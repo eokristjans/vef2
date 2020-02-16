@@ -1,0 +1,29 @@
+@import "config";
+
+* {
+  padding: 0;
+  margin: 0;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: inherit;
+}
+
+html { /* stylelint-disable-line */
+  box-sizing: border-box;
+  overflow-x: hidden;
+  overflow-y: scroll; // alltaf hafa y skrollbar
+
+  font-family: $leturgerdMM;
+  font-size: $leturstaerd1;
+}
+
+img { /* stylelint-disable-line */
+  max-width: 100%;
+}
+
+// TODO import
+@import "index";
+@import "fyrirlestur";

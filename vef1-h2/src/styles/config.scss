@@ -1,0 +1,30 @@
+// TODO stillingar hér
+
+// Litapalletta
+// "Yfir myndum er 60% gegnsær hvítur litur." Gera breytu fyrir það.
+$hviturYfirMyndum: rgba($color: #fff, $alpha: 0.4);
+$svartur: #000;
+$grar1: #999;
+$grar2: #aaa;
+$grar3: #ccc;
+$graenn1: #2d2;
+$graenn2: #1a1;
+$gulur: #fcffd2; //???
+$bleikur: #cc9694; //???
+
+// Grunnstærðir
+$gutter: 20px;
+$leturstaerd1: 16px; // Texti og .headline3 sem er VEFFORRITUN í .header og .lecture_category úr lectures.json
+$leturstaerd2: 24px;
+$leturstaerd3: 32px;
+$leturstaerd4: 48px;
+
+// Leturgerðir
+$leturgerdMM: "Lora", "Times New Roman", serif;
+$leturgerdFS: "Roboto Mono", "Courier New", monospace;
+
+// Stillingar
+$kvikun: 300ms ease-in-out;
+$brotpunktur1: 800px;
+$brotpunktur2: 1000px;
+$brotpunktur3: 1240px;

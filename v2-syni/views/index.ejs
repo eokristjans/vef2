@@ -1,0 +1,13 @@
+<form method="post" action="/register">
+    <label for="name">Nafn</label>
+    <input id="name" name="name" value="<%= name %>">
+
+    <button>Skrá</button>
+</form>
+
+<!-- Setjum errors (úr register.js) hingað -->
+<ul>
+    <% errors.forEach((error) => { %> <!-- ítrun opnar -->
+        <li><%= error.msg %></li>
+    <% }) %> <!-- lokum ítrún -->
+</ul>

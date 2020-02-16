@@ -1,0 +1,45 @@
+<%- include('header') -%>
+
+<h1>Atvinnuumsókn</h1>
+
+<form method="post" action="/">
+  
+  <div class="field<%= locals.isInvalid('nafn', errors) ?  ' field--invalid' : '' %>">
+    <label for="nafn">Nafn</label>
+    <input type="text" name="nafn" id="nafn" value="<%= nafn %>" class="">
+  </div>
+  <div class="field<%= locals.isInvalid('netfang', errors) ?  ' field--invalid' : '' %>">
+    <label for="netfang">Netfang</label>
+    <input type="text" name="netfang" id="netfang" value="<%= netfang %>" class="">
+  </div>
+  <div class="field<%= locals.isInvalid('simi', errors) ?  ' field--invalid' : '' %>">
+    <label for="simi">Sími</label>
+    <input type="text" name="simi" id="simi" value="<%= simi %>" class="">
+  </div>
+  <div class="field<%= locals.isInvalid('kynning', errors) ?  ' field--invalid' : '' %>">
+    <label for="kynning">Kynning á þér:</label>
+    <textarea name="kynning" id="kynning"><%= kynning %></textarea>
+  </div>
+
+  <div class="field<%= locals.isInvalid('starf', errors) ?  ' field--invalid' : '' %>">
+    <label for="starf">Starf</label>
+    <select id="starf" name="starf">
+      <option value="forritari">forritari</option>
+      <option value="hönnuður">hönnuður</option>
+      <option value="verkefnastjóri">verkefnastjóri</option>
+    </select>
+  </div>
+  
+  <% if (errors.length > 0) { %>
+    <h2>Vandræði við að senda umsókn:</h2>
+    <ul class="errors">
+      <% errors.forEach((error) => { %>
+        <li class="error"><label for="<%= error.param %>"><%= error.msg %></label></li>
+      <% }); %>
+    </ul>
+  <% } %>
+
+  <button>Skrá</button>
+</form>
+
+<%- include('footer') -%>

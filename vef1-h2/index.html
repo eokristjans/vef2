@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="is">
+
+<head>
+  <meta charset="utf-8">
+  <title>Hópverkefni 2</title>
+
+  <link href="https://fonts.googleapis.com/css?family=Lora|Roboto+Mono" rel="stylesheet">
+  <!--<link rel="stylesheet" href="/grid.css">-->
+  <link rel="stylesheet" href="/dist/styles.css">
+</head>
+
+<body>
+  <main class="main"><!-----Beginning of Main Content----->
+
+    <header class="header index-header">
+      <!-----Beginning of Header----->
+      <div class="header__content">
+        <h3 class="headline3">Vefforritun</h3>
+        <h1 class="headline1">Fyrirlestrar</h1>
+      </div>
+    </header>
+    <!----------End of Header---------->
+
+    <section class="buttons">
+      <!--Beginning of Button Section   Gætum þurft að breyta þeim í checkbox og style'a þá?-->
+      <button class="button html-butt">HTML</button>
+      <button class="button css-butt">CSS</button>
+      <button class="button js-butt">JavaScript</button>
+    </section>
+    <!----------End of Button Section---------->
+
+    <section class="grid"><!-----Beginning of Grid Section----->
+      <div class="grid__row list"><!--Byrjun á class="grid__row list"-->
+        <div class="grid__col">
+          <!--Sample content, þetta er fjarlægt og sambærilegt lesið úr lectures.json-->
+          <div class="lecture">
+            <div class="lecture__title">
+              <h2 class="headline2"><a href="/fyrirlestur.html">Sagan (+ linkur)</a></h2>
+            </div>
+            <div class="lecture__category">
+              <h3 class="headline3">HTML</h3>
+            </div>
+            <div class="lecture__image"><img src="/img/thumb1.jpg" alt="" class="img"></div>
+          </div>
+        </div>
+        </div>
+      </div><!----------Endir grid__row---------->
+    </section><!----------End of Grid Section---------->
+
+  </main><!----------End of Main Content---------->
+  <script src="./dist/bundle.js"></script>
+</body>
+
+</html>
