@@ -1,12 +1,16 @@
-# Verkefni 2
+# Verkefni 2 & 3
 
 Verkefni 2 snýst um að setja upp vef sem bíður upp á senda inn atvinnuumsóknir ásamt síðu sem listar upp allar umsóknir.
+
+Verkefni 3 byggir á verkefni 2 og bætir við notendaumsjón með nýskráningu og meðhöndlun á notendum.
+
 
 ## Glosur
 
 ```bash
 npm install
-npm install --save pg express-validator ejs xss
+npm install --save pg express-validator ejs xss 
+npm install --save bcrypt cookie-parser express-session passport passport-local
 nodemon app.js
 ```
 
