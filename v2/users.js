@@ -4,83 +4,67 @@
 
 // Viðbót til að geta vistað gögn sem voru send inn í gagnagrunninn.
 // Sækjum bara insertApplication fallið.
-const { 
-    insertAppuser, 
-    selectFromAppuser, 
+const {
+    insertAppuser,
+    selectFromAppuser,
+    selectFromAppuserWhereUsernameEquals,
     selectAllFromAppuserOrderById,
     updateAppuserAdminStatus,
 } = require('./db');
 
 const bcrypt = require('bcrypt');
+const saltRounds = 10;
 
-/***************************************************************
- * Einhverjir default users sem ætti að geyma í gagnagrunni 
- * frekar en minni til að gera láta session endast lengur.
- ***************************************************************/
-const records = [
-  // Erum ekki að hash-a lykilorð, því þá væru þau mismunandi.
-  {
-    id: 1,
-    // TODO: change password to encrypted asdfasdf
-    nafn: 'Admin',
-    netfang: 'admin@example.org',
-    username: 'admin',
-    // Afrit af lykilorði sem er er búið að hash-a
-    password: '$2a$11$pgj3.zySyFOvIQEpD7W6Aund1Tw.BFarXxgLJxLbrzIv/4Nteisii', // 123
-    admin: true,
-  },
-  {
-    id: 2,
-    // TODO: change password to encrypted 12341234
-    nafn: 'Nafnlaus',
-    netfang: 'nn@example.org',
-    username: 'n',
-    password: '$2a$11$pgj3.zySyFOvIQEpD7W6Aund1Tw.BFarXxgLJxLbrzIv/4Nteisii', // 123
-    admin: false,
-  },
-];
 
 async function comparePasswords(password, user) {
-  const ok = await bcrypt.compare(password, user.password);
+    const ok = await bcrypt.compare(password, user.password);
 
-  if (ok) {
-    return user;
-  }
+    if (ok) {
+        return user;
+    }
 
-  return false;
+    return false;
 }
 
 /***************************************************************
  * Þessu þyrfti þá að breyta til að sækja notendur í gagnagrunn.
  ***************************************************************/
-function findByUsername(username) {
-  const found = records.find(u => u.username === username);
+async function findByUsername(username) {
+    const list = await selectFromAppuserWhereUsernameEquals(username);
 
-  if (found) {
-    return Promise.resolve(found);
-  }
+    if (list == null) {
+        // TODO: Error
+    }
 
-  return Promise.resolve(null);
+    return list[0];
 }
 
-function findById(id) {
-  const found = records.find(u => u.id === id);
+async function findById(id) {
+    const list = await selectFromAppuser(id);
 
-  if (found) {
-    return Promise.resolve(found);
-  }
+    if (list == null) {
+        // TODO: Error
+    }
 
-  return Promise.resolve(null);
+    return list[0];
 }
 
-function createUser(user) {
-    records.push(user);
-    console.log('Creating user with username' + user.username);
+async function createUser(nafn, netfang, username, password) {
+
+    console.log('Creating user with username: ' + username);
+
+    // Hash the password, do not store the password any longer than necessary.
+    await bcrypt.hash(password, saltRounds, function (err, hash) {
+        // Store the user immediately.
+        insertAppuser(nafn, netfang, username, hash, false);
+    });
+
+
 }
 
 module.exports = {
-  comparePasswords,
-  findByUsername,
-  findById,
-  createUser,
+    comparePasswords,
+    findByUsername,
+    findById,
+    createUser,
 };

@@ -125,7 +125,7 @@ async function selectAllFromAppuserOrderById() {
 async function selectFromAppuser(id) {
   const result = await query('SELECT * FROM appuser WHERE id = $1', [id]);
 
-  return result.rows[0];
+  return result.rows;
 }
 
 /**
@@ -134,10 +134,10 @@ async function selectFromAppuser(id) {
  * @param {string} username username á notanda
  * @returns {object} Hlut með niðurstöðu af því að keyra fyrirspurn
  */
-async function selectFromAppuser(username) {
+async function selectFromAppuserWhereUsernameEquals(username) {
   const result = await query('SELECT * FROM appuser WHERE username = $1', [username]);
 
-  return result.rows[0];
+  return result.rows;
 }
 
 /**
@@ -177,6 +177,7 @@ module.exports = {
   insertAppuser,
   selectAllFromAppuserOrderById,
   selectFromAppuser,
+  selectFromAppuserWhereUsernameEquals,
   updateAppuserAdminStatus,
   deleteAppuser,
 };

@@ -96,7 +96,7 @@ function showErrors(req, res, next) {
  * @param {object} req Request hlutur
  * @param {object} res Response hlutur
  */
-function formPost(req, res) {
+async function formPost(req, res) {
   const {
     body: {
       nafn = '',
@@ -106,9 +106,7 @@ function formPost(req, res) {
     } = {},
   } = req;
 
-  // TODO: insertUser( to database )
-  // await insertApplication(nafn, netfang, simi, kynning, starf);
-  users.createUser(req.body);
+  await users.createUser(nafn, netfang, username, password);
   
   return res.redirect('/register/thanks');
 }
