@@ -1,7 +1,15 @@
 /* v3 - Hjálparföll um notendur og meðhöndlun þeirra */
 
-/* todo útfæra virkni fyrir notendur - bæta við gagnagrunni */
 
+
+// Viðbót til að geta vistað gögn sem voru send inn í gagnagrunninn.
+// Sækjum bara insertApplication fallið.
+const { 
+    insertAppuser, 
+    selectFromAppuser, 
+    selectAllFromAppuserOrderById,
+    updateAppuserAdminStatus,
+} = require('./db');
 
 const bcrypt = require('bcrypt');
 
@@ -13,21 +21,21 @@ const records = [
   // Erum ekki að hash-a lykilorð, því þá væru þau mismunandi.
   {
     id: 1,
+    // TODO: change password to encrypted asdfasdf
+    nafn: 'Admin',
+    netfang: 'admin@example.org',
     username: 'admin',
     // Afrit af lykilorði sem er er búið að hash-a
     password: '$2a$11$pgj3.zySyFOvIQEpD7W6Aund1Tw.BFarXxgLJxLbrzIv/4Nteisii', // 123
-    // TODO: change password to encrypted asdfasdf
-    name: 'Admin',
-    email: 'admin@example.org',
     admin: true,
   },
   {
     id: 2,
+    // TODO: change password to encrypted 12341234
+    nafn: 'Nafnlaus',
+    netfang: 'nn@example.org',
     username: 'n',
     password: '$2a$11$pgj3.zySyFOvIQEpD7W6Aund1Tw.BFarXxgLJxLbrzIv/4Nteisii', // 123
-    // TODO: change password to encrypted 12341234
-    name: 'Nafnlaus',
-    email: 'nn@example.org',
     admin: false,
   },
 ];
@@ -65,8 +73,14 @@ function findById(id) {
   return Promise.resolve(null);
 }
 
+function createUser(user) {
+    records.push(user);
+    console.log('Creating user with username' + user.username);
+}
+
 module.exports = {
   comparePasswords,
   findByUsername,
   findById,
+  createUser,
 };

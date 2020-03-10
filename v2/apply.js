@@ -99,7 +99,7 @@ const sanitazions = [
  *
  * @param {object} req Request hlutur
  * @param {object} res Response hlutur
- * @returns {string} Formi fyrir umsókn
+ * @returns {string} Form fyrir umsókn
  */
 function form(req, res) {
   const data = {
@@ -170,19 +170,9 @@ async function formPost(req, res) {
     } = {},
   } = req;
 
-//  try {
-//    await upload(req, res);
-//    // Everything went fine
-//    console.log('uploading:', req.file);
-//  } catch (e) {
-//    // An error occurred when uploading
-//    console.log('formPost caught error trying to upload.');
-//    throw e;
-//  }
-
   await insertApplication(nafn, netfang, simi, kynning, starf);
 
-  return res.redirect('/thanks');
+  return res.redirect('/apply/thanks');
 }
 
 /**

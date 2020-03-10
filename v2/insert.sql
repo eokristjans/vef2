@@ -33,3 +33,15 @@ INSERT INTO application (nafn, netfang, simi, kynning, starf, processed) VALUES
   , 'Etiam accumsan neque nec mauris fringilla, id dignissim tortor maximus. Proin sit amet sodales felis. Vivamus ut est magna. Quisque porta quam ac orci dignissim convallis. Nunc efficitur sagittis felis at gravida. Praesent quis quam molestie, rutrum mi sed, malesuada nisi. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse felis tortor, imperdiet in metus eget, bibendum aliquet nisl.'
   , 'verkefnastjóri'
   , False);
+INSERT INTO appuser (nafn, netfang, username, password, admin) VALUES 
+  ( 'Admin'
+  , 'admin@example.org'
+  , 'admin'
+  , '$2a$11$pgj3.zySyFOvIQEpD7W6Aund1Tw.BFarXxgLJxLbrzIv/4Nteisii'
+  , true);
+INSERT INTO appuser (nafn, netfang, username, password, admin) VALUES 
+  ( 'Nafnlaus'
+  , 'nn@example.org'
+  , 'nn'
+  , '$2a$11$pgj3.zySyFOvIQEpD7W6Aund1Tw.BFarXxgLJxLbrzIv/4Nteisii'
+  , false);

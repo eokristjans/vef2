@@ -18,7 +18,6 @@ const { Strategy } = require('passport-local'); // v3
 
 const sessionSecret = process.env.SESSION_SECRET; // v3
 
-// v3 - Leyfilegt er að setja upp virkni fyrir notendur í annari skrá en db.js.
 
 const app = express();
 
@@ -33,9 +32,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/apply', apply);
 app.use('/applications', applications);
 app.use('/register', register); // v3
-// app.use('/admin', admin); // v3 TODO: Uncomment after moving admin functionality there
-
-/* todo setja upp login og logout virkni - mætti jafnvel vera í sér skrá. */
+app.use('/admin', admin); // v3 TODO: Uncomment after moving admin functionality
 
 if (!sessionSecret) {
   console.error('Add SESSION_SECRET to .env');
@@ -53,8 +50,7 @@ app.use(session({
 
 
 
-
-
+// v3 - Leyfilegt er að setja upp virkni fyrir notendur í annari skrá en db.js.
 
 /**
  * Athugar hvort username og password sé til í notandakerfi.
@@ -127,6 +123,7 @@ function ensureLoggedIn(req, res, next) {
   return res.redirect('/login');
 }
 
+// TODO: Búa til menu bar og eyða
 app.get('/', (req, res) => {
   if (req.isAuthenticated()) {
     return res.send(`
@@ -142,36 +139,44 @@ app.get('/', (req, res) => {
   `);
 });
 
-// Þetta er semsagt login formið
-app.get('/login', (req, res) => {
 
-  if (req.isAuthenticated()) {
-    return res.redirect('/');
-  }
+/**
+ * Login Form
+ * 
+ * @param {object} req Request hlutur
+ * @param {object} res Response hlutur
+ */
+app.get('/login', (req, res) => {
+  const data = {
+    title: 'Innskráning', // Ekki í notkun eins og er
+    username: 'admin', // current default
+    password: '123', // current default
+    errors: [],
+  };
+
+  // TODO: Validation & Sanitazion
+
+  if (req.isAuthenticated()) {  return res.redirect('/'); }
 
   let message = '';
 
-  // Athugum hvort einhver skilaboð séu til í session, ef svo er birtum þau
-  // og hreinsum skilaboð
+  // Athugum hvort einhver skilaboð séu til í session, ef svo er birtum þau og hreinsum skilaboð
   if (req.session.messages && req.session.messages.length > 0) {
     message = req.session.messages.join(', ');
     req.session.messages = [];
   }
 
-  // EF VIÐ VÆRUM AÐ NOTA ejs ÞÁ VÆRI ÞETTA BARA res.render( MEÐ FORMINU )
-  // Ef við breytum name á öðrum hvorum reitnum að neðan mun ekkert virka
-  return res.send(`
-    <form method="post" action="/login">
-      <label>Notendanafn: <input type="text" name="username"></label>
-      <label>Lykilorð: <input type="password" name="password"></label>
-      <button>Innskrá</button>
-    </form>
-    <p>${message}</p>
-  `);
-  // REITIRNIR VERÐA AÐ HEITA username OG password SVO passport.authenticate VIRKI.
+  // TODO: Senda Message með (bæta því við data eða láta ejs sækja það úr req.session.messages?)
+  res.render('loginForm', data);
 });
 
-// Þetta er aðgerðin til að skrá sig inn
+
+/**
+ * Login Post Method (Mun þurfa að verða Async vegna samskipta við gagnagrunn)
+ * 
+ * @param {object} req Request hlutur
+ * @param {object} res Response hlutur
+ */
 app.post(
   '/login',
 
@@ -187,11 +192,20 @@ app.post(
   },
 );
 
+
+/**
+ * Log out Method
+ * 
+ * @param {object} req Request hlutur
+ * @param {object} res Response hlutur
+ */
 app.get('/logout', (req, res) => {
-  req.logout();
+  req.logout(); // Passport method
   res.redirect('/');
 });
 
+/*
+// TODO: Eyða
 // ensureLoggedIn PASSAR AÐ HANN VERÐUR AÐ VERA SKRÁÐUR INN.
 // Þarf ekki að vera admin m.v. núverandi stillingar.
 app.get('/admin', ensureLoggedIn, (req, res) => {
@@ -200,7 +214,7 @@ app.get('/admin', ensureLoggedIn, (req, res) => {
     <p><a href="/">Forsíða</a></p>
   `);
 });
-
+*/
 
 /***************************************************************
  * Hingað mætti bæta við register formi og post (keimlíkt login)
@@ -224,6 +238,7 @@ function isInvalid(field, errors) {
 
 app.locals.isInvalid = isInvalid;
 
+/**
 function notFoundHandler(req, res, next) { // eslint-disable-line
   res.status(404).render('error', { title: '404', error: '404 fannst ekki' });
 }
@@ -235,7 +250,7 @@ function errorHandler(error, req, res, next) { // eslint-disable-line
 
 app.use(notFoundHandler);
 app.use(errorHandler);
-
+ */
 
 
 /********** HOSTNAME, PORT AND LISTEN AT THE ABSOLUTE BOTTOM **********/

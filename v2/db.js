@@ -27,6 +27,8 @@ async function query(q, values = []) {
   }
 }
 
+/********************** APPLICATION CRUD **********************/
+
 /**
  * Bætir við umsókn.
  *
@@ -82,9 +84,99 @@ async function deleteApplication(id) {
 }
 
 
+
+/********************** APPUSER CRUD **********************/
+
+
+/**
+ * Bætir við user.
+ *
+ * @param {array} data Fylki af gögnum fyrir notanda
+ * @returns {object} Hlut með niðurstöðu af því að keyra fyrirspurn
+ */
+async function insertAppuser(nafn, netfang, username, password, admin) {
+  const q = `
+  INSERT INTO appuser
+   (nafn, netfang, username, password, admin) 
+   VALUES 
+   ($1, $2, $3, $4, $5)`;
+  const values = [nafn, netfang, username, password, admin];
+  return query(q, values);
+}
+
+/**
+ * Sækir alla notendur
+ *
+ * @returns {array} Fylki af öllum notendum
+ */
+async function selectAllFromAppuserOrderById() {
+  const result = await query('SELECT * FROM appuser ORDER BY id');
+
+  return result.rows;
+}
+
+
+/**
+ * Sækir notanda
+ *
+ * @param {string} id Id á notanda
+ * @returns {object} Hlut með niðurstöðu af því að keyra fyrirspurn
+ */
+async function selectFromAppuser(id) {
+  const result = await query('SELECT * FROM appuser WHERE id = $1', [id]);
+
+  return result.rows[0];
+}
+
+/**
+ * Sækir notanda
+ *
+ * @param {string} username username á notanda
+ * @returns {object} Hlut með niðurstöðu af því að keyra fyrirspurn
+ */
+async function selectFromAppuser(username) {
+  const result = await query('SELECT * FROM appuser WHERE username = $1', [username]);
+
+  return result.rows[0];
+}
+
+/**
+ * Stillir admin status á notanda.
+ *
+ * @param {string} id Id á notanda
+ * @returns {object} Hlut með niðurstöðu af því að keyra fyrirspurn
+ */
+async function updateAppuserAdminStatus(id, admin) {
+  const q = `
+    UPDATE appuser
+    SET admin = $2, updated = current_timestamp
+    WHERE id = $1`;
+
+  return query(q, [id, admin]);
+}
+
+/**
+ * Eyðir notanda.
+ *
+ * @param {string} id Id á notanda
+ * @returns {object} Hlut með niðurstöðu af því að keyra fyrirspurn
+ */
+async function deleteAppuser(id) {
+  const q = 'DELETE FROM appuser WHERE id = $1';
+
+  return query(q, [id]);
+}
+
+
+
 module.exports = {
   insertApplication,
   selectAllFromApplicationOrderById,
   updateApplicationSetProcessedEqualsTrue,
   deleteApplication,
+  insertAppuser,
+  selectAllFromAppuserOrderById,
+  selectFromAppuser,
+  updateAppuserAdminStatus,
+  deleteAppuser,
 };

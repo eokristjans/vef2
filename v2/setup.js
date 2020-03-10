@@ -30,19 +30,20 @@ async function main() {
   console.info(`Set upp gagnagrunn á ${connectionString}`);
   // droppa töflu ef til
   await query('DROP TABLE IF EXISTS application');
-  console.info('Töflu eytt');
+  await query('DROP TABLE IF EXISTS appuser');
+  console.info('Töflum eytt');
 
   // búa til töflu út frá skema
   try {
-    const createTable = await readFileAsync('./schema.sql');
-    await query(createTable.toString('utf8'));
-    console.info('Tafla búin til');
+    const createSchema = await readFileAsync('./schema.sql');
+    await query(createSchema.toString('utf8'));
+    console.info('Schema sett upp');
   } catch (e) {
-    console.error('Villa við að búa til töflu:', e.message);
+    console.error('Villa við að búa til töflur:', e.message);
     return;
   }
 
-  // bæta færslum við töflu
+  // bæta færslum við töflur
   try {
     const insert = await readFileAsync('./insert.sql');
     await query(insert.toString('utf8'));

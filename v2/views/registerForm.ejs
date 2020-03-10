@@ -1,0 +1,44 @@
+<%- include('header') -%>
+
+
+<h1>Nýskráning</h1>
+
+<form method="post" action="/register">
+  
+<div class="field<%= locals.isInvalid('nafn', errors) ?  ' field--invalid' : '' %>">
+    <label for="nafn">Nafn</label>
+    <input type="text" name="nafn" id="nafn" value="<%= nafn %>" class="">
+  </div>
+  <div class="field<%= locals.isInvalid('netfang', errors) ?  ' field--invalid' : '' %>">
+    <label for="netfang">Netfang</label>
+    <input type="text" name="netfang" id="netfang" value="<%= netfang %>" class="">
+  </div>
+  <!-- REITIRNIR VERÐA AÐ HEITA username OG password SVO passport.authenticate VIRKI.-->
+  <div class="field<%= locals.isInvalid('username', errors) ?  ' field--invalid' : '' %>">
+    <label>Notendanafn: </label>
+    <input type="text" name="username" id="username" value="<%= username %>" class="">
+  </div>
+  <div class="field<%= locals.isInvalid('password', errors) ?  ' field--invalid' : '' %>">
+      <label>Lykilorð: </label>
+      <input type="password" name="password" id="password" value="<%= password %>" class="">
+  </div>
+  <!-- TODO: Lykilorð, aftur
+  <div class="field<%= locals.isInvalid('password', errors) ?  ' field--invalid' : '' %>">
+      <label>Lykilorð: </label>
+      <input type="password" name="password" id="password" value="<%= password %>" class="">
+  </div>
+  -->
+
+  <% if (errors.length > 0) { %>
+    <h2>Vandræði við nýskráningu:</h2>
+    <ul class="errors">
+      <% errors.forEach((error) => { %>
+        <li class="error"><label for="<%= error.param %>"><%= error.msg %></label></li>
+      <% }); %>
+    </ul>
+  <% } %>
+
+  <button>Skrá notanda</button>
+</form>
+
+<%- include('footer') -%>
