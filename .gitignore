@@ -23,3 +23,7 @@ yarn-error.log*
 .env
 
 dist/
+
+
+# Was messing around with uploading files in v2
+**/uploads
