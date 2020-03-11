@@ -6,7 +6,31 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link href="https://fonts.googleapis.com/css?family=Open+Sans|Source+Sans+Pro:700" rel="stylesheet">
     <title><%= title %></title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="./styles.css">
+    <link rel="stylesheet" href="../styles.css"> <!-- Fyrir thanks síður með slóð /*/thanks-->
   </head>
   <body>
+    <header>
+      <!-- Krefst þess að res.locals.user sé stilltur -->
+      <!-- CSS klasar fyrir page eru settir samkvæmt res.locals.page-->
+      <nav>
+        <ul>
+          <% if (typeof page === 'undefined') page = ''; %>
+          <li class="<%= page === 'apply' ? 'current' : '' %>"><a href="/">Atvinnuumsókn</a></li>
+          <% if (!user) { %>
+            <li class="<%= page === 'login' ? 'current' : '' %>"><a href="/login">Innskráning</a></li>
+            <li class="<%= page === 'register' ? 'current' : '' %>"><a href="/register">Nýskráning</a></li>
+          <% } else { %>
+            <li class="<%= page === 'applications' ? 'current' : '' %>"><a href="/applications">Umsóknir</a></li>
+            <li class="<%= page === 'users' ? 'current' : '' %>"><a href="/users">Notendur</a></li>
+          <% } %>
+        </ul>
+      </nav>
+      <% if (user) { %>
+        <div class="user">
+          <p class="user__name"><%= user.username %></p>
+          <p class="user__logout"><a href="/logout">Útskrá</a></p>
+        </div>
+      <% } %>
+    </header>
     <main>

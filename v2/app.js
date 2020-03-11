@@ -1,4 +1,6 @@
-// ÆTTI AÐ VERA TILBÚIÐ.
+// v2 TILBÚIÐ.
+
+// v3 TODO: Færa login o.fl. yfir í nýja skrá, utils.js
 require('dotenv').config();
 
 const path = require('path');
@@ -6,18 +8,16 @@ const express = require('express');
 const session = require('express-session'); // v3
 const passport = require('passport'); // v3
 
-const apply = require('./apply');
-const applications = require('./applications');
-const register = require('./register'); // v3
-const admin = require('./admin'); // v3
-const users = require('./users'); // v3 - being used but not as middleware
+const apply = require('./routes/apply');
+const applications = require('./routes/applications');
+const register = require('./routes/register'); // v3
+const usersPage = require('./routes/users'); // v3
+const users = require('./DAOs/users'); // v3 - being used but not as middleware
 
 // Strategy um hvernig við ætlum að nálgast og eiga við notendur
 const { Strategy } = require('passport-local'); // v3
 
-
 const sessionSecret = process.env.SESSION_SECRET; // v3
-
 
 const app = express();
 
@@ -29,17 +29,13 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/apply', apply);
-app.use('/applications', applications);
-app.use('/register', register); // v3
-app.use('/admin', admin); // v3 TODO: Uncomment after moving admin functionality
 
-if (!sessionSecret) {
+if (!sessionSecret) { // v3
   console.error('Add SESSION_SECRET to .env');
   process.exit(1);
 }
 
-// Passport mun verða notað með session
+// v3 Passport mun verða notað með session
 app.use(session({
   secret: sessionSecret,
   resave: false,
@@ -49,10 +45,7 @@ app.use(session({
 
 
 
-
-// v3 - Leyfilegt er að setja upp virkni fyrir notendur í annari skrá en db.js.
-
-/**
+/** v3
  * Athugar hvort username og password sé til í notandakerfi.
  * Callback tekur við villu sem fyrsta argument, annað argument er
  * - `false` ef notandi ekki til eða lykilorð vitlaust
@@ -80,15 +73,15 @@ async function strat(username, password, done) {
   }
 }
 
-// Notum local strategy með „strattinu“ okkar til að leita að notanda
+// v3 Notum local strategy með „strattinu“ okkar til að leita að notanda
 passport.use(new Strategy(strat));
 
-// Geymum id á notanda í session, það er nóg til að vita hvaða notandi þetta er
+// v3 Geymum id á notanda í session, það er nóg til að vita hvaða notandi þetta er
 passport.serializeUser((user, done) => {
   done(null, user.id);
 });
 
-// Sækir notanda út frá id
+// v3 Sækir notanda út frá id
 passport.deserializeUser(async (id, done) => {
   try {
     const user = await users.findById(id);
@@ -98,22 +91,21 @@ passport.deserializeUser(async (id, done) => {
   }
 });
 
-// Látum express nota passport með session
+// v3 Látum express nota passport með session
 app.use(passport.initialize());
 app.use(passport.session());
 
-// Gott að skilgreina eitthvað svona til að gera user hlut aðgengilegan í
+// v3 Gott að skilgreina eitthvað svona til að gera user hlut aðgengilegan í
 // view-um ef við erum að nota þannig
 app.use((req, res, next) => {
-  if (req.isAuthenticated()) {
-    // getum núna notað user í view-um
-    res.locals.user = req.user;
-  }
+
+  // Látum `user` alltaf vera til fyrir view
+  res.locals.user = req.isAuthenticated() ? req.user : null;
 
   next();
 });
 
-// Hjálpar middleware sem athugar hvort notandi sé innskráður og hleypir okkur
+// v3 Hjálpar middleware sem athugar hvort notandi sé innskráður og hleypir okkur
 // þá áfram, annars sendir á /login
 function ensureLoggedIn(req, res, next) {
   if (req.isAuthenticated()) {
@@ -123,36 +115,37 @@ function ensureLoggedIn(req, res, next) {
   return res.redirect('/login');
 }
 
-// TODO: Búa til menu bar og eyða
-app.get('/', (req, res) => {
+// v3 Hjálpar middleware sem athugar hvort notandi sé innskráður
+// og sendir okkur þá á rót, annars hleypir okkur áfram
+// Notað t.d. áður en hleypt er á /register og /login síður
+function ensureNotLoggedIn(req, res, next) {
   if (req.isAuthenticated()) {
-    return res.send(`
-      <p>Innskráning sem ${req.user.username}</p>
-      <p>Þú ert ${req.user.admin ? 'admin.' : 'ekki admin.'}</p>
-      <p><a href="/logout">Útskráning</a></p>
-      <p><a href="/admin">Skoða leyndarmál</a></p>
-    `);
+    // Er útskráður
+    return res.redirect('/');
   }
 
-  return res.send(`
-    <p><a href="/login">Innskráning</a></p>
-  `);
-});
+  return next();
+}
 
 
-/**
+/** v3
  * Login Form
  * 
  * @param {object} req Request hlutur
  * @param {object} res Response hlutur
  */
-app.get('/login', (req, res) => {
+app.get('/login', ensureNotLoggedIn, (req, res) => {
   const data = {
     title: 'Innskráning', // Ekki í notkun eins og er
     username: 'admin', // current default
-    password: '123', // current default
+    password: 'asdfasdf', // current default
     errors: [],
   };
+
+
+  // v3 setjum current page (betra ef þetta væri aðgerð aðgengileg öllum)
+  res.locals.page = 'login';
+
 
   // TODO: Validation & Sanitazion
 
@@ -171,7 +164,7 @@ app.get('/login', (req, res) => {
 });
 
 
-/**
+/** v3
  * Login Post Method (Mun þurfa að verða Async vegna samskipta við gagnagrunn)
  * 
  * @param {object} req Request hlutur
@@ -186,39 +179,31 @@ app.post(
     failureRedirect: '/login',
   }),
 
-  // Ef við komumst hingað var notandi skráður inn, senda á /admin
+  // Ef við komumst hingað var notandi skráður inn, senda á /users
   (req, res) => {
-    res.redirect('/admin');
+    res.redirect('/users');
   },
 );
 
 
-/**
+/** v3
  * Log out Method
  * 
  * @param {object} req Request hlutur
  * @param {object} res Response hlutur
  */
-app.get('/logout', (req, res) => {
+app.get('/logout', ensureLoggedIn, (req, res) => {
   req.logout(); // Passport method
   res.redirect('/');
 });
 
-/*
-// TODO: Eyða
-// ensureLoggedIn PASSAR AÐ HANN VERÐUR AÐ VERA SKRÁÐUR INN.
-// Þarf ekki að vera admin m.v. núverandi stillingar.
-app.get('/admin', ensureLoggedIn, (req, res) => {
-  res.send(`
-    <p>Hér eru leyndarmál</p>
-    <p><a href="/">Forsíða</a></p>
-  `);
-});
-*/
 
-/***************************************************************
- * Hingað mætti bæta við register formi og post (keimlíkt login)
- ***************************************************************/
+
+app.use('/', apply);
+app.use('/register', ensureNotLoggedIn, register); // v3
+app.use('/applications', ensureLoggedIn, applications);
+app.use('/users', ensureLoggedIn, usersPage); // v3
+
 
 
 
@@ -238,7 +223,6 @@ function isInvalid(field, errors) {
 
 app.locals.isInvalid = isInvalid;
 
-/**
 function notFoundHandler(req, res, next) { // eslint-disable-line
   res.status(404).render('error', { title: '404', error: '404 fannst ekki' });
 }
@@ -250,10 +234,10 @@ function errorHandler(error, req, res, next) { // eslint-disable-line
 
 app.use(notFoundHandler);
 app.use(errorHandler);
- */
 
 
-/********** HOSTNAME, PORT AND LISTEN AT THE ABSOLUTE BOTTOM **********/
+
+/********** LISTEN MUST BE AT THE ABSOLUTE BOTTOM **********/
 
 const hostname = '127.0.0.1';
 const port = 3000;

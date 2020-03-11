@@ -1,7 +1,11 @@
 const express = require('express');
 
 // Viðbót til að geta sótt og breytt gögnum sem eru í gagnagrunninum.
-const { selectAllFromApplicationOrderById, updateApplicationSetProcessedEqualsTrue, deleteApplication } = require('./db');
+const { 
+  selectAllFromApplicationOrderById, 
+  updateApplicationSetProcessedEqualsTrue, 
+  deleteApplication 
+} = require('../DAOs/db');
 
 const router = express.Router();
 
@@ -29,6 +33,9 @@ async function applications(req, res) {
     title: 'Umsóknir',
     list,
   };
+  
+  // setjum current page (betra ef þetta væri aðgerð aðgengileg öllum)
+  res.locals.page = 'applications';
 
   return res.render('applications', data);
 }

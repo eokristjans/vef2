@@ -37,11 +37,11 @@ INSERT INTO appuser (nafn, netfang, username, password, admin) VALUES
   ( 'Admin'
   , 'admin@example.org'
   , 'admin'
-  , '$2a$11$pgj3.zySyFOvIQEpD7W6Aund1Tw.BFarXxgLJxLbrzIv/4Nteisii'
+  , '$2b$10$N0R0DphxTZfCaN3n3882VuZ5DlOkijtezdtSCbKSUDZcFt98N8n56'
   , true);
 INSERT INTO appuser (nafn, netfang, username, password, admin) VALUES 
   ( 'Nafnlaus'
   , 'nn@example.org'
   , 'nn'
-  , '$2a$11$pgj3.zySyFOvIQEpD7W6Aund1Tw.BFarXxgLJxLbrzIv/4Nteisii'
+  , '$2b$10$VovxIJixUY9CnuFWxEUG9.L49jTMpDys/M7ErUz7uYUhV3QYF0N/S'
   , false);

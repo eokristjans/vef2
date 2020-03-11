@@ -12,7 +12,7 @@ const { sanitize } = require('express-validator');
 
 // Viðbót til að geta vistað gögn sem voru send inn í gagnagrunninn.
 // Sækjum bara insertApplication fallið.
-const { insertApplication } = require('./db');
+const { insertApplication } = require('../DAOs/db');
 
 const router = express.Router();
 
@@ -112,6 +112,10 @@ function form(req, res) {
     starf: 'forritari',
     errors: [],
   };
+  
+  // setjum current page (betra ef þetta væri aðgerð aðgengileg öllum)
+  res.locals.page = 'apply';
+
   res.render('form', data);
 }
 
@@ -187,14 +191,14 @@ function thanks(req, res) {
 
 
 router.get('/', form);
-router.get('/thanks', thanks);
+router.get('/apply/thanks', thanks);
 
 // passa að senda validation og sanitazion fylkin með í post fallið.
 router.post(
-  '/',
+  '/apply',
+  sanitazions, // Hreinsa gögn áður en þau eru valideruð
   validations, // Athugar hvort form sé í lagi
   showErrors, // Ef form er ekki í lagi, birtir upplýsingar um það
-  sanitazions, // Öll gögn í lagi, hreinsa þau
   catchErrors(formPost), // Senda gögn í gagnagrunn
 );
 

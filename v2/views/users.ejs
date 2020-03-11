@@ -1,0 +1,32 @@
+<%- include('header') -%>
+
+<h1>Notendur</h1>
+
+<form method="post" action="/users">
+  <div class="users">
+    <table cellspacing="0">
+      <tr>
+        <% if (user && user.admin) { %>
+          <th>Stjórnandi?</th>
+        <% } %>
+        <th>Notendanafn</th>
+        <th>Nafn</th>
+        <th>Netfang</th>
+      </tr>
+      <% list.forEach((currentUser) => { %>
+        <tr>
+          <% if (user && user.admin) { %>
+            <td><input type="checkbox" name="admin[]" value="<%= currentUser.id%>" <%= currentUser.admin ? 'checked' : '' %>></td>
+          <% } %>
+          <td><%=currentUser.username %></td>
+          <td><%=currentUser.nafn %></td>
+          <td><%=currentUser.netfang %></td>
+        </tr>
+      <% }) %>
+    </table>
+  </div>
+  <% if (user && user.admin) { %>
+    <button>Uppfæra stjórnendur</button>
+  <% } %>
+</form>
+<%- include('footer') -%>

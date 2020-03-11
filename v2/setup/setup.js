@@ -35,7 +35,7 @@ async function main() {
 
   // búa til töflu út frá skema
   try {
-    const createSchema = await readFileAsync('./schema.sql');
+    const createSchema = await readFileAsync('./setup/schema.sql');
     await query(createSchema.toString('utf8'));
     console.info('Schema sett upp');
   } catch (e) {
@@ -45,7 +45,7 @@ async function main() {
 
   // bæta færslum við töflur
   try {
-    const insert = await readFileAsync('./insert.sql');
+    const insert = await readFileAsync('./setup/insert.sql');
     await query(insert.toString('utf8'));
     console.info('Gögnum bætt við');
   } catch (e) {
