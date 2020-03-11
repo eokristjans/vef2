@@ -1,6 +1,10 @@
 // v2 TILBÚIÐ.
 
 // v3 TODO: Færa login o.fl. yfir í nýja skrá, utils.js
+// TODO: Login Validation & Sanitazion
+// TODO: Setja á heroku?
+
+
 require('dotenv').config();
 
 const path = require('path');
@@ -147,7 +151,6 @@ app.get('/login', ensureNotLoggedIn, (req, res) => {
   res.locals.page = 'login';
 
 
-  // TODO: Validation & Sanitazion
 
   if (req.isAuthenticated()) {  return res.redirect('/'); }
 
