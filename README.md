@@ -257,3 +257,107 @@ Sjá [passport.js](../vef2-19-master/fyrirlestrar/05/daemi/auth/04.passport.js) 
 <hr>
 
 
+## Fyrirlestur 5.2 - Twelve-Factor App
+
+Samansafn af 12 atriðum sem hjálpar okkur að skrifa forrit sem auðvelt er að reka.
+
+DevOps hugmyndarfræði.
+
+### 1. Codebase
+
+One codebase tracked in revision (source) control.
+
+Many deploys of the same codebase for each purpose like production, staging and for each developer.
+
+### 2. Dependencies
+
+Explicitly declare and isolate dependencies. Never assume anything. `package.json` declares these.
+
+### 3. Config
+
+Store config (that differ between deploys) in the environment.
+
+This includes databases, login info etc.
+
+we can keep this in `process.env`
+
+### 4. Backing services
+
+Treat _backing services_ as attached resources.
+
+A backing service is a service that we need for software and we retrieve over the internet 
+(E.g. databases, web services etc.).
+
+The app connects via URL and does not distinguish between a local or 3rd party service.
+
+Heroku has a lot of add-ons, like `Heroku postgres`
+
+
+### 5. Build, release, run
+
+Strictly separate build and run stages.
+
+Code is changed to deploy in these three steps.
+
+
+### 6. Processes
+
+Execute the app as one or more stateless processes.
+
+We run an app with one or more stateless process. Each deploy is stateless and shares nothing with other deploys.
+
+Thus we can't save anything to memory on Heroku. Not files and not even the session. Need to use _backing services_.
+
+Define how heroku should run the app in `procfile`.
+
+### 7. Port binding
+
+Export services via port binding.
+
+App binds itself to ports in running environment and listens to instructions coming from that port.
+
+### 8. Concurrency
+
+Scale out via the process model.
+
+Design our software so that they can utilize various _process types_ (e.g. `web` for web traffic and `worker` for data processing or something that takes longer).
+
+Heroku can add more _dynos_ (containers that run our programs) on demand, which scales very well. We can define how much our app can scale.
+
+### 9. Disposability
+
+Maximize robustness with fast startup and graceful shutdown.
+
+Make sure not to store any data in memory for any prolonged time.
+
+### 10. Dev/proc parity
+
+Keep development, staging and production as similar as possible...
+
+in order to speed up deployment, reduce the gap between development and operations, tools that are used etc. 
+
+Includes keeping the same database scheme in development and deployment.
+
+Should be able to deploy often per day without any issues, because if it worked locally and we push to master it should still work.
+
+### 11. Logs
+
+Treat logs as event streams.
+
+App shouldn't think about logging, just writing out what happens. 
+
+During development, the developer pays attention to the console. 
+
+Specific _backing services_ can keep track of logs from production deployment.
+
+
+### Admin processes
+
+Run admin/mgmt tasks as one-off processes.
+
+These include tasks that are not part of daily deployment (e.g. create database, reorder database, clean up data).
+
+This can be done with `heroku run <script>`.
+
+
+
