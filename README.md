@@ -361,3 +361,76 @@ This can be done with `heroku run <script>`.
 
 
 
+## Fyrirlestur 6.1 - Vefþjónustur
+
+Í grunnin: samskipti milli tölva yfir net.
+
+- Remote Procedure Calls (RPC): Kallað á fall í annari tölvu.
+- XML-RPC: Kall kóðað í XML og sent yfir HTTP.
+- Service Oriented Architecture (SOA): Hönnunar og arkítektúra mynstur, hugbúnaður veitir virkni sem þjónustu.
+- WSDL: Lýsing á þjónustu og samskiptum sem byggir á XML
+  - Týpur (einfaldar og flóknar)
+  - Aðgerðir og inntak/úttak
+  - Endapunkt (hvert á að kalla á þjónstuna)
+  - Langoftast eru notuð tól sem búa til kóða útfrá WSDL (stór og mikil XML skjöl)
+- SOAP: Sett inní Envelope með (valkvæmum) header og body.
+- Monolith: 
+  - Kerfi sem eru stór og innihalda næstum alla virkni (business, application logic o.fl.)
+  - Getur verið erfitt að viðhalda.
+- Microservice: 
+  - Nýleg túlkun á SOA til að útfæra dreifð kerfi.
+  - Einblínir á að skipta forriti upp í lauslega tengda hluta.
+  - Góð hugmynd en krefst mikils aga og skipulags í útfærslu.
+
+### HTTP Aðferðir
+- GET
+- POST
+- PATCH: Uppfærir aðeisn þá hluta einingar sem eru sendir.
+- DELETE
+- PUT: Blanda af POST og PATCH... yfirskrifar mögulega með tómum gildum í request body?
+- HEAD: Sækir bara haus.
+
+Örugg aðgerð: Breytir engri stöðu (GET og HEAD). Annars óörugg.
+
+Idempotency (æ-dem-pó-tent): Ef kallað á þær mörgum sinnum með sömu skilyðrum hefur sömu áhrif og á að kalla einu sinni (sér í lagi PUT og DELETE, en líka GET og HEAD).
+
+
+### Stöðukóðar
+- 1xx Til upplýsinga
+- 2xx Success
+  - 200 OK
+  - 201 Created
+  - 202 Accepted (beiðni móttekin en aðgerð er ekki lokið)
+  - 204 No Conent (t.d. vegna þess að einhverju var eytt)
+- 3xx Redirection
+  - 301 Moved Permanently
+  - 304 Not Modified (ekkert hefur breyst síðan í fyrri beiðni m.v. `If-Modified-Since` eða `If-None-Match` hausa - notað með *caching*).
+- 4xx Villa hjá client
+  - 400 Bad Request (villa hjá client t.d. gögn ekki gild)
+  - 401 Unauthorized (Auðkenningar er krafist)
+  - 403 Forbidden (Uppgefin auðkenning hefur ekki aðgang)
+  - 404 Not Found
+  - 451 Unavailable for Legal Reasons
+- 5xx Villa hjá server
+  - 500 Internal Server Error (kemur líka ef engin villumeðhöndlun var skilgreind á Express netþjón).
+  - 501 Not Implemented (Server skildi svar en kann ekki (ennþá) að svara).
+  - 503 Service Unavailable (Server getur ekki svarað t.d. vegna anna).
+
+### Representational State Transfer (REST)
+
+Hunsar útfærslu og samskipti en einblínir á hlutverk eininga, samskipti þeirra á milli og takmarkanir þar á.
+
+1. Samræmt viðmót aðskilur Client og Server.
+2. Stöðulausar: Engin staða er geymd milli beiðna.
+3. Cacheable: Client getur geymt afrit af svari, svör verða því að skilgreina hvort það megi eða ekki. Getum þannig skilgreint hvort þau hafi breyst (t.d `lastModifed`)
+4. Lagskipt kerfi: Client þarf ekki að vita hvort hann sé tengdur enda-server eða hvort hann tengist einhverjum millilið (proxy).
+5. Code on demand (valkvæmt): Servers geta útvíkkað eða breytt hegðun hjá Client tímabundið með því að senda client-side scripts eða þýdd applets. 
+6. Samræmt viðmót: 
+      - Grunnur á hönnun á REST þjónustu (einfaldur og aðskildur arkítektúr þ.a. client og server geta vaxið óháð hvor öðrum). 
+      - Sjálf-lýsandi skilaboð: Vitum alltaf nóg til að geta unnið með skilaboðin.
+
+Hypermedia As The Engine Of Application State (HATEOAS): Client þarf engar frekari upplýsingar en þær sem hann fær í byrjun (svipað WSDL).
+
+https://www.youtube.com/watch?v=5WPsgjfC3lE&feature=youtu.be
+30:00
+
