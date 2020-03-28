@@ -21,10 +21,10 @@ Er verið að eyða helling? Er það eðlilegt?
 Hversu mikið á að logga? Hvaða gögn? 
 Hvert á að logga? - Í skrá, eða þjónustu eins og pappartrail eða Sentry, eða Console eins og á Heroku.
 Log levels:
-    - error: Villa í forriti sem stöðvar keyrslu eða setur forrit í óræða stöðu, ætti ekki að koma upp.
-    - warn: Eitthvað sem ætti ekki að koma fyrir, en ekki alvarlega villa. T.d. reynt að senda ógild gögn.
-    - info: Upplýsingar um eitthvað, request á vefþjón, hlutur búinn til eða eytt.
-    - debug: Upplýsingar sem hjálpa til við debug, oft mikið af upplýsingum.
+  - error: Villa í forriti sem stöðvar keyrslu eða setur forrit í óræða stöðu, ætti ekki að koma upp.
+  - warn: Eitthvað sem ætti ekki að koma fyrir, en ekki alvarlega villa. T.d. reynt að senda ógild gögn.
+  - info: Upplýsingar um eitthvað, request á vefþjón, hlutur búinn til eða eytt.
+  - debug: Upplýsingar sem hjálpa til við debug, oft mikið af upplýsingum.
 
 `morgan` er NodeJS pakki sem loggar HTTP request á stöðluðu formi.
 Settur sem middleware á express app. Þarf bara að sækja og stilla. 
