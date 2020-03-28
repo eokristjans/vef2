@@ -502,7 +502,7 @@ async function list(req, res) {
 * Getum notað `RETURNING` syntax í postgres til að fá til baka færslu sem búin var til
 * Þurfum ekki aðra fyrirspurn til að fletta upp reitum eins og `id` eða `created`
 * `INSERT INTO items (text) VALUES ('foo') RETURNING id, text, created;`
-* Eyðing: `return (await query('DELETE FROM foo WHERE id = $1', [id])).rows === 1;` sem skilar True ef nkl. einni færslu var eytt.
+* Eyðing: `return (await query('DELETE FROM foo WHERE id = $1 RETURNING *', [id])).rows === 1;` sem skilar True ef nkl. einni færslu var eytt.
 
 
 ##### 
