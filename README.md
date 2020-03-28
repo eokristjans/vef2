@@ -431,6 +431,83 @@ Hunsar útfærslu og samskipti en einblínir á hlutverk eininga, samskipti þei
 
 Hypermedia As The Engine Of Application State (HATEOAS): Client þarf engar frekari upplýsingar en þær sem hann fær í byrjun (svipað WSDL).
 
-https://www.youtube.com/watch?v=5WPsgjfC3lE&feature=youtu.be
-30:00
+##### Notum:
+- URI fyrir auðlindirnar okkar - nafnorð
+- Content Types fyrir framsetningu
+- HTTP aðgerðir til að tilgreina hvað við ætum að gera - sagnorð
+
+
+##### RESTful 
+- Json
+- HTTP aðgerðir
+- Stöðukóði.
+
+Annað liggur milli hluta.
+
+Gerum okkar besta í að gera þjónustu sem er þægilegt að nota, fyrir forritara og notendur.
+
+##### REST tól
+
+- Postman
+- cURL
+- JSON Formatter extension
+
+
+### REST & express
+
+app.use(express.json()) í stað url-encoded
+
+res.json({ data: 'foo' }); í stað res.render(..);
+
+Ef beðið um lista af færslum og hann er tómur þá svörum við samt 200 OK.
+
+
+### Hönnun
+
+- Samræmi á heitum (ekki nota username, userName og user-name)
+- Samræmi á URI (ekki /get-users og svo /products)
+- Samræmi á villuskilaboðum
+
+Hugsum heildstætt. Hvað gerist í hverju tilfelli?
+- Hvað gerist ef beðið um eitthvað sem eru ekki til?
+- Hvað gerist er (óþekkt) villa kemur upp?
+  - Debugging og logs
+
+##### Dýnamískar fyrirspurnir
+
+- Stundum þarf að undirbúa fyrirspurnir með strengjameðhöndlun, ekki bara prepared statement. T.d. ef boðið er upp á `ORDER BY id ASC` eða `... DESC`.
+- Eins með update statement, þegar það á bara að uppfæra eitthvað ákveðið.
+- Þarf að fara einstaklega varlega til að koma í veg fyrir SQL injection árásir.
+
+```javascript
+async function list(req, res) {
+  const asc = req.query.order === 'ASC';
+
+  // röðum eftir id í ascending (ASC) eða descending
+  // (DESC) röð eftir því hvort boolean gildi sé
+  // satt eða ekki
+  // Notum ekkert frá notanda í dýnamískrí fyrirsp.
+  // GETUM AÐEINS HAFT TVÖ GILDI!
+  const order = asc ? 'id ASC' : 'id DESC';
+
+  const q = `SELECT * FROM items ORDER BY ${order}`;
+
+  const result = await query(q);
+}
+```
+
+
+##### Færslur búnar til
+
+* Getum notað `RETURNING` syntax í postgres til að fá til baka færslu sem búin var til
+* Þurfum ekki aðra fyrirspurn til að fletta upp reitum eins og `id` eða `created`
+* `INSERT INTO items (text) VALUES ('foo') RETURNING id, text, created;`
+* Eyðing: `return (await query('DELETE FROM foo WHERE id = $1', [id])).rows === 1;` sem skilar True ef nkl. einni færslu var eytt.
+
+
+##### 
+
+
+
+
 
