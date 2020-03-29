@@ -13,13 +13,21 @@ Mínar lausnir á verkefnum námskeiðisins ásamt glósum o.fl.
 
 ### A10 Insufficient Logging and Monitoring
 Ekki loggað nógu vel eða ekki fylgst nógu vel með þeim loggum.
+
 Logga auditable atburði eins og CRUD aðgerðir.
+
 Skrá niður hvað er gert svo hægt sé að fylgjast með.
+
 Þ.á.m. innskráningar og tilraunir til að skrá sig inn.
+
 Hvaðan koma þessir atburðir? Eru þeir óeðlilega miklir?
+
 Er verið að eyða helling? Er það eðlilegt?
+
 Hversu mikið á að logga? Hvaða gögn? 
+
 Hvert á að logga? - Í skrá, eða þjónustu eins og pappartrail eða Sentry, eða Console eins og á Heroku.
+
 Log levels:
 
   - error: Villa í forriti sem stöðvar keyrslu eða setur forrit í óræða stöðu, ætti ekki að koma upp.
@@ -35,9 +43,13 @@ Loggar í console log og skrár eins og *app.log* og *debug.log*.
 
 ### A9 - Using Components with Known Vulnerability
 Muna að uppfæra modules og plugins á kerfum sem eru í notkun.
+
 Hafa ferli til að uppfæra (gjarnan outsource-að).
+
 Sjálfvirkar athuganir (GitHub gerir það).
+
 Oft finnast veikleikar í mikið notuðum modules. 
+
 Hættulegt að nota nákvæmar útgáfur af NPM pökkum.
 
 
@@ -506,9 +518,182 @@ async function list(req, res) {
 * Eyðing: `return (await query('DELETE FROM foo WHERE id = $1 RETURNING *', [id])).rows === 1;` sem skilar True ef nkl. einni færslu var eytt.
 
 
-##### 
+## 7.1 Redis
+
+NoSQL (non relational) gagnataga geymsla (key-value store) í skyndiminni.
+
+Gjarnan notuð fyrir gildi sem *mega gleymast*. 
+
+Gjarnan notað fyrir caching og session store.
+
+```redis
+SET hello "hello world" EX 10 // 10 sek líftími
+GET hello // skilar "hello world", eða null ef ekki til
+
+MSET hello "hello world" foo "bar" // Set many
+```
+
+Hægt að sækja alla lykla með `KEYS *`. Sjá [allar skipanir](https://redis.io/commands).
+
+Hægt að nota með `redis-cli`.
+
+Hægt að setja upp `heroku redis` og npm pakka `npm install redis`.
+
+Þurfum að nota `util.promisify()` til að nota `async - await`.
+
+Þurfum að hætta keyrslu með `client.quit()` svo þetta hætti keyrslu á event-loop, nema það sé fast við `express`, þá hættir þau keyrslu saman.
+
+```js
+const client = redis.createClient({
+  url: redisUrl
+});
+const setAsync = promisify(cilent.set).bind(client);
+
+awaiit setAsync('hello', 'hello world', 'EX', 10);
+
+client.quit();
+```
+
+
+#### redis session storage
+
+```js
+const RedisStore = require('connect-redis')(session);
+
+app.use(session({
+  // ...
+  // session hættir því að renna út þegar server hættir/pásar keyrslu (eða client?)
+  store: new RedisStore({ url: redisUrl }),
+}));
+```
+
+#### redis sem cache
+
+Notum JSON með því að keyra `stringify` á gögn.
+
+```js
+const cached = fromCache(key);
+
+// If data is cached, return it
+if (cached) {
+  return cached;
+}
+
+// Otherwise, perform expensive operation 
+const result = expensiveOperation();
+
+// Store result in cache
+cache(key, result, expires);
+
+// Return result
+return result;
+```
+
+
+## 7.2-3 Vefþjónustur 
+
+### Auðkenning
+
+Notum ekki session því þau skalast illa.
+
+#### Tokens
+
+Búum til undirritaða *tokens*.
+
+Getum stýrt því hvaða upplýsingar eru geymdar.
+
+Auðvelt að senda á milli í single sign-on kerfum.
+
+Vefþjónn undirritar *token* með dulkóðunaraðferð og földum lykli.
+
+Client fær token og geymir, sendir hann með hverri request þar til auðkenningar (Authorization header).
+
+#### JWT (JSON Web Tokens)
+
+Tryggja að JSON hlutir sendir á milli hafi ekki verið breytt.
+
+Byggja á því að base64 kóða upplýsingar og undirrita með leyndarmáli.
+
+Hefur verið gagnrýndur fyrir **að vera ekki nógu vel skilgreindur og óöruggur**.
+
+Notum til að vita að sá sem heldur á token hafi á einhverjum tímapunkti auðkennt sig gagnvart okkur. Geymir **engar** viðkvæmar upplýsingar í token (það með hvorki netfang né lykilorð, en þó mögulega notendanafn).
+
+*Log me out from all devices* eyðir því vanalega tokens.
+
+Notum `passport-jwt` npm pakkann og undirritum með `jsonwebtoken`.
+
+Þurfum ekki session og þurfum ekki að framkvæma *(de)serialize* á notanda.
+
+Þarf að passa upp á þessi *tokens* því handhafi þeirra getur gert allt eins og hann sé skráður inn, eins og hann sé með notandanafn og lykilorð.
+
+Þurfum að staðfesta token í hvert skipti sem notandi biður um eitthvað sem krefst auðkenningar.
+
+Geymum `JWT_SECRET` í `.env` skrá, sem má alls ekki leka út því þá væri hægt að undirrita hvað sem er og þykjast vera hvaða notandi sem er í kerfinu án þess að hafa lykilorðið hans (þarf samt að hafa hvað annað sem notað er til að búa til token).
+
+Sjá [vef2-19-master/07/daemi/jwt/app.js](../vef2-19-master/fyrirlestrar/07/daemi/jwt/app.js).
+
+
+### Paging
+
+Takmarka hversu miklu er skilað þegar gögn eru sótt (viljum ekki endilega allt í einu). Það er yfirleitt útfært með *síðum*.
+
+#### Síður
+
+Takmarkast af fjölda færsla per síðu (limit) og hve mörgum við sleppum (offset).
+
+`limit=10, offset=10` birtir færslur 11-20. Hægt að skilgreina `page=1` sem færslur 1-10, `page=4` sem færslur 31-40 etc.
+
+RFC 5988 staðallinn skilgreining *web linking* og hvernig nota megi í hausnum hlekk. Hypertext application language (HAL) skilgreinir hvernig tengja megi saman síður:
+
+```json
+"_links": {
+  "self": {
+    "href": "http://api.example.com/?page=2"
+  },
+  "previous": {
+    "href": "http://api.example.com/?page=1"
+  },
+  "next": {
+    "href": "http://api.example.com/?page=3"
+  },
+  "items": [
+    // items á þessari page
+  ]
+}
+```
+
+Bætta má við heildarfjölda síðna.
+
+Getum sent `offset` og `limit` í postgres query með `SELECT * FROM foo OFFSET 0 LIMIT 10` (sendum parameterized gildi). Rétt eins og ef við gerum `SELECT * FROM foo` úr stórri töflu þá birtir kerfið t.d. 10 línur í einu á skipanalínu og við ýtum á Spacebar til að fá næstu 10.
 
 
 
+### Leit
+
+**Table Scan**: `Where description LIKE '%foo%'` leit í gagnagrunni er ekki góð (línuleg leit og samaburður við öll stök).
+
+Notum því frekar **Index** fyrir töflu, veljum einhverja dálka og geymum þá sérstaklega. Getum þurft sérstaka uppsetningu í gagnagrunn.
+
+Önnur lausn er að vera með **Leitarþjónustu**, t.d. `elasticsearch` og `algolia`.
+
+#### Leit í Postgres (nokkuð góð)
+
+Leitar m.t.t. málfræði (allavega ensku).
+
+Skilgreinum í hvaða dálk við leitum og eftir hverju í `to_tsvector` eða `plainto_tsvector` og `to_tsquery`. T.d.
+
+```sql
+SELECT title 
+FROM pgweb
+WHERE
+  -- leita í body dálknum
+  to_tsvector('english', body)
+  @@
+  -- eftir 'friend' og svipuðum orðum eins og 'friends' og 'friendship' og e-h
+  to_tsquery('english', 'friend')
+```
 
 
+#### Caching
+
+[Fyrirlestur 7.3](https://www.youtube.com/watch?v=bLZfedFVEGU&list=PLRj-ccg8iozy9xtBk-02VNOnOoIFR84Oe&index=23) 20:03
