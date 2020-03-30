@@ -696,4 +696,231 @@ WHERE
 
 #### Caching
 
-[Fyrirlestur 7.3](https://www.youtube.com/watch?v=bLZfedFVEGU&list=PLRj-ccg8iozy9xtBk-02VNOnOoIFR84Oe&index=23) 20:03
+1. Ferskleiki: Gefinn tími sem gögn eru *fersk* og ekki þarf að sækja aftur á vefþjón, t.d. með `Cache-Control: max-age=100` haus sem væru þá 100 sek.
+2. Staðfesting: Getum fengið staðfestingu hvort gögn séu enn í lagi t.d. með `If-Last-Modified` haus og `ETag` haus. 
+3. Ógilding: Ef við breytum gögnum getum POST, PUT og DELETE þá er cache hreinsað.
+
+##### Hverjir og hvar er cache-að
+
+- Vafrar 
+- Proxy: t.d. hjá fyrirtæki eða ISP 
+- Gateway: t.d. sett upp fyrir framan bakenda til að draga úr þörf á að sækja sama efnið oft.
+
+
+##### Content Delivery Network (CDN)
+
+Sér um að dreifa efni um heiminn og gera aðgengilegra hraðar.
+
+Gagnaver á mismunandi stöðum um heiminn.
+
+##### Forrit sem cache-a
+
+- Cache á gildi sem tekur langan tíma að reikna.
+- Cache á síðu sem er lengi að vera búin til (t.d. vegna margra uppfletting í gagnagrunni)
+- Cache á gögnum frá (öðrum) API
+
+Stundum er cache-að t.d. listi yfir fréttir og geymdur í 5 mín, og svo er ný frétt send inn en hann birtist ekki á listanum fyrr en hann verður endurnýjaður.
+
+
+#### Pakkar 
+
+Sem hjálpa til við framendagerð, til að skrifa kóða sem getur bæði keyrt í vafra (client með global `window`) og á server (node umhverfi með global `process`):
+
+- `request`
+- `axios`
+- `node-fetch` - Bara til að nota fetch í node. Hjálpar ekki við að nota það á vafra, þurfum þar `isomorphic-fetch`.
+- `isomorphic-fetch` - Í dag er svona kóði kallaður *universal* frekar en *isomorphic*. Kallast *server-side rendering* þegar það er að hluta eða öllu leyti render-að á server.
+
+### `fetch` notkun
+
+Búa til request, t.d. `fetch(url)` framkvæmir `GET` á `url` og skilar Promise. Hægt að gera með `async await`. Getum líka set headers og framkvæmt aðrar Http Requests. 
+
+Fáum til baka `response` hlut og `response.ok` ef svarkóði er á bilinu 200-299.
+
+Þurfum að vita á hvaða sniði svarið er, t.d. `response.json()` en fyrir binary gögn þá `response.blob()`.
+
+Setjum `Access-Control-Allow-Origin`, `Access-Control-Allow-Methods` og `Access-Control-Allow-Headers` í *header* í HTTP svör á server (stillt fyrir Express app) til að leyfa öðrum vefforritum að tengjast okkar vefþjónustu.
+
+
+## React - fyrirlestrar 8-10
+
+### Single Page Application (SPA)
+
+Framkvæma aldrei *refresh* eftir fyrsta load.
+
+Fáum ný gögn frá vefþjón með `Ajax` eða álíka.
+
+#### Grunnhugmynd React
+
+Þeir halda því fram að aðskilnaður milli markup í formi template og lógíkar (JS) er órökréttur því template mál hafa öðruvísi og ekki jafn kröftugan syntax og JS. 
+
+- **High cohesion**: Her hluti inniheldur langflest sem þarf til birtingar og notkunar.
+- **Loose coupling**: Hver hluti er sjálfum sér nægur og þarf ekki aðra hluti.
+
+Notum ES6/2015, þ.e. `import` og `export` í stað `require` og `module.exports`.
+
+Notum `babel` transpiler: breyta ES2015+ kóða í *backwards compatible* JS kóða sem keyrir annars staðar.
+
+#### Starter kits
+
+React krefst margra tækja og tóla til að þróa verkefni. *Starter kits* taka saman ýmist þau nauðsynlegu (*unopinionated*) og þau sem einhverjir halda fram að séu góð (*opinionated*).
+
+##### create react app (cra)
+
+*Zero config*, felur langflestar flækjur, viðhaldið af react, *unopinionated*.
+
+`npm run eject` sleppir svo CRA styllingum í okkar hendur ef við viljum (birtir flækjurnar).
+
+```bash
+npx create-react-app my-app
+cd my-app
+npm start
+```
+
+Til að fá eslint til að virka þá getum við þurft að búa eftirfarandi `.eslint.json`, en það ætti að duga að hafa það `"eslintConfig"` í `package.json`.
+
+```json
+{
+  "extends": "react-app"
+}
+```
+
+##### React Dev Tools
+
+Extension fyrir Chrome og Firefox.
+
+### JSX
+
+Viðbót við JS sem leyfir okkur að lýsa viðmóti með JS.
+
+Blandar saman HTML elementum, React components og JavaScript.
+
+**JSX tré**: Svipar til DOM, má hreiðra. Element sem byrja á stórum staf eru React element, en annars DOM element. Öll lauf element eru DOM element (renderuð út til að birtast á skjá).
+
+Vefjum JSX inní () til að koma í veg fyrir automatic semicolon insertion.
+
+```jsx
+(<p>Testing {[1, 2, 3].join(', ')}</p>)
+```
+
+Einnig hægt að túlka JSX sem segð:
+
+```jsx
+return (<h1>Hello world!</h1>);
+```
+
+Element í JSX geta átt attribute, skrifuð með *camalCase* frekar en *kebab-case* eins og í HTML.
+
+Notum `className` í stað `class`.
+
+Öll gildi sem túlkuð eru í JSX eru *escaped* til að vernda fyrir XSS.
+
+Getum notað (verðum að nota?) self-closing syntax úr XML/XHTML (þ.e. loka t.d. img tag eins og ég er vanur).
+
+Til þess að JSX virki fyir höfuð þarð að vera búið að gera `import React from 'react'`.
+
+JSX element eru ekki DOM element og því töluvert ódýrara að búa þau til, þar til á einhverjum tímapunkti sem við búum til DOM element í raun. Búum loks til DOM tré með:
+
+```jsx
+ReactDOM.render(
+  element,
+  document.getElementById('root')
+);
+```
+
+#### Uppfærsla í DOM
+
+Ef eitthvað lætur `element` breytast eða ef við köllum aftur í `render` eða ef einhver component kallar á `setState` þá mun React *aðeins uppfæra* það sem breytist. Það heldur semsagt utan um *Virtual DOM (VDOM)*. Þetta sync er kallað **Reconsiliation**. 
+
+Með Reconsiliation er t.d. öllu hluttré hent (og endurteiknað) ef foreldri breytist, því það tekur minni tíma en að breyta einu tré í annað. 
+
+Fyrir lista af hlutum ætti forritari að láta vita hvort breytingar hafi átt sér stað með `key` attribute, gefum lista semsagt *stable id*.
+
+##### Reconsiliation reiknirit (einfaldað)
+
+1. React býr til nýtt VDOM
+2. Diffar við gamla
+3. Útbýr minnsta sett af DOM agðgerum til að breyta á milli
+4. Framkvæmið aðgerðir
+
+Mjög einfalt og þægilegt. Við þurfum aldrei að pæla í þessu og aldrei að kalla í `window.createElement(...)`, `.appendChild(...)` eða eh.
+
+
+#### Components
+
+Með því að nota components getum við skipt viðmótinu okkar upp í sjálfstæðar einingar. Mjög góð pæling sem virkar vel í praxís. Ef margir forritarar vinna í mismunandi components á sama tíma þá hafa þeir engin áhrif hver á annan.
+
+```jsx
+// Hægt skilgreina með function
+function Welcome(props) {
+  // props er stytting á properties
+  return <h1>Hello, {props.name}</h1>;
+}
+
+// Klasi gerir það sama
+class Welcome extends React.Component {
+  // Þurfum alltaf að útfæra render fallið
+  render() {
+    return <h1>Hello, {this.props.name}</h1>;
+  }
+}
+
+// Myndum nota bæði tvennt á sama máta
+const element = <Welcome 
+                  name="Sara"
+                  // Næsta prop er óþarfi, bara sýna hvernig það gæti litið út.
+                  otherProp="some other info"
+                />;
+```
+
+Components geta skila Elements, JSX segð, fylkjum af þessu, eða falsy gildi (ekkert verður skrifað út í DOM tréið).
+
+```jsx
+const numbers = [1, 2, 3, 4];
+const listItems = numbers.map((number) =>
+  // eigum að hafa key eða unique id til að ýtra eftir,
+  // getum gripið til þess að búa það til eftir index úr fylkinu.
+  <li key={number.toString()}> 
+    {number}
+  </li>
+)
+```
+
+#### Fragments
+
+```jsx
+function Columns(props) {
+  // Gætum líka skilað fylki
+  return (
+    <React.Fragment>
+      <td>Foo</td>
+      <td>Bar</td>
+    </React.Fragment>
+  );
+}
+
+function Table(props) {
+  return (
+    <table>
+      <tr>
+        <Columns />
+      </tr>
+    </table>
+  );
+}
+```
+
+Best að skipta forriti upp í fleiri, minni components.
+
+#### App component
+
+Rót fyrir UI, geymt í `App.js`.
+
+Tekur ekki inn nein props.
+
+Stillir og setur upp ákveðna hluti eins og routing.
+
+`index.js` sækir svo `App.js` og keyrir `ReactDOM.render(<App />, document.getElementById('root'))`.
+
+
+[Fyrirlestur 8.2 - 27:00](https://www.youtube.com/watch?v=AoABbAA0Ko8&list=PLRj-ccg8iozy9xtBk-02VNOnOoIFR84Oe&index=25)
