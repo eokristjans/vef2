@@ -846,7 +846,7 @@ Fyrir lista af hlutum ætti forritari að láta vita hvort breytingar hafi átt 
 Mjög einfalt og þægilegt. Við þurfum aldrei að pæla í þessu og aldrei að kalla í `window.createElement(...)`, `.appendChild(...)` eða eh.
 
 
-#### Components
+### Components
 
 Með því að nota components getum við skipt viðmótinu okkar upp í sjálfstæðar einingar. Mjög góð pæling sem virkar vel í praxís. Ef margir forritarar vinna í mismunandi components á sama tíma þá hafa þeir engin áhrif hver á annan.
 
@@ -886,7 +886,7 @@ const listItems = numbers.map((number) =>
 )
 ```
 
-#### Fragments
+### Fragments
 
 ```jsx
 function Columns(props) {
@@ -912,7 +912,7 @@ function Table(props) {
 
 Best að skipta forriti upp í fleiri, minni components.
 
-#### App component
+### App component
 
 Rót fyrir UI, geymt í `App.js`.
 
@@ -923,4 +923,94 @@ Stillir og setur upp ákveðna hluti eins og routing.
 `index.js` sækir svo `App.js` og keyrir `ReactDOM.render(<App />, document.getElementById('root'))`.
 
 
-[Fyrirlestur 8.2 - 27:00](https://www.youtube.com/watch?v=AoABbAA0Ko8&list=PLRj-ccg8iozy9xtBk-02VNOnOoIFR84Oe&index=25)
+### Props
+
+React components ættu að vera hrein föll m.t.t. *props*:
+
+- Ef ég sendi inn *props* með þessu gildi núna og aftur seinna, þá fæ ég sömu niðurstöðu.
+- Breytum aldrei *props*, þau eru read-only.
+
+Notum *state* til að bregðast við breytingu í UI.
+
+Notum sérstakt `children` *prop* sem geta verið mismunandi gagnatýpur. 
+Notum `React.Children.toArray(children);` til að breyta þeim öllum í `array` að lengd 0, 1 eða meira.
+
+Notum `prop-types` pakkann til að keyra type check á runtime í þróun (t.d. til að passa að strengur sé strengur, og array sé array).
+
+*Prop types* geta t.d. verið `node` (hægt að birta), JS týpur, listar (`oneOf`, `oneOfType`, `arrayOf`) eða hlutur á ákveðnu formi (`shape({})).
+
+Getum skilgreint `defaultProps`, en notum það ekki með `isRequired`.
+
+```jsx
+import PropTypes from 'prop-types';
+
+// Skilgreinum hvað má fara inn
+Comp.proptypes = {
+  title: PropTypes.string.isRequired,
+  type: PropTypes.oneOf(['foo', 'bar']),
+  user: PropTypes.shape({
+    name: PropTypes.string,
+    age: propTypes.number,
+  }),
+  onClick: PropTypes.func,
+};
+
+// Skilgreinum default props, ef einhver
+Comp.defaultProps = {
+  type: 'foo',
+  user: null,
+  onClick: () => {},
+};
+```
+
+Með réttum stillingum á babel getum við sett `propTypes` og `defaultProps` sem `static` breytur á class. Sjá dæmi.
+
+```jsx
+class Person extends Component {
+  static propTypes = {
+    name: PropTypes.string,
+  }
+
+  static defaultProps = {
+    name: 'NN',
+  }
+  //...
+}
+```
+
+
+### State
+
+Keimlíkt `props` en er prívat fyrir component, og **ekki** read-only.
+
+Stjórnað af component að öllu leiti.
+
+Mögulega aðeins til staðar ef componenent er skilgreint sem `class`.
+
+Ættum aðeins að setja hluti sem verða birtir í `state`. Önnur gögn getum við geymt í `class` með `this`.
+
+```jsx
+class Foo extends Component {
+  constructor(props) {
+    super(props)
+    this.state = { /* ... */ } // Eina skiptið sem við SETJUM state
+  }
+}
+// Or if we don't need to do anything else in the constructor, then:
+class Foo extends Component {
+  state = { /* ... */ } // Eina skiptið sem við SETJUM state
+}
+```
+
+Uppfærsla á `state` fer alltaf fram í gegnum `this.setState()`, t.d. `this.setState({ comment: 'Hello' })` til að uppfæra breytuna `comment`.
+
+Uppfærslur eru keyrðar async, svo þetta gerist ekki endilega alveg strax (keyrt sem batch jobs, X margar á sekúndu).
+
+Notum því callback eins og `this.setState((prevState, props) => { /* ... */ })`
+
+```jsx
+this.setState((prevState, props) => ({
+  // props.incr er væntanlega eitthvað function.
+  counter: prevState.counter + props.incr,
+}));
+```
