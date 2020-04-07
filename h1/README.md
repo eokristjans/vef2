@@ -109,11 +109,13 @@ A list of ImageURLs must be available.
   * Email, unique, not null.
   * Password, not null, at least 8 characters and not in this list of [500 bad passwords](https://github.com/danielmiessler/SecLists/blob/master/Passwords/Common-Credentials/500-worst-passwords.txt), stored as a hash from `bcrypt`.
   * Admin, boolean, default  `false`.
+  * Created, date with timezone, assigned by default.
+  * Modified, date with timezone, assigned by default.
 * Notebooks
   * Id, integer, assigned by default.
   * UserId, integer, assigned by default.
-  * DateCreated, assigned by default.
-  * DateModified, assigned by default.
+  * Created, date with timezone, assigned by default.
+  * Modified, date with timezone, assigned by default.
   * SectionGroupIds, array.
   * SectionIds, array.
   * ImageIds, array.
@@ -123,8 +125,8 @@ A list of ImageURLs must be available.
   * Id, integer, assigned by default.
   * UserId, integer, assigned by default.
   * NotebookId, integer, assigned by default.
-  * DateCreated, assigned by default.
-  * DateModified, assigned by default.
+  * Created, date with timezone, assigned by default.
+  * Modified, date with timezone, assigned by default.
   * SectionIds, array.
   * Title, not null.
   * Unique (NotebookId, Title).
@@ -133,8 +135,8 @@ A list of ImageURLs must be available.
   * UserId, integer, assigned by default.
   * SectionGroupId, integer, assigned by default.
   * NotebookId, integer, assigned by default.
-  * DateCreated, assigned by default.
-  * DateModified, assigned by default.
+  * Created, date with timezone, assigned by default.
+  * Modified, date with timezone, assigned by default.
   * PageIds, array.
   * Title, not null.
   * Unique (SectionGroupId, Title).
@@ -144,8 +146,8 @@ A list of ImageURLs must be available.
   * SectionId, integer, assigned by default.
   * SectionGroupId, integer, assigned by default.
   * NotebookId, integer, assigned by default.
-  * DateCreated, assigned by default.
-  * DateModified, assigned by default.
+  * Created, date with timezone, assigned by default.
+  * Modified, date with timezone, assigned by default.
   * Title, not null.
   * Body, not null.
   * Unique (SectionId, Title).
@@ -153,7 +155,7 @@ A list of ImageURLs must be available.
   * Id, integer, assigned by default.
   * UserId, integer, assigned by default.
   * NotebookId, integer, assigned by default.
-  * DateCreated, assigned by default.
+  * Created, date with timezone, assigned by default.
   * Title, not null.
   * Url, not null.
   * Unique (NotebookId, Title).

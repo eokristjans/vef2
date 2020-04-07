@@ -35,6 +35,7 @@ function indexRoute(req, res) {
       login: '/users/login',
       me: '/users/me',
     },
+    // TODO: Add other endpoints
   });
 }
 

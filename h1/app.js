@@ -21,6 +21,8 @@ app.use(cors);
 app.use(auth);
 app.use('/', api);
 
+// TODO: user management first :)
+
 
 //********* ERROR HANDLING MUST BE BELOW OTHER MIDDLEWARE *********
 

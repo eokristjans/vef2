@@ -1,11 +1,11 @@
 {
-  "name": "v4-synilausn",
+  "name": "h1",
   "version": "1.0.0",
-  "description": "Sýnilausn á verkefni 4",
+  "description": "Back-end for final project",
   "main": "index.js",
   "scripts": {
     "dev": "nodemon app.js",
-    "setup": "node setup/setup.js",
+    "setup": "node setup.js",
     "start": "node app.js",
     "eslint": "eslint *.js",
     "test": "npm run eslint"
