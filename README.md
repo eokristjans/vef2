@@ -1014,3 +1014,16 @@ this.setState((prevState, props) => ({
   counter: prevState.counter + props.incr,
 }));
 ```
+
+#### Flæði gagna
+
+Components nota JSX til að birta sig, `props` til að fá inn einhverja stöðu, og nota `state` til að halda utan um sína eigin stöðu.
+
+`state` er aldrei aðgengilegt öðrum component, svo aðrir components geta aldrei gert ráð fyrir neinu úr þeim. Einn getur látið annan vita með því að senda stöðu áfram í `prop` hjá honum. Gögn flæða því ALLTAF *niður* (*top-down / unidirectional*). Vegna *reconciliation* er ódýrara að teikna *allt* UI aftur en að breyta ákveðnum hlut.
+
+
+### Atburðir í react
+
+[Vef2 Fl8.3 React 9:30](https://www.youtube.com/watch?v=x7FJNbgq4-Y&list=PLRj-ccg8iozy9xtBk-02VNOnOoIFR84Oe&index=26)
+
+
