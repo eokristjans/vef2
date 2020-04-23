@@ -1,4 +1,4 @@
-// TODO: remove unnecessary pagedQueries?
+// TODO: remove unnecessary pagedQueries? Naa it's aiiight
 // TODO: Documentation
 // TODO: rename listUser and listUsers to select or read?
 
@@ -13,7 +13,7 @@ const { query, pagedQuery } = require('../utils/db');
 const { isBoolean } = require('../utils/validation');
 const addPageMetadata = require('../utils/addPageMetadata');
 
-async function listUsers(req, res) {
+async function readUsersRoute(req, res) {
   const { offset = 0, limit = 10 } = req.query;
 
   const users = await pagedQuery(
@@ -35,7 +35,7 @@ async function listUsers(req, res) {
   return res.json(usersWithPage);
 }
 
-async function listUser(req, res) {
+async function readUserRoute(req, res) {
   const { id } = req.params;
 
   const user = await findById(id);
@@ -124,8 +124,8 @@ async function updateCurrentUser(req, res) {
 }
 
 module.exports = {
-  listUsers,
-  listUser,
+  readUsersRoute,
+  readUserRoute,
   updateUser: updateUserRoute,
   currentUser: currentUserRoute,
   updateCurrentUser,

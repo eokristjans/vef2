@@ -1,6 +1,6 @@
 // TODO: Documentation
 
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const xss = require('xss');
 
 // import 500 worst passwords
@@ -176,6 +176,9 @@ async function findById(id) {
 async function createUser(username, password, email, admin = false) {
   const hashedPassword = await bcrypt.hash(password, bcryptRounds);
 
+  // Delete the password from memory - no longer required.
+  delete password;
+
   const q = `
     INSERT INTO
       users (username, email, password, admin)
@@ -189,7 +192,10 @@ async function createUser(username, password, email, admin = false) {
     values,
   );
 
-  return result.rows[0];
+  const createdUser = result.rows[0];
+  delete createdUser.password;
+
+  return createdUser;
 }
 
 
@@ -208,6 +214,9 @@ async function updateUser(id, password, email) {
   if (password) {
     hashedPassword = await bcrypt.hash(password, bcryptRounds);
   }
+
+  // Delete the password from memory - no longer required.
+  delete password;
 
   const values = [
     hashedPassword,

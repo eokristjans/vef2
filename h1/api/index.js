@@ -10,8 +10,8 @@ const requireAdmin = [
 
 // ******************** API IMPORTS ******************** 
 const {
-  listUsers,
-  listUser,
+  readUsersRoute,
+  readUserRoute,
   updateUser,
   currentUser,
   updateCurrentUser,
@@ -42,10 +42,10 @@ function indexRoute(req, res) {
 router.get('/', indexRoute);
 
 // add routes to router
-router.get('/users', requireAdmin, catchErrors(listUsers));
+router.get('/users', requireAdmin, catchErrors(readUsersRoute));
 router.get('/users/me', requireAuth, catchErrors(currentUser));
 router.patch('/users/me', requireAuth, catchErrors(updateCurrentUser));
-router.get('/users/:id', requireAdmin, catchErrors(listUser));
+router.get('/users/:id', requireAdmin, catchErrors(readUserRoute));
 router.patch('/users/:id', requireAdmin, catchErrors(updateUser));
 
 // export the router
