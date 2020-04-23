@@ -130,7 +130,7 @@ async function readNotebooksRoute(req, res) {
  */
 async function createNotebookRoute(req, res) {
   const { user } = req;
-  const { title = xss(title) } = req.body;
+  const { title } = req.body;
 
   // Validate input
   const entityName = 'notebook';
@@ -153,7 +153,9 @@ async function createNotebookRoute(req, res) {
       RETURNING *
   `;
 
-  const result = await query(q, [user.id, title]);
+  const result = await query(q, [user.id, xss(title)]);
+
+  // TODO: Insert default empty section or add empty array?
 
   return res.status(201).json(result.rows[0]);
 }

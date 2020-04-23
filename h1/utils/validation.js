@@ -1,5 +1,6 @@
 // Helper functions for validating input, data types and such.
 const { query } = require('./db');
+const xss = require('xss');
 
 function isEmpty(s) {
   return s != null && !s;
@@ -94,6 +95,8 @@ async function validateTitleForEntity(foreignKeyId, title, entityName) {
       // Should not happen. TODO: Deal with?
       break;
   }
+
+  const xssTitle = xss(title);
 
   // Check if user has another entity with same title
   const entity = await query(

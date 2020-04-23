@@ -99,7 +99,7 @@ async function readSectionRoute(req, res) {
  */
 async function createSectionRoute(req, res) {
   const { user } = req;
-  const { title = xss(title), notebookId } = req.body;
+  const { title, notebookId } = req.body;
 
   // Check that the notebook belongs to the current user
   const notebook = await readNotebook(notebookId, user.id);
@@ -129,7 +129,9 @@ async function createSectionRoute(req, res) {
       RETURNING *
   `;
 
-  const result = await query(q, [user.id, notebookId, title]);
+  const result = await query(q, [user.id, notebookId, xss(title)]);
+
+  // TODO: Insert default empty page or add empty array?
 
   return res.status(201).json(result.rows[0]);
 }
@@ -177,6 +179,7 @@ async function readNotebooksRoute(req, res) {
 */
 
 module.exports = {
+  readSection,
   readSectionRoute,
   createSectionRoute,
 };
