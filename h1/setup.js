@@ -35,42 +35,43 @@ const {
 } = process.env;
 
 async function main() {
-  console.info(`Set upp gagnagrunn á ${databaseUrl}`);
-  console.info(`Set upp tengingu við Cloudinary á ${cloudinaryUrl}`);
+  console.info(`Setting up database at ${databaseUrl}`);
+  console.info(`Setting up connection with Cloudinary at ${cloudinaryUrl}`);
 
-  // Fylki með myndum og slóðum á Cloudinary
+  // Array with images and links to Cloudinary
   let images = [];
 
-  // henda töflum
+  // Drop tables
   try {
     const createTable = await readFileAsync('./sql/drop-tables.sql');
     await query(createTable.toString('utf8'));
-    console.info('Töflum hent');
+    console.info('Tables dropped.');
   } catch (e) {
-    console.error('Villa við að henda töflum:', e.message);
+    console.error('Error while dropping tables:', e.message);
     return;
   }
 
-  // búa til töflur út frá skema
+  // Create tables from schema
   try {
     const createTable = await readFileAsync('./sql/schema.sql');
     await query(createTable.toString('utf8'));
-    console.info('Tafla búin til');
+    console.info('Tables created.');
   } catch (e) {
-    console.error('Villa við að búa til töflu:', e.message);
+    console.error('Error while creating tables:', e.message);
     return;
   }
 
-  // búa til notendur
+  // Create users
   try {
     const createData = await readFileAsync('./sql/insert-users.sql');
     await query(createData.toString('utf8'));
-    console.info('Notendur búnir til');
+    console.info('Users created.');
   } catch (e) {
-    console.error('Villa við að búa til notendur:', e.message);
+    console.error('Error while creating users:', e.message);
     return;
   }
 
+  /* TODO: Uncomment - this is fine
   // senda myndir á Cloudinary
   try {
     images = await uploadImagesFromDisk(imageFolder);
@@ -78,6 +79,7 @@ async function main() {
   } catch (e) {
     console.error('Villa við senda myndir á Cloudinary:', e.message);
   }
+  */
 
   /* TODO: Create something similar
   // búa til gervigögn og setja í gagnagrunn
@@ -94,16 +96,16 @@ async function main() {
     console.error('Villa við að búa til gervigögn:', e.message);
     return;
   }
-
-  // búa til pantanir og körfu
-  try {
-    const createData = await readFileAsync('./sql/insert-orders.sql');
-    await query(createData.toString('utf8'));
-    console.info('Pantanir og körfur búnar til');
-  } catch (e) {
-    console.error('Villa við að búa til pantanir og körfur:', e.message);
-  }
   */
+
+  // Create notebooks
+  try {
+    const createData = await readFileAsync('./sql/insert-notebooks.sql');
+    await query(createData.toString('utf8'));
+    console.info('Notebooks created.');
+  } catch (e) {
+    console.error('Error while creating notebooks:', e.message);
+  }
 }
 
 main().catch((err) => {
