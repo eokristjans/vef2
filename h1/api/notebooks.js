@@ -2,15 +2,22 @@ const xss = require('xss');
 const { query } = require('../utils/db');
 
 const {
+  readNotebookSections,
+} = require('./sections');
+
+const {
   isInt,
   isNotEmptyString,
   lengthValidationError,
 } = require('../utils/validation');
 
+/** Helper functions */
+
 /**
  * Helper function.
- * Returns the notebook with the given id. If userId is not null, 
+ * Returns the Notebook with the given id. If userId is not null, 
  * then only returns the notebook if it has the given userId.
+ * Notebooks sections are nested within.
  * 
  * @param {number} id 
  * @param {number} userId of the user to whom the notebook must belong.
@@ -45,8 +52,7 @@ async function readNotebook(id, userId = null) {
 
   const notebook = result.rows[0];
   
-  // TODO: Notebook section and pages
-  // notebook.sections = await readNotebookSections(notebook.id);
+  notebook.sections = await readNotebookSections(notebook.id);
 
   return notebook;
 }
@@ -55,8 +61,8 @@ async function readNotebook(id, userId = null) {
 /** API */
 
 /**
- * Return res.json with any notebook with id equal to req.params and
- * that req.user has access to.
+ * Return res.json with the Notebook with id equal to req.params and
+ * that req.user has access to. Notebooks sections are nested within.
  * 
  * @param {Object} req 
  * @param {Object} res 
@@ -112,9 +118,6 @@ async function readNotebooksRoute(req, res) {
 
   const notebooks = result.rows;
   
-  // TODO: Notebook sections ??
-  // notebook.sections = await readNotebookSections(notebook.id);
-
   return res.json({
     'results': notebooks,
   });
