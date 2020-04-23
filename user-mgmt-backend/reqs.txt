@@ -1,0 +1,2 @@
+npm install bcrypt cloudinary dotenv express faker jsonwebtoken multer passport passport-jwt pg xss
+npm install --only=dev nodemon eslint eslint-config-airbnb-base eslint-plugin-import
