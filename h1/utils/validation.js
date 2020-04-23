@@ -1,4 +1,5 @@
 // Helper functions for validating input, data types and such.
+const { query } = require('./db');
 
 function isEmpty(s) {
   return s != null && !s;
@@ -57,6 +58,58 @@ function toPositiveNumberOrDefault(value, defaultValue) {
   return clean;
 }
 
+
+
+/**
+ * Validates the title for an entity. Checks whether the title length
+ * is correct, and checks if the user already has an entity with the same
+ * title, and if either is true then returns an error for the title field. 
+ * 
+ * @param {number} foreignKeyId userId for notebook, notebookId for section and sectionId for page.
+ * @param {string} title 
+ * @param {string} entityName Singular form of a table name.
+ */
+async function validateTitleForEntity(foreignKeyId, title, entityName) {
+
+  // Validate length
+  if (!isNotEmptyString(title, { min: 1, max: 256 })) {
+    return [{
+      field: 'title',
+      error: lengthValidationError(title, 1, 256),
+    }];
+  }
+
+  let foreignKeyIdName = '';
+  switch(entityName) {
+    case 'notebook':
+      foreignKeyIdName = 'user_id';
+      break;
+    case 'section':
+      foreignKeyIdName = 'notebook_id';
+      break;
+    case 'page':
+      foreignKeyIdName = 'section_id';
+      break;
+    case 'default':
+      // Should not happen. TODO: Deal with?
+      break;
+  }
+
+  // Check if user has another entity with same title
+  const entity = await query(
+    `SELECT id FROM ${entityName}s WHERE ${foreignKeyIdName} = $1 AND title = $2`,
+    [foreignKeyId, title],
+  );
+
+  if (entity.rows.length > 0) {
+    const error = `User already has a ${entityName} with title '${title}'.`;
+    return [{ field: 'title', error}];
+  }
+
+  // No validation error
+  return [];
+}
+
 module.exports = {
   isEmpty,
   isString,
@@ -65,4 +118,5 @@ module.exports = {
   isNotEmptyString,
   toPositiveNumberOrDefault,
   lengthValidationError,
+  validateTitleForEntity,
 };
