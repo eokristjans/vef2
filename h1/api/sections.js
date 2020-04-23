@@ -2,15 +2,22 @@ const xss = require('xss');
 const { query } = require('../utils/db');
 
 const {
+  readSectionPages,
+} = require('./pages');
+
+const {
   isInt,
   isNotEmptyString,
   lengthValidationError,
 } = require('../utils/validation');
 
+
+/** HELPER FUNCTIONS */
+
 /**
  * Helper function.
- * Returns the sections with the given ntoebookId. If userId is not null, 
- * then only returns the section if it has the given userId.
+ * Returns the sections with the given notebookId. If userId is not null, 
+ * then only returns the sections if they have the given userId.
  * 
  * @param {number} notebookId of the notebook to which the section must belong. 
  * @param {number} userId of the user to whom the section must belong.
@@ -84,7 +91,7 @@ async function readSection(id, userId = null) {
   const section = result.rows[0];
   
   // TODO: Section pages
-  // section.pages = await readSectionPages(section.id);
+  section.pages = await readSectionPages(section.id);
 
   return section;
 }
