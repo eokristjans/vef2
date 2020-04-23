@@ -80,7 +80,7 @@ async function readNotebookRoute(req, res) {
 
   if (!notebook) {
     // TODO: Return 403 forbidden if notebook exists but not admin?
-    return res.status(404).json({ error: 'Notebook not found.' })
+    return res.status(404).json({ error: 'Notebook not found.' });
   }
 
   return res.json(notebook);
@@ -146,7 +146,7 @@ async function createNotebookRoute(req, res) {
   // Prepare query
   const q = `
     INSERT INTO 
-    ${entityName}s
+      ${entityName}s
         (user_id, title)
       VALUES
         ($1, $2)
@@ -160,9 +160,60 @@ async function createNotebookRoute(req, res) {
   return res.status(201).json(result.rows[0]);
 }
 
+
+/**
+ * Updates a Notebook entity with title from req.body and 
+ * id from req.params for the current user. Validates the input.
+ * Returns an object representing the new entity if successful.
+ * 
+ * @param {Object} req containing notebook id in .params and new title in .body
+ * @param {Object} res 
+ */
+async function updateNotebookRoute(req, res) {
+  const { user } = req;
+  const { id } = req.params;
+  const { title } = req.body;
+
+  // Check that the notebook belongs to user
+  let notebook = await readNotebook(id, user.id);
+
+  if (!notebook) {
+    return res.status(404).json({ error: 'Notebook not found.' });
+  }
+
+  // Validate input
+  const entityName = 'notebook';
+  const validations = await validateTitleForEntity(user.id, title, entityName);
+
+  // Return validation error if any
+  if (validations.length > 0) {
+    return res.status(400).json({
+      errors: validations,
+    });
+  }
+
+  
+  // Prepare query (only title can be updated)
+  const q = `
+    UPDATE
+      ${entityName}s
+    SET title = $1, updated = current_timestamp
+    WHERE id = $2
+      RETURNING *
+  `;
+
+  const result = await query(q, [xss(title), notebook.id]);
+  notebook = result.rows[0];
+
+  notebook.sections = await readNotebookSections(notebook.id, user.id);
+
+  return res.status(200).json(notebook);
+}
+
 module.exports = {
   readNotebook,
   readNotebookRoute,
   readNotebooksRoute,
   createNotebookRoute,
+  updateNotebookRoute,
 };

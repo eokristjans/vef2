@@ -21,6 +21,7 @@ const {
   readNotebooksRoute,
   readNotebookRoute,
   createNotebookRoute,
+  updateNotebookRoute,
 } = require('./notebooks');
 
 const {
@@ -78,6 +79,7 @@ router.patch('/users/:id', requireAdmin, catchErrors(updateUser));
 router.get('/notebooks', requireAuth, catchErrors(readNotebooksRoute));
 router.post('/notebooks', requireAuth, catchErrors(createNotebookRoute));
 router.get('/notebooks/:id', requireAuth, catchErrors(readNotebookRoute));
+router.patch('/notebooks/:id', requireAuth, catchErrors(updateNotebookRoute));
 
 router.get('/sections/:id', requireAuth, catchErrors(readSectionRoute));
 router.post('/sections', requireAuth, catchErrors(createSectionRoute));
