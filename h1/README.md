@@ -9,6 +9,12 @@
 Skráin `reqs.txt` inniheldur þær skipanir sem voru framkvæmdar til að setja upp þróunarumhverfi. 
 Hins vegar ætti að duga að keyra `npm install` og svo `npm setup`.
 
+Always remember that if Icelandic letters do not show correctly in PSQL, run the following:
+
+```bash
+SET PGCLIENTENCODING=utf-8
+chcp 65001
+```
 
 ## Project Description
 
@@ -21,42 +27,33 @@ The basic layout is as such:
     * Page
     * ... [more pages]
   * ... [more sections]
-  * SectionGroup
-    * Section
-      * Page
-      * ... [more pages]
-    * ... [more sections]
-  * ... [more section groups]
-  * Image Section
-    * List of image URLs.
+  * ImageURLs
+    * ImageURL
+    * ... [more ImageURLs]
 * ... [more notebooks]
 
-A user can register for and login to the platform, create multiple notebooks and add and delete section groups, sections and pages as they desire. A page can only be added within a section. The user can edit his pages by writing Markdown text into them, which the browser can render immediately and then store on the platform. The system stores the pages so that they can be viewed in any browser on any device as long as the user is logged in. Each user only has access to their own notebooks and their contents.
+A user can register for and login to the platform, create multiple notebooks and add and delete sections and pages as they desire. A page can only be added within a section. The user can edit his pages by writing Markdown text into them, which the browser can render immediately and also store on the server. The system stores the pages so that they can be viewed in any browser on any device as long as the user is logged in. Each user only has access to their own notebooks and their contents.
 
 
 ## Functional requirements
+
+**TODO: Import security measures from HBV602_Lokaverk to here and also to user-mgmt-backend.**
 
 Create a web service with:
 
 * User Management
   * Users can register and login.
-  * Users can change, create and delete their own notebooks, section groups, sections and pages.
-  * Users can change their password.
-  * Admins can make other users into admins.
-  * Admins can delete users and content created by them.
+  * Users can change, create and delete their own notebooks, sections and pages.
+  * Users can change their email and password.
+  * Admins can make other users into admins or remove other users' admin privelege.
+  * Admins can view all users, delete them and consequently all of their content.
   * (Optional) Admins can update the *About* section of the platform.
 * Notebooks
   * Belong to a user.
-  * May contain section groups.
-  * May contain sections.
-* Section Groups
-  * Belong to a user.
-  * Belong to a notebook.
   * May contain sections.
 * Sections
   * Belong to a user.
   * Belong to a notebook 
-  * May belong to a section group.
   * May contain pages.
 * Pages
   * Belong to a user.
@@ -110,57 +107,42 @@ A list of ImageURLs must be available.
   * Password, not null, at least 8 characters and not in this list of [500 bad passwords](https://github.com/danielmiessler/SecLists/blob/master/Passwords/Common-Credentials/500-worst-passwords.txt), stored as a hash from `bcrypt`.
   * Admin, boolean, default  `false`.
   * Created, date with timezone, assigned by default.
-  * Modified, date with timezone, assigned by default.
+  * Updated, date with timezone, assigned by default.
 * Notebooks
   * Id, integer, assigned by default.
   * UserId, integer, assigned by default.
   * Created, date with timezone, assigned by default.
-  * Modified, date with timezone, assigned by default.
-  * SectionGroupIds, array.
-  * SectionIds, array.
-  * ImageIds, array.
-  * Title, not null.
+  * Updated, date with timezone, assigned by default.
+  * Title, varchar, not null.
   * Unique (UserId, Title).
-* SectionGroups
-  * Id, integer, assigned by default.
-  * UserId, integer, assigned by default.
-  * NotebookId, integer, assigned by default.
-  * Created, date with timezone, assigned by default.
-  * Modified, date with timezone, assigned by default.
-  * SectionIds, array.
-  * Title, not null.
-  * Unique (NotebookId, Title).
 * Sections
   * Id, integer, assigned by default.
   * UserId, integer, assigned by default.
-  * SectionGroupId, integer, assigned by default.
-  * NotebookId, integer, assigned by default.
+  * NotebookId, integer(, assigned by default??). 
   * Created, date with timezone, assigned by default.
-  * Modified, date with timezone, assigned by default.
-  * PageIds, array.
-  * Title, not null.
-  * Unique (SectionGroupId, Title).
+  * Updated, date with timezone, assigned by default.
+  * Title, varchar, not null.
+  * Unique (NotebookId, Title).
 * Pages
   * Id, integer, assigned by default.
-  * UserId, integer, assigned by default.
-  * SectionId, integer, assigned by default.
-  * SectionGroupId, integer, assigned by default.
-  * NotebookId, integer, assigned by default.
+  * UserId, integer(, assigned by default??). 
+  * SectionId, integer(, assigned by default??). 
+  * NotebookId, integer(, assigned by default??). 
   * Created, date with timezone, assigned by default.
-  * Modified, date with timezone, assigned by default.
-  * Title, not null.
-  * Body, not null.
+  * Updated, date with timezone, assigned by default.
+  * Title, varchar, not null.
+  * Body, text (or bytea??), not null.
   * Unique (SectionId, Title).
 * Images
   * Id, integer, assigned by default.
   * UserId, integer, assigned by default.
-  * NotebookId, integer, assigned by default.
+  * NotebookId, integer(, assigned by default??).
   * Created, date with timezone, assigned by default.
-  * Title, not null.
-  * Url, not null.
+  * Title, varchar, not null.
+  * Url, varchar, not null.
   * Unique (NotebookId, Title).
 
-**TODO: Consider whether this two-way pointing is necessary (i.e. Pages point to Sections and Sections contain Array of Pages). Bear in mind that if a Section is created, it must first delete all the pages it contains, otherwise it will break a constraint. However, because page points to a section, `cascade` might be able to take care of deleting everything that points to the section.**
+*Two-way pointing is unnecessary (i.e. Pages point to Sections and Sections contain Array of Pages), because we can get all Pages in a Section using the section_id.*
 
 Tables should have unique Ids and use [foreign keys](https://www.postgresql.org/docs/current/ddl-constraints.html#DDL-CONSTRAINTS-FK) to point to other tables.
 
@@ -168,9 +150,7 @@ Tables should have unique Ids and use [foreign keys](https://www.postgresql.org/
 ## Data
 
 When a new user is created, one sample notebook is created for him. This notebook contains:
-* 1 section.
-* 1 section group with 2 sections.
-* Each section contains 2 pages.
+* 1 section with 2 pages.
 * 2 images.
 
 Populate the pages by creating fake data with [faker](https://github.com/Marak/faker.js):
@@ -224,16 +204,7 @@ Never return or show password hash.
   * `PATCH` updates the name of the notebook, only if data input is valid, and if the user who performs the request is the owner.
   * `DELETE` deletes the notebook and all its contents, only if the user who performs the request is the owner.
 
-### Section Groups
-* `/notebooks/:id/section-groups`
-  * `POST` creates a new section group owned by the user who performs the request.
-* `/notebooks/:id/section-groups/:id`
-  * `GET` returns a section group, only if it belong to the user who performs the request.
-  * `PATCH` updates the name of the section group, only if data input is valid, and if the user who performs the request is the owner.
-  * `DELETE` deletes the section group and all its contents, only if the user who performs the request is the owner.
-
 ### Sections
-*Sections do not have to be nested within a section-group.*
 
 * `/notebooks/:id/sections`
   * `POST` creates a new section owned by the user who performs the request.
@@ -243,7 +214,6 @@ Never return or show password hash.
   * `DELETE` deletes the section and all its contents, only if the user who performs the request is the owner.
 
 ### Pages
-*Parent section deos not have to be nested within a section-group.*
 
 * `/notebooks/:id/sections/:id/pages`
   * `POST` creates a new page owned by the user who performs the request.
