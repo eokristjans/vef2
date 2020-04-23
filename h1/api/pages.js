@@ -12,46 +12,6 @@ const {
 
 /**
  * Helper function.
- * Returns the pages with the given sectionId. If userId is not null, 
- * then only returns the pages if they have the given userId.
- * The page body is NOT nested within.
- * 
- * @param {number} sectionId of the section to which the pages must belong. 
- * @param {number} userId of the user to whom the pages must belong.
- */
-async function readSectionPages(sectionId, userId = null) {
-  if (!isInt(sectionId)) {
-    return null;
-  }
-
-  // If the userId is not an integer, then it will not be used in the request.
-  const hasUser = userId && isInt(userId);
-  const filterUser = hasUser ? 'AND user_id = $2' : '';
-
-  // Select * EXCEPT the body
-  const q = `
-    SELECT
-      id, title, created, updated, user_id, notebook_id, section_id
-    FROM
-      pages
-    WHERE
-      section_id = $1
-      ${filterUser}
-  `;
-
-  const result = await query(
-    q,
-    [sectionId, hasUser? userId : null].filter(Boolean),
-  );
-
-  const pages = result.rows;
-  
-
-  return pages;
-}
-
-/**
- * Helper function.
  * Returns the page with the given id. If userId is not null, 
  * then only returns the page if it has the given userId.
  * The page body is nested within.
@@ -119,6 +79,5 @@ async function readPageRoute(req, res) {
 }
 
 module.exports = {
-  readSectionPages,
   readPageRoute,
 };

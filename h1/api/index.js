@@ -20,10 +20,12 @@ const {
 const {
   readNotebooksRoute,
   readNotebookRoute,
+  createNotebookRoute,
 } = require('./notebooks');
 
 const {
   readSectionRoute,
+  createSectionRoute,
 } = require('./sections');
 
 const {
@@ -71,9 +73,11 @@ router.get('/users/:id', requireAdmin, catchErrors(readUserRoute));
 router.patch('/users/:id', requireAdmin, catchErrors(updateUser));
 
 router.get('/notebooks', requireAuth, catchErrors(readNotebooksRoute));
+router.post('/notebooks', requireAuth, catchErrors(createNotebookRoute));
 router.get('/notebooks/:id', requireAuth, catchErrors(readNotebookRoute));
 
 router.get('/sections/:id', requireAuth, catchErrors(readSectionRoute));
+router.post('/sections', requireAuth, catchErrors(createSectionRoute));
 
 router.get('/pages/:id', requireAuth, catchErrors(readPageRoute));
 

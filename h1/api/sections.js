@@ -3,54 +3,20 @@ const { query } = require('../utils/db');
 
 const {
   readSectionPages,
-} = require('./pages');
+} = require('./notebook-helpers');
+
+const {
+  readNotebook,
+} = require('./notebooks');
 
 const {
   isInt,
   isNotEmptyString,
   lengthValidationError,
+  validateTitleForEntity,
 } = require('../utils/validation');
 
 
-/** HELPER FUNCTIONS */
-
-/**
- * Helper function.
- * Returns the sections with the given notebookId. If userId is not null, 
- * then only returns the sections if they have the given userId.
- * 
- * @param {number} notebookId of the notebook to which the section must belong. 
- * @param {number} userId of the user to whom the section must belong.
- */
-async function readNotebookSections(notebookId, userId = null) {
-  if (!isInt(notebookId)) {
-    return null;
-  }
-
-  // If the userId is not an integer, then it will not be used in the request.
-  const hasUser = userId && isInt(userId);
-  const filterUser = hasUser ? 'AND user_id = $2' : '';
-
-  const q = `
-    SELECT
-      *
-    FROM
-      sections
-    WHERE
-      notebook_id = $1
-      ${filterUser}
-  `;
-
-  const result = await query(
-    q,
-    [notebookId, hasUser? userId : null].filter(Boolean),
-  );
-
-  const sections = result.rows;
-  
-
-  return sections;
-}
 
 /**
  * Helper function.
@@ -123,6 +89,50 @@ async function readSectionRoute(req, res) {
 }
 
 
+/**
+ * Creates and inserts a new Section entity with title and notebookId 
+ * from req.body for the current user. Validates the input.
+ * Returns an object representing the new entity if successful.
+ * 
+ * @param {Object} req must contain .user and .body.title
+ * @param {Object} res 
+ */
+async function createSectionRoute(req, res) {
+  const { user } = req;
+  const { title = xss(title), notebookId } = req.body;
+
+  // Check that the notebook belongs to the current user
+  const notebook = await readNotebook(notebookId, user.id);
+  
+  if (!notebook) {
+    return res.status(404).json({ error: 'Notebook not found.' });
+  }
+
+  // Validate input
+  const entityName = 'section';
+  const validations = await validateTitleForEntity(notebookId, title, entityName);
+
+  // Return validation error if any
+  if (validations.length > 0) {
+    return res.status(400).json({
+      errors: validations,
+    });
+  }
+
+  // Prepare query
+  const q = `
+    INSERT INTO 
+      ${entityName}s
+        (user_id, notebook_id, title)
+      VALUES
+        ($1, $2, $3)
+      RETURNING *
+  `;
+
+  const result = await query(q, [user.id, notebookId, title]);
+
+  return res.status(201).json(result.rows[0]);
+}
 
 
 /**
@@ -167,6 +177,6 @@ async function readNotebooksRoute(req, res) {
 */
 
 module.exports = {
-  readNotebookSections,
   readSectionRoute,
+  createSectionRoute,
 };

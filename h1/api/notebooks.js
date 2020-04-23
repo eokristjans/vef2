@@ -3,15 +3,17 @@ const { query } = require('../utils/db');
 
 const {
   readNotebookSections,
-} = require('./sections');
+} = require('./notebook-helpers');
 
 const {
   isInt,
   isNotEmptyString,
   lengthValidationError,
+  validateTitleForEntity,
 } = require('../utils/validation');
 
-/** Helper functions */
+
+/** HELPER FUNCTIONS */
 
 /**
  * Helper function.
@@ -19,7 +21,7 @@ const {
  * then only returns the notebook if it has the given userId.
  * Notebooks sections are nested within.
  * 
- * @param {number} id 
+ * @param {number} id of the notebook
  * @param {number} userId of the user to whom the notebook must belong.
  */
 async function readNotebook(id, userId = null) {
@@ -85,8 +87,6 @@ async function readNotebookRoute(req, res) {
 }
 
 
-
-
 /**
  * Return res.json with all notebooks that req.user has access to.
  * 
@@ -95,11 +95,11 @@ async function readNotebookRoute(req, res) {
  */
 async function readNotebooksRoute(req, res) {
   const { user } = req;
-
-  console.log('readNotebooksRoute: ' + user.username);
   
+  // Only admins can access all notebooks
   const filterUser = !user.admin ? 'WHERE user_id = $1' : '';
 
+  // Prepare query
   const q = `
     SELECT
       *
@@ -113,9 +113,6 @@ async function readNotebooksRoute(req, res) {
     [!user.admin ? user.id : null].filter(Boolean),
   );
 
-  
-  console.log('readNotebooksRoute: ' + result);
-
   const notebooks = result.rows;
   
   return res.json({
@@ -123,7 +120,47 @@ async function readNotebooksRoute(req, res) {
   });
 }
 
+/**
+ * Creates and inserts a new Notebook entity with title from 
+ * req.body for the current user. Validates the input.
+ * Returns an object representing the new entity if successful.
+ * 
+ * @param {Object} req must contain .user and .body.title
+ * @param {Object} res 
+ */
+async function createNotebookRoute(req, res) {
+  const { user } = req;
+  const { title = xss(title) } = req.body;
+
+  // Validate input
+  const entityName = 'notebook';
+  const validations = await validateTitleForEntity(user.id, title, entityName);
+
+  // Return validation error if any
+  if (validations.length > 0) {
+    return res.status(400).json({
+      errors: validations,
+    });
+  }
+
+  // Prepare query
+  const q = `
+    INSERT INTO 
+    ${entityName}s
+        (user_id, title)
+      VALUES
+        ($1, $2)
+      RETURNING *
+  `;
+
+  const result = await query(q, [user.id, title]);
+
+  return res.status(201).json(result.rows[0]);
+}
+
 module.exports = {
+  readNotebook,
   readNotebookRoute,
-  readNotebooksRoute
+  readNotebooksRoute,
+  createNotebookRoute,
 };
