@@ -1,11 +1,15 @@
 const xss = require('xss');
 const { query } = require('../utils/db');
 
+const {
+  readSection,
+} = require('./sections');
 
 const {
   isInt,
   isNotEmptyString,
   lengthValidationError,
+  validateTitleForEntity,
 } = require('../utils/validation');
 
 /** HELPER FUNCTIONS */
@@ -78,6 +82,54 @@ async function readPageRoute(req, res) {
   return res.json(page);
 }
 
+/**
+ * Creates and inserts a new Page entity with title and sectionId 
+ * from req.body for the current user. Validates the input.
+ * Returns an object representing the new entity if successful.
+ * 
+ * @param {Object} req must contain .user and .body.title
+ * @param {Object} res 
+ */
+async function createPageRoute(req, res) {
+  const { user } = req;
+  const { title, sectionId } = req.body;
+
+  // Check that the notebook belongs to the current user
+  const section = await readSection(sectionId, user.id);
+  
+  if (!section) {
+    return res.status(404).json({ error: 'Section not found.' });
+  }
+  const notebookId = section.notebook_id;
+
+  // Validate input
+  const entityName = 'page';
+  const validations = await validateTitleForEntity(sectionId, title, entityName);
+
+  // Return validation error if any
+  if (validations.length > 0) {
+    return res.status(400).json({
+      errors: validations,
+    });
+  }
+
+  // Prepare query
+  const q = `
+    INSERT INTO 
+      ${entityName}s
+        (user_id, notebook_id, section_id, title, body)
+      VALUES
+        ($1, $2, $3, $4, $5)
+      RETURNING *
+  `;
+
+  const result = await query(q, [user.id, notebookId, sectionId, xss(title), '']);
+
+  return res.status(201).json(result.rows[0]);
+}
+
+
 module.exports = {
   readPageRoute,
+  createPageRoute,
 };

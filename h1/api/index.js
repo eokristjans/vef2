@@ -30,6 +30,7 @@ const {
 
 const {
   readPageRoute,
+  createPageRoute,
 } = require('./pages');
 
 const router = express.Router();
@@ -51,13 +52,15 @@ function indexRoute(req, res) {
     },
     notebooks: {
       notebooks: '/notebooks',
-      notebook: '/notebooks/{id}'
+      notebook: '/notebooks/{id}',
     },
     sections: {
-      section: '/sections/{id}'
+      section: '/sections/',
+      section: '/sections/{id}',
     },
     pages: {
-      page: '/pages/{id}'
+      pages: '/pages/',
+      page: '/pages/{id}',
     }
     // TODO: Add other endpoints
   });
@@ -80,6 +83,7 @@ router.get('/sections/:id', requireAuth, catchErrors(readSectionRoute));
 router.post('/sections', requireAuth, catchErrors(createSectionRoute));
 
 router.get('/pages/:id', requireAuth, catchErrors(readPageRoute));
+router.post('/pages', requireAuth, catchErrors(createPageRoute));
 
 // export the router
 module.exports = router;
