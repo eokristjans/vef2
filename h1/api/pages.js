@@ -2,25 +2,26 @@ const xss = require('xss');
 const { query } = require('../utils/db');
 
 const {
+  validateTitleForEntity,
+} = require('./notebook-helpers');
+
+const {
   readSection,
 } = require('./sections');
 
 const {
   isInt,
-  isNotEmptyString,
-  lengthValidationError,
-  validateTitleForEntity,
 } = require('../utils/validation');
 
 /** HELPER FUNCTIONS */
 
 /**
  * Helper function.
- * Returns the page with the given id. If userId is not null, 
+ * Returns the page with the given id. If userId is not null,
  * then only returns the page if it has the given userId.
  * The page body is nested within.
- * 
- * @param {number} id 
+ *
+ * @param {number} id
  * @param {number} userId of the user to whom the page must belong.
  */
 async function readPage(id, userId = null) {
@@ -44,7 +45,10 @@ async function readPage(id, userId = null) {
 
   const result = await query(
     q,
-    [id, hasUser? userId : null].filter(Boolean),
+    [
+      id,
+      hasUser ? userId : null,
+    ].filter(Boolean),
   );
 
   if (result.rows.length !== 1) {
@@ -62,9 +66,9 @@ async function readPage(id, userId = null) {
 /**
  * Return res.json with a page with id equal to req.params and
  * that req.user has access to. The page body is nested within.
- * 
- * @param {Object} req 
- * @param {Object} res 
+ *
+ * @param {Object} req
+ * @param {Object} res
  */
 async function readPageRoute(req, res) {
   const { id } = req.params;
@@ -76,19 +80,19 @@ async function readPageRoute(req, res) {
   const page = await readPage(id, userIdIfNotAdmin);
 
   if (!page) {
-    return res.status(404).json({ error: 'Page not found.' })
+    return res.status(404).json({ error: 'Page not found.' });
   }
 
   return res.json(page);
 }
 
 /**
- * Creates and inserts a new Page entity with title and sectionId 
+ * Creates and inserts a new Page entity with title and sectionId
  * from req.body for the current user. Validates the input.
  * Returns an object representing the new entity if successful.
- * 
- * @param {Object} req must contain .user and .body.title
- * @param {Object} res 
+ *
+ * @param {Object} req must contain .user and .body.title.
+ * @param {Object} res
  */
 async function createPageRoute(req, res) {
   const { user } = req;
@@ -96,7 +100,7 @@ async function createPageRoute(req, res) {
 
   // Check that the notebook belongs to the current user
   const section = await readSection(sectionId, user.id);
-  
+
   if (!section) {
     return res.status(404).json({ error: 'Section not found.' });
   }
@@ -104,7 +108,9 @@ async function createPageRoute(req, res) {
 
   // Validate input
   const entityName = 'page';
-  const validations = await validateTitleForEntity(sectionId, title, entityName);
+  const validations = await validateTitleForEntity(
+    sectionId, title, 3,
+  );
 
   // Return validation error if any
   if (validations.length > 0) {
@@ -123,7 +129,10 @@ async function createPageRoute(req, res) {
       RETURNING *
   `;
 
-  const result = await query(q, [user.id, notebookId, sectionId, xss(title), '']);
+  const result = await query(
+    q,
+    [user.id, notebookId, sectionId, xss(title), ''],
+  );
 
   return res.status(201).json(result.rows[0]);
 }

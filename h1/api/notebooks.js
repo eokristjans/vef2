@@ -2,12 +2,12 @@ const xss = require('xss');
 const { query } = require('../utils/db');
 
 const {
+  validateTitleForEntity,
   readNotebookSections,
 } = require('./notebook-helpers');
 
 const {
   isInt,
-  validateTitleForEntity,
 } = require('../utils/validation');
 
 
@@ -135,7 +135,7 @@ async function createNotebookRoute(req, res) {
 
   // Validate input
   const entityName = 'notebook';
-  const validations = await validateTitleForEntity(user.id, title, entityName);
+  const validations = await validateTitleForEntity(user.id, title, 1);
 
   // Return validation error if any
   if (validations.length > 0) {
@@ -184,7 +184,7 @@ async function updateNotebookRoute(req, res) {
 
   // Validate input
   const entityName = 'notebook';
-  const validations = await validateTitleForEntity(user.id, title, entityName);
+  const validations = await validateTitleForEntity(user.id, title, 1);
 
   // Return validation error if any
   if (validations.length > 0) {

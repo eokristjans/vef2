@@ -2,6 +2,7 @@ const xss = require('xss');
 const { query } = require('../utils/db');
 
 const {
+  validateTitleForEntity,
   readSectionPages,
 } = require('./notebook-helpers');
 
@@ -11,7 +12,6 @@ const {
 
 const {
   isInt,
-  validateTitleForEntity,
 } = require('../utils/validation');
 
 
@@ -111,7 +111,7 @@ async function createSectionRoute(req, res) {
   // Validate input
   const entityName = 'section';
   const validations = await validateTitleForEntity(
-    notebookId, title, entityName,
+    notebookId, title, 2,
   );
 
   // Return validation error if any
@@ -161,7 +161,9 @@ async function updateSectionRoute(req, res) {
 
   // Validate input
   const entityName = 'section';
-  const validations = await validateTitleForEntity(user.id, title, entityName);
+  const validations = await validateTitleForEntity(
+    section.notebook_id, title, 2,
+  );
 
   // Return validation error if any
   if (validations.length > 0) {
