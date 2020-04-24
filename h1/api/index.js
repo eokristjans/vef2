@@ -15,6 +15,7 @@ const {
   updateUser,
   currentUser,
   updateCurrentUser,
+  deleteUserRoute,
 } = require('./users');
 
 const {
@@ -76,10 +77,12 @@ router.get('/', indexRoute);
 
 // Add routes to router
 router.get('/users', requireAdmin, catchErrors(readUsersRoute));
-router.get('/users/me', requireAuth, catchErrors(currentUser));
-router.patch('/users/me', requireAuth, catchErrors(updateCurrentUser));
 router.get('/users/:id', requireAdmin, catchErrors(readUserRoute));
 router.patch('/users/:id', requireAdmin, catchErrors(updateUser));
+router.delete('/users/:id', requireAdmin, catchErrors(deleteUserRoute));
+
+router.get('/users/me', requireAuth, catchErrors(currentUser));
+router.patch('/users/me', requireAuth, catchErrors(updateCurrentUser));
 
 router.get('/notebooks', requireAuth, catchErrors(readNotebooksRoute));
 router.post('/notebooks', requireAuth, catchErrors(createNotebookRoute));

@@ -198,7 +198,7 @@ async function deleteSectionPages(sectionId, userId) {
 /**
  * Helper function.
  * Delete all sections in notebook with given notebookId,
- * belonging to user with given userId.
+ * and user_id matching the given userId.
  * Also deletes all the pages in the sections.
  *
  * @param {number} notebookId
@@ -230,10 +230,52 @@ async function deleteNotebookSections(notebookId, userId) {
   await query(q2, [notebookId, userId]);
 }
 
+
+/**
+ * Helper function.
+ * Delete all pages, sections and notebooks with a user_id
+ * matching the given userId.
+ *
+ * @param {number} notebookId
+ * @param {number} userId
+ */
+async function deleteUserContents(userId) {
+  // Prepare query to delete pages owned by the user
+  const q1 = `
+    DELETE FROM 
+      pages
+    WHERE 
+      user_id = $1
+  `;
+
+  await query(q1, [userId]);
+
+  // Prepare query to delete sections owned by the user
+  const q2 = `
+    DELETE FROM 
+      sections
+    WHERE 
+      user_id = $1
+  `;
+
+  await query(q2, [userId]);
+
+  // Prepare query to delete pages owned by the user
+  const q3 = `
+    DELETE FROM 
+      notebooks
+    WHERE 
+      user_id = $1
+  `;
+
+  await query(q3, [userId]);
+}
+
 module.exports = {
   validateTitleForEntity,
   readNotebookSections,
   readSectionPages,
   deleteSectionPages,
   deleteNotebookSections,
+  deleteUserContents,
 };

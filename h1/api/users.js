@@ -9,6 +9,8 @@ const {
   findById,
 } = require('../auth/users');
 
+const { deleteUserContents } = require('./notebook-helpers');
+
 const { query, pagedQuery } = require('../utils/db');
 const { isBoolean } = require('../utils/validation');
 const addPageMetadata = require('../utils/addPageMetadata');
@@ -51,6 +53,7 @@ async function readUsersRoute(req, res) {
 async function readUserRoute(req, res) {
   const { id } = req.params;
 
+  // Find the user and return it if found
   const user = await findById(id);
 
   if (!user) {
@@ -58,6 +61,37 @@ async function readUserRoute(req, res) {
   }
 
   return res.json(user);
+}
+
+
+/**
+ * Deletes the user with id from req.params.
+ * Also deletes the user's notebooks, sections and pages.
+ * Returns 304 no conent if successful.
+ *
+ * @param {Object} req must contain user id in .params
+ * @param {Object} res
+ */
+async function deleteUserRoute(req, res) {
+  const { id } = req.params;
+
+  // Find the user
+  const user = await findById(id);
+
+  if (!user) {
+    return res.status(404).json({ error: 'User not found' });
+  }
+
+  // Delete sections in this notebook
+  await deleteUserContents(id);
+
+  // Delete notebook
+  const entityName = 'user';
+  const q = `DELETE FROM ${entityName}s WHERE id = $1`;
+
+  await query(q, [id]);
+
+  return res.status(204).json({});
 }
 
 
@@ -174,4 +208,5 @@ module.exports = {
   updateUser: updateUserRoute,
   currentUser: currentUserRoute,
   updateCurrentUser,
+  deleteUserRoute,
 };
