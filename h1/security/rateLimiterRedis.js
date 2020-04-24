@@ -7,10 +7,11 @@ const { RateLimiterRedis } = require('rate-limiter-flexible');
 const {
   REDIS_HOST: redisHost = 'redis',
   REDIS_PORT: redisPort = 12549,
+  REDIS_URL: redisUrl = `redis://${redisHost}:${redisPort}/`,
 } = process.env;
 
 const redisClient = redis.createClient({
-  url: `redis://${redisHost}:${redisPort}/`,
+  url: redisUrl,
   enable_offline_queue: false,
 });
 
