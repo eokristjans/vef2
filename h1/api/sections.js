@@ -4,6 +4,7 @@ const { query } = require('../utils/db');
 const {
   validateTitleForEntity,
   readSectionPages,
+  deleteSectionPages,
 } = require('./notebook-helpers');
 
 const {
@@ -189,50 +190,40 @@ async function updateSectionRoute(req, res) {
   return res.status(200).json(section);
 }
 
-
 /**
- * Return res.json with all notebooks that req.user has access to.
+ * Deletes a Section entity.
+ * Returns status 204 no content if successful.
  *
- * @param {Object} req
+ * @param {Object} req with section id in .params
  * @param {Object} res
  */
-/* TODO: Uncomment and modify to sections if needed
-async function readNotebooksRoute(req, res) {
+async function deleteSectionRoute(req, res) {
   const { user } = req;
+  const { id } = req.params;
 
-  console.log('readNotebooksRoute: ' + user.username);
+  // Check that the page belongs to the current user
+  const section = await readSection(id, user.id);
 
-  const filterUser = !user.admin ? 'WHERE user_id = $1' : '';
+  if (!section) {
+    return res.status(404).json({ error: 'Section not found.' });
+  }
 
-  const q = `
-    SELECT
-      *
-    FROM
-      notebooks
-      ${filterUser}
-  `;
+  await deleteSectionPages(id, user.id);
 
-  const result = await query(
-    q,
-    [!user.admin ? user.id : null].filter(Boolean),
-  );
+  const entityName = 'section';
 
-  console.log('readNotebooksRoute: ' + result);
+  // Prepare query
+  const q = `DELETE FROM ${entityName}s WHERE id = $1`;
 
-  const notebooks = result.rows;
+  await query(q, [id]);
 
-  // TODO: Notebook sections ??
-  // notebook.sections = await readNotebookSections(notebook.id);
-
-  return res.json({
-    'results': notebooks,
-  });
+  return res.status(204).json({});
 }
-*/
 
 module.exports = {
   readSection,
   readSectionRoute,
   createSectionRoute,
   updateSectionRoute,
+  deleteSectionRoute,
 };

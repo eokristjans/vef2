@@ -4,6 +4,7 @@ const { query } = require('../utils/db');
 const {
   validateTitleForEntity,
   readNotebookSections,
+  deleteNotebookSections,
 } = require('./notebook-helpers');
 
 const {
@@ -210,10 +211,41 @@ async function updateNotebookRoute(req, res) {
   return res.status(200).json(notebook);
 }
 
+/**
+ * Deletes a Notebook entity.
+ * Returns status 204 no content if successful.
+ *
+ * @param {Object} req with notebook id in .params
+ * @param {Object} res
+ */
+async function deleteNotebookRoute(req, res) {
+  const { user } = req;
+  const { id } = req.params;
+
+  // Check that the page belongs to the current user
+  const notebook = await readNotebook(id, user.id);
+
+  if (!notebook) {
+    return res.status(404).json({ error: 'Notebook not found.' });
+  }
+
+  // Delete sections in this notebook
+  await deleteNotebookSections(id, user.id);
+
+  // Delete notebook
+  const entityName = 'notebook';
+  const q = `DELETE FROM ${entityName}s WHERE id = $1`;
+
+  await query(q, [id]);
+
+  return res.status(204).json({});
+}
+
 module.exports = {
   readNotebook,
   readNotebookRoute,
   readNotebooksRoute,
   createNotebookRoute,
   updateNotebookRoute,
+  deleteNotebookRoute,
 };

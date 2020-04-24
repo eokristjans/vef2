@@ -99,7 +99,7 @@ async function createPageRoute(req, res) {
   const { user } = req;
   const { title, sectionId } = req.body;
 
-  // Check that the notebook belongs to the current user
+  // Check that the section belongs to the current user
   const section = await readSection(sectionId, user.id);
 
   if (!section) {
@@ -204,8 +204,37 @@ async function updatePageRoute(req, res) {
 }
 
 
+/**
+ * Deletes a Page entity.
+ * Returns status 204 no content if successful.
+ *
+ * @param {Object} req with page id in .params
+ * @param {Object} res
+ */
+async function deletePageRoute(req, res) {
+  const { user } = req;
+  const { id } = req.params;
+
+  // Check that the page belongs to the current user
+  const page = await readPage(id, user.id);
+
+  if (!page) {
+    return res.status(404).json({ error: 'Page not found.' });
+  }
+
+  const entityName = 'page';
+
+  // Prepare query
+  const q = `DELETE FROM ${entityName}s WHERE id = $1`;
+
+  await query(q, [id]);
+
+  return res.status(204).json({});
+}
+
 module.exports = {
   readPageRoute,
   createPageRoute,
   updatePageRoute,
+  deletePageRoute,
 };

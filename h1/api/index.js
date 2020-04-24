@@ -22,18 +22,21 @@ const {
   readNotebookRoute,
   createNotebookRoute,
   updateNotebookRoute,
+  deleteNotebookRoute,
 } = require('./notebooks');
 
 const {
   readSectionRoute,
   createSectionRoute,
   updateSectionRoute,
+  deleteSectionRoute,
 } = require('./sections');
 
 const {
   readPageRoute,
   createPageRoute,
   updatePageRoute,
+  deletePageRoute,
 } = require('./pages');
 
 const router = express.Router();
@@ -82,14 +85,17 @@ router.get('/notebooks', requireAuth, catchErrors(readNotebooksRoute));
 router.post('/notebooks', requireAuth, catchErrors(createNotebookRoute));
 router.get('/notebooks/:id', requireAuth, catchErrors(readNotebookRoute));
 router.patch('/notebooks/:id', requireAuth, catchErrors(updateNotebookRoute));
+router.delete('/notebooks/:id', requireAuth, catchErrors(deleteNotebookRoute));
 
 router.post('/sections', requireAuth, catchErrors(createSectionRoute));
 router.get('/sections/:id', requireAuth, catchErrors(readSectionRoute));
 router.patch('/sections/:id', requireAuth, catchErrors(updateSectionRoute));
+router.delete('/sections/:id', requireAuth, catchErrors(deleteSectionRoute));
 
 router.post('/pages', requireAuth, catchErrors(createPageRoute));
 router.get('/pages/:id', requireAuth, catchErrors(readPageRoute));
 router.patch('/pages/:id', requireAuth, catchErrors(updatePageRoute));
+router.delete('/pages/:id', requireAuth, catchErrors(deletePageRoute));
 
 // export the router
 module.exports = router;

@@ -14,6 +14,7 @@ const {
 /** HELPER FUNCTIONS */
 
 /**
+ * Helper function.
  * Validates the title for an entity. Checks whether the title length
  * is correct, and checks if the user already has an entity with the same
  * title, and if either is true then returns an error for the title field.
@@ -173,8 +174,66 @@ async function readSectionPages(sectionId, userId = null) {
   return pages;
 }
 
+/**
+ * Helper function.
+ * Delete all pages in section with given sectionId,
+ * belonging to user with given userId.
+ *
+ * @param {number} sectionId
+ * @param {number} userId
+ */
+async function deleteSectionPages(sectionId, userId) {
+  // Prepare query
+  const q = `
+    DELETE FROM 
+      pages
+    WHERE 
+      section_id = $1 AND user_id = $2
+  `;
+
+  await query(q, [sectionId, userId]);
+}
+
+
+/**
+ * Helper function.
+ * Delete all sections in notebook with given notebookId,
+ * belonging to user with given userId.
+ * Also deletes all the pages in the sections.
+ *
+ * @param {number} notebookId
+ * @param {number} userId
+ */
+async function deleteNotebookSections(notebookId, userId) {
+  // Prepare query to delete pages in the sections
+  const q1 = `
+    DELETE FROM 
+      pages
+    WHERE 
+      user_id = $1
+    AND
+      notebook_id IN (
+        SELECT id from notebooks where id = $2
+      )
+  `;
+
+  await query(q1, [userId, notebookId]);
+
+  // Prepare query to delete sections in the notebook
+  const q2 = `
+    DELETE FROM 
+      sections
+    WHERE 
+      notebook_id = $1 AND user_id = $2
+  `;
+
+  await query(q2, [notebookId, userId]);
+}
+
 module.exports = {
   validateTitleForEntity,
   readNotebookSections,
   readSectionPages,
+  deleteSectionPages,
+  deleteNotebookSections,
 };
