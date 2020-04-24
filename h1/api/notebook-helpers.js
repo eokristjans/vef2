@@ -35,6 +35,7 @@ async function validateTitleForEntity(foreignKeyId, title, entityType) {
 
   const xssTitle = xss(title);
 
+  // Determine string literals
   let {
     foreignKeyIdName = '',
     entityName = '',
@@ -61,6 +62,7 @@ async function validateTitleForEntity(foreignKeyId, title, entityType) {
       break;
   }
 
+  // Create query
   const q = `
   SELECT 
     id 
