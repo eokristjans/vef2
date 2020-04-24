@@ -48,12 +48,13 @@ Create a web service with:
   * Admins can make other users into admins or remove other users' admin privelege.
   * Admins can view all users, delete them and consequently all of their content.
   * (Optional) Admins can update the *About* section of the platform.
+  * (Optional) Users can move their sections between notebooks, and their pages between sections.
 * Notebooks
   * Belong to a user.
   * May contain sections.
 * Sections
   * Belong to a user.
-  * Belong to a notebook 
+  * Belong to a notebook.
   * May contain pages.
 * Pages
   * Belong to a user.
@@ -82,7 +83,7 @@ A list of ImageURLs must be available.
 * User Management
   * You should be able to register a user and login.
   * JWT with Passport should be used for authentication.
-  * Passwords should not be present on this list of [500 bad passwords](https://github.com/danielmiessler/SecLists/blob/master/Passwords/Common-Credentials/500-worst-passwords.txt).
+  * Passwords should not be present in this list of [500 bad passwords](https://github.com/danielmiessler/SecLists/blob/master/Passwords/Common-Credentials/500-worst-passwords.txt).
   * (Optional Extra) Limited number of login attempts permitted.
 
 * Front End
@@ -110,24 +111,24 @@ A list of ImageURLs must be available.
   * Updated, date with timezone, assigned by default.
 * Notebooks
   * Id, integer, assigned by default.
-  * UserId, integer, assigned by default.
+  * UserId, integer.
   * Created, date with timezone, assigned by default.
   * Updated, date with timezone, assigned by default.
   * Title, varchar, not null.
   * Unique (UserId, Title).
 * Sections
   * Id, integer, assigned by default.
-  * UserId, integer, assigned by default.
-  * NotebookId, integer(, assigned by default??). 
+  * UserId, integer.
+  * NotebookId, integer.
   * Created, date with timezone, assigned by default.
   * Updated, date with timezone, assigned by default.
   * Title, varchar, not null.
   * Unique (NotebookId, Title).
 * Pages
   * Id, integer, assigned by default.
-  * UserId, integer(, assigned by default??). 
-  * SectionId, integer(, assigned by default??). 
-  * NotebookId, integer(, assigned by default??). 
+  * UserId, integer. 
+  * SectionId, integer. 
+  * NotebookId, integer. 
   * Created, date with timezone, assigned by default.
   * Updated, date with timezone, assigned by default.
   * Title, varchar, not null.
@@ -135,14 +136,14 @@ A list of ImageURLs must be available.
   * Unique (SectionId, Title).
 * Images
   * Id, integer, assigned by default.
-  * UserId, integer, assigned by default.
-  * NotebookId, integer(, assigned by default??).
+  * UserId.
+  * NotebookId, integer.
   * Created, date with timezone, assigned by default.
   * Title, varchar, not null.
   * Url, varchar, not null.
   * Unique (NotebookId, Title).
 
-*Two-way pointing is unnecessary (i.e. Pages point to Sections and Sections contain Array of Pages), because we can get all Pages in a Section using the section_id.*
+*Two-way pointing (i.e. Pages point to Sections and Sections contain Array of Pages) is unnecessary, because we can get all Pages in a Section using the section_id.*
 
 Tables should have unique Ids and use [foreign keys](https://www.postgresql.org/docs/current/ddl-constraints.html#DDL-CONSTRAINTS-FK) to point to other tables.
 
@@ -180,7 +181,7 @@ GET `/` shall return a list of possible operations.
 ### Users
 
 * `/users`
-  * `GET` returns a list of users, only if the user that performs the request is an admin.
+  * `GET` returns a list of up to 10 users, only if the user that performs the request is an admin. Uses pagination to return more users.
 * `/users/:id`
   * `GET` returns a user, only if the user that performs the request is an admin.
   * `PATCH` changes whether the user is an admin or not, only if the user that performs the request is an admin and is not changing themself.
@@ -197,36 +198,36 @@ Never return or show password hash.
 
 ### Notebooks
 * `/notebooks`
-  * `GET` returns a list of notebooks that belong to the user who performs the request. **TODO: Contents nested within?**
-  * `POST` creates a new notebook owned by the user who performs the request.
+  * `GET` returns a list of notebooks that belong to the user who performs the request.
+  * `POST` creates a new notebook owned by the user who performs the request. Request body must contain a valid title for the new notebook.
 * `/notebooks/:id`
-  * `GET` returns a notebook, only if it belong to the user who performs the request.
+  * `GET` returns the notebook, only if it belongs to the user who performs the request.
   * `PATCH` updates the name of the notebook, only if data input is valid, and if the user who performs the request is the owner.
   * `DELETE` deletes the notebook and all its contents, only if the user who performs the request is the owner.
 
 ### Sections
 
-* `/notebooks/:id/sections`
-  * `POST` creates a new section owned by the user who performs the request.
-* `/notebooks/:id/sections/:id`
-  * `GET` returns a section, only if it belong to the user who performs the request.
+* `/sections`
+  * `POST` creates a new section owned by the user who performs the request with foreign key pointing to a notebook entity owned by the user. Request body must contain the notebook id and a valid title for the new section.
+* `/sections/:id`
+  * `GET` returns the section, only if it belongs to the user who performs the request.
   * `PATCH` updates the name of the section, only if data input is valid, and if the user who performs the request is the owner.
   * `DELETE` deletes the section and all its contents, only if the user who performs the request is the owner.
 
 ### Pages
 
-* `/notebooks/:id/sections/:id/pages`
-  * `POST` creates a new page owned by the user who performs the request.
-* `/notebooks/:id/sections/:id/pages/:id`
-  * `GET` returns a page, only if it belong to the user who performs the request.
+* `/pages`
+  * `POST` creates a new page owned by the user who performs the request with foreign key pointing to a section entity owned by the user. Request body must contain the section id and a valid title for the new section.
+* `/pages/:id`
+  * `GET` returns the page, only if it belongs to the user who performs the request.
   * `PATCH` updates the page, only if data input is valid, and if the user who performs the request is the owner.
   * `DELETE` deletes the page, only if the user who performs the request is the owner.
 
 ### Images
-* `/notebook/:id/images`
-  * `POST` uploads a new image owned by the user, contained within the notebook, only if data input is valid and only if the notebook is owned by the user who performs the request.
-  * `GET` returns a list of all image owned by the user, contained within the notebook, only if the notebook is owned by the user who performs the request.
-* `/notebook/:id/images/:id`
+* `/images`
+  * `POST` uploads a new image owned by the user who performs the request, only if data input is valid.
+  * `GET` returns a list of up to 10 images owned by the user who performs the request. Uses pagination to return more images.
+* `/images/:id`
   * `GET` returns an image, only if it belong to the user who performs the request.
   * `PATCH` updates the image, only if data input is valid, and if the user who performs the request is the owner.
   * `DELETE` deletes the image, only if the user who performs the request is the owner.
@@ -235,8 +236,9 @@ Each time when data is created or updated, the web service should verify that th
 
 
 
-> Útgáfa 0.1
+> Release 0.2
 
-| Útgáfa | Lýsing                                                                   |
-|--------|--------------------------------------------------------------------------|
-| 0.1    | Fyrsta útgáfa                                                            |
+| Release | Description                                                              |
+|---------|--------------------------------------------------------------------------|
+| 0.1     | First release                                                            |
+| 0.2     | Updated description.                                                     |
