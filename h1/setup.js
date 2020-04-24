@@ -1,10 +1,10 @@
 /**
  * Initializes database and data for the project.
  * Starts by dropping all existing tables and recreates them.
- * 
+ *
  * Data is created with Faker.
  * Images are stored on Cloudinary.
- * 
+ *
  */
 
 require('dotenv').config();
@@ -71,15 +71,13 @@ async function main() {
     return;
   }
 
-  /* TODO: Uncomment - this is fine
-  // senda myndir á Cloudinary
+  // send pictures to Cloudinary
   try {
     images = await uploadImagesFromDisk(imageFolder);
     console.info(`Sendi ${images.length} myndir á Cloudinary`);
   } catch (e) {
     console.error('Villa við senda myndir á Cloudinary:', e.message);
   }
-  */
 
   /* TODO: Create something similar
   // búa til gervigögn og setja í gagnagrunn

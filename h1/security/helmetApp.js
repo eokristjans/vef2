@@ -6,7 +6,6 @@ const helmet = require('helmet');
 const expressEnforcesSSL = require('express-enforces-ssl');
 
 // Limit # of requests per user
-const rateLimiterRedisMiddleware = require('./rateLimiterRedis');
 
 
 const app = express();
@@ -26,8 +25,12 @@ const {
   ENVIRONMENT: env = 'production',
 } = process.env;
 
-// These settings do not work on localhost
+// These settings do not work on localhost, unless correctly configured
+// and with redis server running.
 if (env === 'production') {
+  // eslint-disable-next-line global-require
+  const rateLimiterRedisMiddleware = require('./rateLimiterRedis');
+
   // Redirects use to https connection
   // throws an error if users try to send data via http.
   app.enable('trust proxy');

@@ -1,10 +1,11 @@
 // A beaute learned from Olafur Sverrir Kjartansson
-// TODO: Documentation
 
 const util = require('util');
 const fs = require('fs');
 const path = require('path');
 const cloudinary = require('cloudinary').v2;
+const multer = require('multer');
+
 const debug = require('../utils/debug');
 
 const readDirAsync = util.promisify(fs.readdir);
@@ -12,7 +13,12 @@ const statAsync = util.promisify(fs.stat);
 const resourcesAsync = util.promisify(cloudinary.api.resources);
 const uploadAsync = util.promisify(cloudinary.uploader.upload);
 
-// Cloudinary er stillt sjálfkrafa því við höfum CLOUDINARY_URL í umhverfi
+// Permitted mimetypes
+const MIMETYPES = [
+  'image/jpeg',
+  'image/png',
+  'image/gif',
+];
 
 // Geymum í minni niðurstöður úr því að lista allar myndir frá Cloudinary
 let cachedListImages = null;
@@ -85,6 +91,36 @@ async function uploadImagesFromDisk(imageDir) {
   return images;
 }
 
+/**
+ * Returns true if mimetype is permitted in the system.
+ *
+ * @param {string} mimetype
+ */
+function validateImageMimetype(mimetype) {
+  return MIMETYPES.indexOf(mimetype.toLowerCase()) >= 0;
+}
+
+async function withMulter(req, res, next, fn) {
+  multer({ dest: './temp' })
+    .single('url')(req, res, (err) => {
+      if (err) {
+        if (err.message === 'Unexpected field') {
+          const errors = [{
+            field: 'url',
+            error: 'Unable to read image',
+          }];
+          return res.status(400).json({ errors });
+        }
+
+        return next(err);
+      }
+
+      return fn(req, res, next).catch(next);
+    });
+}
+
 module.exports = {
   uploadImagesFromDisk,
+  validateImageMimetype,
+  withMulter,
 };

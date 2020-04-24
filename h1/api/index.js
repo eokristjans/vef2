@@ -40,6 +40,12 @@ const {
   deletePageRoute,
 } = require('./pages');
 
+const {
+  createImageRoute,
+  // readImageRoute,
+  // deleteImageRoute,
+} = require('./images');
+
 const router = express.Router();
 
 /**
@@ -100,11 +106,17 @@ router.get('/sections/:id', requireAuth, catchErrors(readSectionRoute));
 router.patch('/sections/:id', requireAuth, catchErrors(updateSectionRoute));
 router.delete('/sections/:id', requireAuth, catchErrors(deleteSectionRoute));
 
-// Section actions by users
+// Page actions by users
 router.post('/pages', requireAuth, catchErrors(createPageRoute));
 router.get('/pages/:id', requireAuth, catchErrors(readPageRoute));
 router.patch('/pages/:id', requireAuth, catchErrors(updatePageRoute));
 router.delete('/pages/:id', requireAuth, catchErrors(deletePageRoute));
+
+// Image actions by users
+// router.get('/images', requireAuth, catchErrors(readImagesRoute));
+router.post('/images', requireAuth, catchErrors(createImageRoute));
+// router.get('/images/:id', requireAuth, catchErrors(readImageRoute));
+// router.delete('/images/:id', requireAuth, catchErrors(deleteImageRoute));
 
 // export the router
 module.exports = router;

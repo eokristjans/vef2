@@ -17,13 +17,13 @@ const {
  * Helper function.
  * Validates the title for an entity. Checks whether the title length
  * is correct, and checks if the user already has an entity with the same
- * title, and if either is true then returns an error for the title field.
+ * title, and if either is true then returns an array with the field and error.
  *
  * @param {number} foreignKeyId userId for notebook, notebookId for section
  * and sectionId for page.
  * @param {string} title that needs to be validated.
  * @param {number} entityType Type of entity that is being validated.
- * 1 for notebook, 2 for section, 3 for page.
+ * 1 for notebook, 2 for section, 3 for page, 4 for image
  */
 async function validateTitleForEntity(foreignKeyId, title, entityType) {
   // Validate length
@@ -57,6 +57,11 @@ async function validateTitleForEntity(foreignKeyId, title, entityType) {
       entityName = 'page';
       foreignKeyIdName = 'section_id';
       foreignKeyEntityName = 'Section';
+      break;
+    case 4:
+      entityName = 'image';
+      foreignKeyIdName = 'user_id';
+      foreignKeyEntityName = 'User';
       break;
     default:
       // Should not happen. TODO: Deal with?

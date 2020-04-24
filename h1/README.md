@@ -113,7 +113,6 @@ Create a web service with:
   * Written in [Markdown with rendering and live preview](https://www.npmjs.com/package/react-markdown-renderer).
 * ImageURLs
   * Belong to a user.
-  * Belong to a notebook.
   * Upload images through the platform that can be stored on [Cloudinary](https://cloudinary.com/) 
     and the link can be embedded into the markdown-formatted blog post.
 
@@ -187,14 +186,13 @@ A list of ImageURLs must be available.
   * Unique (SectionId, Title).
 * Images
   * Id, integer, assigned by default.
-  * UserId.
-  * NotebookId, integer.
+  * UserId, integer.
   * Created, date with timezone, assigned by default.
   * Title, varchar, not null.
   * Url, varchar, not null.
-  * Unique (NotebookId, Title).
+  * Unique (UserId, Title).
 
-*Two-way pointing (i.e. Pages point to Sections and Sections contain Array of Pages) is unnecessary, because we can get all Pages in a Section using the section_id.*
+*Two-way pointing (i.e. Pages point to Sections and Sections contain Array of Pages) is unnecessary, because we can quickly get all Pages in a Section using the section_id.*
 
 Tables should have unique Ids and use [foreign keys](https://www.postgresql.org/docs/current/ddl-constraints.html#DDL-CONSTRAINTS-FK) to point to other tables.
 

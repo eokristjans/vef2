@@ -35,4 +35,11 @@ CREATE TABLE pages (
   section_id  INTEGER REFERENCES sections(id) NOT NULL,
   UNIQUE(section_id, title)
 );
--- TODO: Images
+CREATE TABLE images (
+  id          SERIAL PRIMARY KEY,
+  title       VARCHAR(256) NOT NULL,
+  url         VARCHAR(256) NOT NULL,
+  created     TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT current_timestamp,
+  user_id     INTEGER REFERENCES users(id) NOT NULL,
+  UNIQUE(user_id, title)
+);
