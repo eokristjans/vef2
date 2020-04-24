@@ -8,7 +8,7 @@ const requireAdmin = [
   checkUserIsAdmin,
 ];
 
-// ******************** API IMPORTS ******************** 
+// ******************** API IMPORTS ********************
 const {
   readUsersRoute,
   readUserRoute,
@@ -27,6 +27,7 @@ const {
 const {
   readSectionRoute,
   createSectionRoute,
+  updateSectionRoute,
 } = require('./sections');
 
 const {
@@ -38,9 +39,9 @@ const router = express.Router();
 
 /**
  * Lists and links to all available routes in the api
- * 
- * @param {object} req 
- * @param {object} res 
+ *
+ * @param {object} req
+ * @param {object} res
  */
 function indexRoute(req, res) {
   return res.json({
@@ -56,13 +57,13 @@ function indexRoute(req, res) {
       notebook: '/notebooks/{id}',
     },
     sections: {
-      section: '/sections/',
+      sections: '/sections/',
       section: '/sections/{id}',
     },
     pages: {
       pages: '/pages/',
       page: '/pages/{id}',
-    }
+    },
     // TODO: Add other endpoints
   });
 }
@@ -81,8 +82,9 @@ router.post('/notebooks', requireAuth, catchErrors(createNotebookRoute));
 router.get('/notebooks/:id', requireAuth, catchErrors(readNotebookRoute));
 router.patch('/notebooks/:id', requireAuth, catchErrors(updateNotebookRoute));
 
-router.get('/sections/:id', requireAuth, catchErrors(readSectionRoute));
 router.post('/sections', requireAuth, catchErrors(createSectionRoute));
+router.get('/sections/:id', requireAuth, catchErrors(readSectionRoute));
+router.patch('/sections/:id', requireAuth, catchErrors(updateSectionRoute));
 
 router.get('/pages/:id', requireAuth, catchErrors(readPageRoute));
 router.post('/pages', requireAuth, catchErrors(createPageRoute));
