@@ -33,6 +33,7 @@ const {
 const {
   readPageRoute,
   createPageRoute,
+  updatePageRoute,
 } = require('./pages');
 
 const router = express.Router();
@@ -86,8 +87,9 @@ router.post('/sections', requireAuth, catchErrors(createSectionRoute));
 router.get('/sections/:id', requireAuth, catchErrors(readSectionRoute));
 router.patch('/sections/:id', requireAuth, catchErrors(updateSectionRoute));
 
-router.get('/pages/:id', requireAuth, catchErrors(readPageRoute));
 router.post('/pages', requireAuth, catchErrors(createPageRoute));
+router.get('/pages/:id', requireAuth, catchErrors(readPageRoute));
+router.patch('/pages/:id', requireAuth, catchErrors(updatePageRoute));
 
 // export the router
 module.exports = router;

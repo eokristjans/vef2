@@ -11,6 +11,7 @@ const {
 
 const {
   isInt,
+  isNotEmptyString,
 } = require('../utils/validation');
 
 /** HELPER FUNCTIONS */
@@ -138,7 +139,73 @@ async function createPageRoute(req, res) {
 }
 
 
+/**
+ * Updates a Page entity with title and body from req.body and
+ * id from req.params for the current user. Validates the input.
+ * Returns an object representing the new entity if successful.
+ *
+ * @param {Object} req containing page id in .params and
+ * new body and title in .body
+ * @param {Object} res
+ */
+async function updatePageRoute(req, res) {
+  const { user } = req;
+  const { id } = req.params;
+  const { title, body } = req.body;
+
+  // Check that the page belongs to user
+  let page = await readPage(id, user.id);
+
+  if (!page) {
+    return res.status(404).json({ error: 'Page not found.' });
+  }
+
+  // Check if title is being updated
+  const hasTitle = title && isNotEmptyString(title, { min: 1, max: 256 });
+  const setTitle = hasTitle ? 'title = $2,' : '';
+
+  // If updating title, check that it's valid
+  if (hasTitle && xss(title) !== page.title) {
+    // Validate title
+    const validations = await validateTitleForEntity(
+      page.section_id, title, 3,
+    );
+
+    // Return validation error if any
+    if (validations.length > 0) {
+      return res.status(400).json({
+        errors: validations,
+      });
+    }
+  }
+
+  const entityName = 'page';
+
+  // Prepare query (both title and body can be updated)
+  const q = `
+    UPDATE
+      ${entityName}s
+    SET body = $1, ${setTitle} updated = current_timestamp
+    WHERE id = $3
+      RETURNING *
+  `;
+
+  const result = await query(
+    q,
+    [
+      xss(body),
+      hasTitle ? xss(title) : '',
+      id,
+    ],
+  );
+  page = result.rows[0]; // eslint-disable-line prefer-destructuring
+
+  return res.status(200).json(page);
+}
+
+
 module.exports = {
   readPageRoute,
   createPageRoute,
+  updatePageRoute,
 };
