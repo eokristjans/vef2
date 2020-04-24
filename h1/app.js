@@ -25,11 +25,6 @@ const {
 } = process.env;
  */
 
-/* TODO:
-Move security middleware and express apps to security directory
-Import and use noCache,
-Import and use helmet.. change name?
-*/
 const {
   PORT: port = 3000,
   HOST: host = '127.0.0.1',
@@ -38,10 +33,12 @@ const {
 const app = express();
 app.use(express.json());
 
+// Web service security
 app.use(helmetApp);
 app.use(noCache);
 app.use(cors);
 
+// User management security
 app.use(auth);
 
 // Contains all routes

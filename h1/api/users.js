@@ -82,6 +82,10 @@ async function deleteUserRoute(req, res) {
     return res.status(404).json({ error: 'User not found' });
   }
 
+  if (user.admin) {
+    return res.status(403).json({ error: 'Can not delete an admin' });
+  }
+
   // Delete sections in this notebook
   await deleteUserContents(id);
 
