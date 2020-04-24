@@ -27,14 +27,16 @@ chcp 65001
 # Set up Heroku (globally)
 npm install -g heroku
 
+# Navigate to git root folder, in my case it's vef2-eok4 and backend is contained within directory h1/
+
 # Login
 heroku login 
 
 # Connect to remote
-heroku git:remote -a noteworthy-md
+heroku git:remote -a noteworthy-md-eok4
 
 # Push just a subtree (the webapp) to Heroku
-git subtree push --prefix vef2-eok4/h1 heroku master
+git subtree push --prefix h1 heroku master
 
 # See https://medium.com/@shalandy/deploy-git-subdirectory-to-heroku-ea05e95fce1f for more details
 
@@ -42,8 +44,8 @@ git subtree push --prefix vef2-eok4/h1 heroku master
 # Set up Postgres database
 heroku addons:create heroku-postgresql:hobby-dev -a noteworthy-md-eok4
 
-# Run setup on Heroku
-heroku run node setup/setup.js
+# Run setup on Heroku (make sure Config Vars are correct on Heroku)
+heroku run node setup.js
 ```
 
 Use Papertrail for logging and Heroku-Redis for caching.
