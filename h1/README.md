@@ -4,10 +4,15 @@
 #### Final Project
 #### Author: Erling Óskar Kristjánsson
 
-## Glósur höfundar
+## The author's notes
 
-Skráin `reqs.txt` inniheldur þær skipanir sem voru framkvæmdar til að setja upp þróunarumhverfi. 
-Hins vegar ætti að duga að keyra `npm install` og svo `npm setup`.
+The file `reqs.txt` contains commands used to set up the development environment.
+However, it should suffice to run
+
+```bash
+npm install
+npm setup
+```
 
 Always remember that if Icelandic letters do not show correctly in PSQL, run the following:
 
@@ -15,6 +20,47 @@ Always remember that if Icelandic letters do not show correctly in PSQL, run the
 SET PGCLIENTENCODING=utf-8
 chcp 65001
 ```
+
+### Setting up Heroku and deploying project
+
+```bash
+# Set up Heroku (globally)
+npm install -g heroku
+
+# Login
+heroku login 
+
+# Connect to remote
+heroku git:remote -a noteworthy-md
+
+# Push just a subtree (the webapp) to Heroku
+git subtree push --prefix vef2-eok4/h1 heroku master
+
+# See https://medium.com/@shalandy/deploy-git-subdirectory-to-heroku-ea05e95fce1f for more details
+
+
+# Set up Postgres database
+heroku addons:create heroku-postgresql:hobby-dev -a noteworthy-md-eok4
+
+# Run setup on Heroku
+heroku run node setup/setup.js
+```
+
+Use Papertrail for logging and Heroku-Redis for caching.
+
+
+### Setting up redis (noSQL) for caching (inconvient on Windows)
+
+If you want to configure caching on development environment, you'll have to set up and have a redis-server running locally.
+
+```bash
+# Install on Linux
+sudo apt install redis-server
+
+# Run server with default config
+redis-server
+```
+
 
 ## Project Description
 
