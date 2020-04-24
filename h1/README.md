@@ -44,6 +44,9 @@ git subtree push --prefix h1 heroku master
 # Set up Postgres database
 heroku addons:create heroku-postgresql:hobby-dev -a noteworthy-md-eok4
 
+# Set up Redis - Make sure to configure REDIS_URL usage in app.
+heroku addons:create heroku-redis:hobby-dev -a noteworthy-md-eok4
+
 # Run setup on Heroku (make sure Config Vars are correct on Heroku)
 heroku run node setup.js
 ```
