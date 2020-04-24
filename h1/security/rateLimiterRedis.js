@@ -5,7 +5,7 @@ const redis = require('redis');
 const { RateLimiterRedis } = require('rate-limiter-flexible');
 
 const {
-  REDIS_HOST: redisHost = '',
+  REDIS_HOST: redisHost = 'redis',
   REDIS_PORT: redisPort = 12549,
 } = process.env;
 
