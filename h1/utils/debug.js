@@ -6,7 +6,7 @@ const {
 
 /**
  * Prints debug messages m in console.info()
- * 
+ *
  * @param  {...any} m message(s) to print in console.info()
  */
 function debug(...m) {

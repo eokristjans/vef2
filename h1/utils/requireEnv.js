@@ -2,12 +2,12 @@
 
 const { isEmpty } = require('./validation');
 
-module.exports = 
+module.exports =
 
 /**
  * Checks which variables in vars are missing from process.env,
  * if any, then prints them in console.error() and exits the program.
- * 
+ *
  * @param {array} vars Variables to check for in process.env
  */
 function requireEnv(vars = []) {

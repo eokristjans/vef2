@@ -75,26 +75,32 @@ function indexRoute(req, res) {
 
 router.get('/', indexRoute);
 
-// Add routes to router
+/** Add routes to router */
+
+// User actions by admin
 router.get('/users', requireAdmin, catchErrors(readUsersRoute));
 router.get('/users/:id', requireAdmin, catchErrors(readUserRoute));
 router.patch('/users/:id', requireAdmin, catchErrors(updateUser));
 router.delete('/users/:id', requireAdmin, catchErrors(deleteUserRoute));
 
+// User actions by self
 router.get('/users/me', requireAuth, catchErrors(currentUser));
 router.patch('/users/me', requireAuth, catchErrors(updateCurrentUser));
 
+// Notebook actinons by users
 router.get('/notebooks', requireAuth, catchErrors(readNotebooksRoute));
 router.post('/notebooks', requireAuth, catchErrors(createNotebookRoute));
 router.get('/notebooks/:id', requireAuth, catchErrors(readNotebookRoute));
 router.patch('/notebooks/:id', requireAuth, catchErrors(updateNotebookRoute));
 router.delete('/notebooks/:id', requireAuth, catchErrors(deleteNotebookRoute));
 
+// Section actions by users
 router.post('/sections', requireAuth, catchErrors(createSectionRoute));
 router.get('/sections/:id', requireAuth, catchErrors(readSectionRoute));
 router.patch('/sections/:id', requireAuth, catchErrors(updateSectionRoute));
 router.delete('/sections/:id', requireAuth, catchErrors(deleteSectionRoute));
 
+// Section actions by users
 router.post('/pages', requireAuth, catchErrors(createPageRoute));
 router.get('/pages/:id', requireAuth, catchErrors(readPageRoute));
 router.patch('/pages/:id', requireAuth, catchErrors(updatePageRoute));

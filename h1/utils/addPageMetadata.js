@@ -12,16 +12,13 @@ const {
 /**
  * Adds page metadata (_links) to object obj if it doesn't have any,
  * returns obj with page metadata based on path and param2.
- * 
+ *
  * @param {object} obj Object to add metadata too
  * @param {*} path the page path
  * @param {*} param2 {offset, limit, length}
  */
-function addPageMetadata(
-                          obj,
-                          path,
-                          { offset = 0, limit = 10, length = 0 } = {},
-                        ) {
+function addPageMetadata(obj, path,
+  { offset = 0, limit = 10, length = 0 } = {}) {
   if (obj._links) {
     return obj;
   }

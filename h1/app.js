@@ -2,13 +2,34 @@ require('dotenv').config();
 
 const express = require('express');
 
-const requireEnv = require('./utils/requireEnv');
-
-const cors = require('./utils/cors');
+const noCache = require('./security/noCache');
+const cors = require('./security/cors');
+const helmetApp = require('./security/helmetApp');
 const auth = require('./auth/auth');
 // Import the entire folder
 const api = require('./api');
 
+/** TODO: Necessary?
+const requireEnv = require('./utils/requireEnv');
+
+requireEnv([
+  'DATABASE_URL',
+  'CLOUDINARY_URL',
+  'JWT_SECRET',
+]);
+
+const {
+  DATABASE_URL: databaseUrl,
+  CLOUDINARY_URL: cloudinaryUrl,
+  IMAGE_FOLDER: imageFolder = './img',
+} = process.env;
+ */
+
+/* TODO:
+Move security middleware and express apps to security directory
+Import and use noCache,
+Import and use helmet.. change name?
+*/
 const {
   PORT: port = 3000,
   HOST: host = '127.0.0.1',
@@ -17,14 +38,17 @@ const {
 const app = express();
 app.use(express.json());
 
+app.use(helmetApp);
+app.use(noCache);
 app.use(cors);
+
 app.use(auth);
+
+// Contains all routes
 app.use('/', api);
 
-// TODO: user management first :)
 
-
-//********* ERROR HANDLING MUST BE BELOW OTHER MIDDLEWARE *********
+/** ERROR HANDLING MUST BE BELOW OTHER MIDDLEWARE */
 
 function notFoundHandler(req, res, next) { // eslint-disable-line
   console.warn('Not found', req.originalUrl);

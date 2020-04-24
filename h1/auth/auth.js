@@ -33,10 +33,10 @@ const jwtOptions = {
   secretOrKey: jwtSecret,
 };
 
-/** 
+/**
  * Strategy middleware that checks if user with data.id exists
  * - `false` if user not found
- * 
+ *
  * @param {object} data with key value pair { "id": <user.id> }
  * @param {function} next callback function with two params:
  *                          1. error (TODO: verify?)
