@@ -181,10 +181,10 @@ async function updateSectionRoute(req, res) {
       RETURNING *
   `;
 
-  const result = await query(q, [xss(title), section.id]);
+  const result = await query(q, [xss(title), id]);
   section = result.rows[0]; // eslint-disable-line prefer-destructuring
 
-  section.pages = await readSectionPages(section.id, user.id);
+  section.pages = await readSectionPages(id, user.id);
 
   return res.status(200).json(section);
 }
