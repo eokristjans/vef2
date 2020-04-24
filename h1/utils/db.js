@@ -33,10 +33,10 @@ async function query(sqlQuery, values = []) {
 
 /**
  * Executes a paged SQL query
- * 
- * @param {*} sqlQuery 
- * @param {*} values 
- * @param {*} param2 
+ *
+ * @param {*} sqlQuery
+ * @param {*} values
+ * @param {*} param2
  */
 async function pagedQuery(
   sqlQuery,
@@ -64,11 +64,11 @@ async function pagedQuery(
 }
 
 /**
- * 
- * @param {*} table 
- * @param {*} id 
- * @param {*} fields 
- * @param {*} values 
+ *
+ * @param {*} table
+ * @param {*} id
+ * @param {*} fields
+ * @param {*} values
  */
 async function conditionalUpdate(table, id, fields, values) {
   const filteredFields = fields.filter(i => typeof i === 'string');

@@ -7,8 +7,6 @@ const {
 
 const {
   isInt,
-  isNotEmptyString,
-  lengthValidationError,
   validateTitleForEntity,
 } = require('../utils/validation');
 
@@ -17,10 +15,10 @@ const {
 
 /**
  * Helper function.
- * Returns the Notebook with the given id. If userId is not null, 
+ * Returns the Notebook with the given id. If userId is not null,
  * then only returns the notebook if it has the given userId.
  * Notebooks sections are nested within.
- * 
+ *
  * @param {number} id of the notebook
  * @param {number} userId of the user to whom the notebook must belong.
  */
@@ -45,7 +43,10 @@ async function readNotebook(id, userId = null) {
 
   const result = await query(
     q,
-    [id, hasUser? userId : null].filter(Boolean),
+    [
+      id,
+      hasUser ? userId : null,
+    ].filter(Boolean),
   );
 
   if (result.rows.length !== 1) {
@@ -53,7 +54,7 @@ async function readNotebook(id, userId = null) {
   }
 
   const notebook = result.rows[0];
-  
+
   notebook.sections = await readNotebookSections(notebook.id);
 
   return notebook;
@@ -65,9 +66,9 @@ async function readNotebook(id, userId = null) {
 /**
  * Return res.json with the Notebook with id equal to req.params and
  * that req.user has access to. Notebooks sections are nested within.
- * 
- * @param {Object} req 
- * @param {Object} res 
+ *
+ * @param {Object} req
+ * @param {Object} res
  */
 async function readNotebookRoute(req, res) {
   const { id } = req.params;
@@ -89,13 +90,13 @@ async function readNotebookRoute(req, res) {
 
 /**
  * Return res.json with all notebooks that req.user has access to.
- * 
- * @param {Object} req 
- * @param {Object} res 
+ *
+ * @param {Object} req
+ * @param {Object} res
  */
 async function readNotebooksRoute(req, res) {
   const { user } = req;
-  
+
   // Only admins can access all notebooks
   const filterUser = !user.admin ? 'WHERE user_id = $1' : '';
 
@@ -114,19 +115,19 @@ async function readNotebooksRoute(req, res) {
   );
 
   const notebooks = result.rows;
-  
+
   return res.json({
-    'results': notebooks,
+    results: notebooks,
   });
 }
 
 /**
- * Creates and inserts a new Notebook entity with title from 
+ * Creates and inserts a new Notebook entity with title from
  * req.body for the current user. Validates the input.
  * Returns an object representing the new entity if successful.
- * 
+ *
  * @param {Object} req must contain .user and .body.title
- * @param {Object} res 
+ * @param {Object} res
  */
 async function createNotebookRoute(req, res) {
   const { user } = req;
@@ -162,12 +163,12 @@ async function createNotebookRoute(req, res) {
 
 
 /**
- * Updates a Notebook entity with title from req.body and 
+ * Updates a Notebook entity with title from req.body and
  * id from req.params for the current user. Validates the input.
  * Returns an object representing the new entity if successful.
- * 
+ *
  * @param {Object} req containing notebook id in .params and new title in .body
- * @param {Object} res 
+ * @param {Object} res
  */
 async function updateNotebookRoute(req, res) {
   const { user } = req;
@@ -192,7 +193,6 @@ async function updateNotebookRoute(req, res) {
     });
   }
 
-  
   // Prepare query (only title can be updated)
   const q = `
     UPDATE
@@ -203,7 +203,7 @@ async function updateNotebookRoute(req, res) {
   `;
 
   const result = await query(q, [xss(title), notebook.id]);
-  notebook = result.rows[0];
+  notebook = result.rows[0]; // eslint-disable-line prefer-destructuring
 
   notebook.sections = await readNotebookSections(notebook.id, user.id);
 
