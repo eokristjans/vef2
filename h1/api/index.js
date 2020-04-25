@@ -42,8 +42,9 @@ const {
 
 const {
   createImageRoute,
-  // readImageRoute,
-  // deleteImageRoute,
+  readImageRoute,
+  readImagesRoute,
+  deleteImageRoute,
 } = require('./images');
 
 const router = express.Router();
@@ -75,7 +76,10 @@ function indexRoute(req, res) {
       pages: '/pages/',
       page: '/pages/{id}',
     },
-    // TODO: Add other endpoints
+    images: {
+      images: '/images/',
+      image: '/images/{id}',
+    },
   });
 }
 
@@ -113,10 +117,10 @@ router.patch('/pages/:id', requireAuth, catchErrors(updatePageRoute));
 router.delete('/pages/:id', requireAuth, catchErrors(deletePageRoute));
 
 // Image actions by users
-// router.get('/images', requireAuth, catchErrors(readImagesRoute));
+router.get('/images', requireAuth, catchErrors(readImagesRoute));
 router.post('/images', requireAuth, catchErrors(createImageRoute));
-// router.get('/images/:id', requireAuth, catchErrors(readImageRoute));
-// router.delete('/images/:id', requireAuth, catchErrors(deleteImageRoute));
+router.get('/images/:id', requireAuth, catchErrors(readImageRoute));
+router.delete('/images/:id', requireAuth, catchErrors(deleteImageRoute));
 
 // export the router
 module.exports = router;
