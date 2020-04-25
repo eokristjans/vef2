@@ -88,8 +88,6 @@ A user can register for and login to the platform, create multiple notebooks and
 
 ## Functional requirements
 
-**TODO: Import security measures from HBV602_Lokaverk to here and also to user-mgmt-backend.**
-
 Create a web service with:
 
 * User Management
