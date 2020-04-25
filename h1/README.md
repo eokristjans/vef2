@@ -1,7 +1,7 @@
 # # noteworthyMD
 
 #### Course: HBV403G (Web Development 2)
-#### Final Project
+#### Final Project (back-end)
 #### Author: Erling Óskar Kristjánsson
 
 ## Setup
@@ -297,9 +297,10 @@ Each time when data is created or updated, the web service should verify that th
 
 
 
-> Release 0.2
+> Release 0.3
 
 | Release | Description                                                              |
 |---------|--------------------------------------------------------------------------|
 | 0.1     | First release                                                            |
 | 0.2     | Updated description.                                                     |
+| 0.3     | Functionality completed.                                                 |
