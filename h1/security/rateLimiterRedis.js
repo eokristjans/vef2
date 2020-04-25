@@ -1,5 +1,6 @@
-// Limits the number of requests that each IP address can send per
-// specified duration, e.g. 5 requests per 1 second by IP.
+/* Limits the number of requests that each IP address can send per specified
+duration, e.g. 5 requests per 1 second by IP. This serves as a protection
+against DDoS attacks as well as brute-force password cracking attacks */
 
 const redis = require('redis');
 const { RateLimiterRedis } = require('rate-limiter-flexible');

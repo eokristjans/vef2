@@ -1,7 +1,9 @@
 
 /**
  * Middleware that sets HTTP header "Cache-Control: no-store, no-cache"
- * and "Pragma: no-cache".
+ * and "Pragma: no-cache". This helps prevent browser from caching old
+ * JS or HTML files which may contain bugs. May reduce performance a bit.
+ * Actually does the same as https://github.com/helmetjs/nocache.
  *
  * @param {IncomingMessage} req
  * @param {ServerResponse} res
