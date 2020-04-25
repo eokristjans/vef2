@@ -197,7 +197,7 @@ const { createUserContents } = require('./../api/notebook-helpers');
  * @param {boolean} admin
  */
 async function createUser(username, password, email, admin = false) {
-  const hashedPassword = await bcrypt.hash(password, bcryptRounds);
+  const hashedPassword = await bcrypt.hash(password, Number(bcryptRounds));
 
   const q = `
     INSERT INTO
@@ -243,7 +243,7 @@ async function updateUser(id, password, email) {
   let hashedPassword = null;
 
   if (password) {
-    hashedPassword = await bcrypt.hash(password, bcryptRounds);
+    hashedPassword = await bcrypt.hash(password, Number(bcryptRounds));
   }
 
   const values = [
