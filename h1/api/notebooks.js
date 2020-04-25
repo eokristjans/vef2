@@ -81,7 +81,6 @@ async function readNotebookRoute(req, res) {
   const notebook = await readNotebook(id, userIdIfNotAdmin);
 
   if (!notebook) {
-    // TODO: Return 403 forbidden if notebook exists but not admin?
     return res.status(404).json({ error: 'Notebook not found.' });
   }
 

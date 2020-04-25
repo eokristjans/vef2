@@ -67,7 +67,7 @@ async function readUserRoute(req, res) {
 /**
  * Deletes the user with id from req.params.
  * Also deletes the user's notebooks, sections and pages.
- * Returns 304 no conent if successful.
+ * Returns 204 no conent if successful.
  *
  * @param {Object} req must contain user id in .params
  * @param {Object} res

@@ -222,10 +222,8 @@ async function deletePageRoute(req, res) {
     return res.status(404).json({ error: 'Page not found.' });
   }
 
-  const entityName = 'page';
-
   // Prepare query
-  const q = `DELETE FROM ${entityName}s WHERE id = $1`;
+  const q = 'DELETE FROM pages WHERE id = $1';
 
   await query(q, [id]);
 

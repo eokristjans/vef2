@@ -32,7 +32,8 @@ async function query(sqlQuery, values = []) {
 }
 
 /**
- * Executes a paged SQL query
+ * Executes a paged SQL query.
+ * If offset and limit are not numbers, then default values will be used.
  *
  * @param {*} sqlQuery
  * @param {*} values
