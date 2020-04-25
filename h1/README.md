@@ -103,20 +103,26 @@ Create a web service with:
 * Notebooks
   * Belong to a user.
   * May contain sections.
+  * Users can create, rename and delete their notebooks.
 * Sections
   * Belong to a user.
   * Belong to a notebook.
   * May contain pages.
+  * Users can create, rename and delete their sections.
 * Pages
   * Belong to a user.
   * Belong to a section.
+  * Users can create, rename and delete their pages.
   * Written in [Markdown with rendering and live preview](https://www.npmjs.com/package/react-markdown-renderer).
 * ImageURLs
   * Belong to a user.
+  * Users can create and delete their images.
+  * Users can view a list of their images.
   * Upload images through the platform that can be stored on [Cloudinary](https://cloudinary.com/) 
     and the link can be embedded into the markdown-formatted blog post.
 
 A list of ImageURLs must be available.
+
 (Optional) *About* section for the webpage must be viewable by all and editable by admins.
 
 
@@ -278,7 +284,6 @@ Never return or show password hash.
   * `GET` returns a list of up to 10 images owned by the user who performs the request. Uses pagination to return more images.
 * `/images/:id`
   * `GET` returns an image, only if it belong to the user who performs the request.
-  * `PATCH` updates the image, only if data input is valid, and if the user who performs the request is the owner.
   * `DELETE` deletes the image, only if the user who performs the request is the owner.
 
 Each time when data is created or updated, the web service should verify that the user has permission and that the data is valid. If not, then the web service should return the appropriate HTTP status code and error message.
