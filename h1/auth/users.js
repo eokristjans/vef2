@@ -1,5 +1,3 @@
-// TODO: Documentation
-
 const bcrypt = require('bcryptjs');
 const xss = require('xss');
 
@@ -23,25 +21,96 @@ const {
   BCRYPT_ROUNDS: bcryptRounds = 17,
 } = process.env;
 
+
 /**
  * Compares the password to the hash
- * 
- * @param {string} password 
- * @param {string} hash 
+ *
+ * @param {string} password
+ * @param {string} hash
  * @returns {boolean} true if the password matches the hash
  */
 async function comparePasswords(password, hash) {
   // TODO: Look into using different salts for each user
 
+  // eslint-disable-next-line no-return-await
   return await bcrypt.compare(password, hash);
 }
 
+
+/**
+ * Find and returns a user entity using the given username.
+ * @param {string} username
+ */
+async function findByUsername(username) {
+  const q = `
+    SELECT
+      id, username, password, email, admin
+    FROM
+      users
+    WHERE username = $1`;
+
+  const result = await query(q, [username]);
+
+  if (result.rowCount === 1) {
+    return result.rows[0];
+  }
+
+  return null;
+}
+
+
+/**
+ * Find and returns a user entity using the given email.
+ * @param {string} email
+ */
+async function findByEmail(email) {
+  const q = `
+    SELECT
+      id, username, password, email, admin
+    FROM
+      users
+    WHERE email = $1`;
+
+  const result = await query(q, [email]);
+
+  if (result.rowCount === 1) {
+    return result.rows[0];
+  }
+
+  return null;
+}
+
+
+/**
+ * Find and returns a user entity using the given id.
+ * @param {number} id
+ */
+async function findById(id) {
+  if (!isInt(id)) {
+    return null;
+  }
+
+  const user = await query(
+    `SELECT
+      id, username, email, admin, created, updated
+    FROM
+      users
+    WHERE id = $1`,
+    [id],
+  );
+
+  if (user.rows.length !== 1) {
+    return null;
+  }
+
+  return user.rows[0];
+}
+
+
 /**
  * Validate input for inserting or updating (patching) a user
- * TODO:  Reconsider... split into different functions for
- *        insertering and updating?
- * 
- * @param {object} param0 { username, password, email } 
+ *
+ * @param {object} param0 { username, password, email }
  * @param {boolean} patching whether user is being patched or not (inserted)
  * @param {number} id user id
  */
@@ -115,69 +184,20 @@ async function validateUser(
 }
 
 
-async function findByUsername(username) {
-  const q = `
-    SELECT
-      id, username, password, email, admin
-    FROM
-      users
-    WHERE username = $1`;
+const { createUserContents } = require('./../api/notebook-helpers');
 
-  const result = await query(q, [username]);
-
-  if (result.rowCount === 1) {
-    return result.rows[0];
-  }
-
-  return null;
-}
-
-
-async function findByEmail(email) {
-  const q = `
-    SELECT
-      id, username, password, email, admin
-    FROM
-      users
-    WHERE email = $1`;
-
-  const result = await query(q, [email]);
-
-  if (result.rowCount === 1) {
-    return result.rows[0];
-  }
-
-  return null;
-}
-
-
-async function findById(id) {
-  if (!isInt(id)) {
-    return null;
-  }
-
-  const user = await query(
-    `SELECT
-      id, username, email, admin, created, updated
-    FROM
-      users
-    WHERE id = $1`,
-    [id],
-  );
-
-  if (user.rows.length !== 1) {
-    return null;
-  }
-
-  return user.rows[0];
-}
-
-
+/**
+ * Helper function.
+ * Creates and inserts a user with given parameters.
+ * Hashes the password and applies xss to input, but no validation.
+ *
+ * @param {string} username
+ * @param {string} password
+ * @param {string} email
+ * @param {boolean} admin
+ */
 async function createUser(username, password, email, admin = false) {
   const hashedPassword = await bcrypt.hash(password, bcryptRounds);
-
-  // Delete the password from memory - no longer required.
-  delete password;
 
   const q = `
     INSERT INTO
@@ -195,10 +215,21 @@ async function createUser(username, password, email, admin = false) {
   const createdUser = result.rows[0];
   delete createdUser.password;
 
+  await createUserContents(createdUser.id);
+
   return createdUser;
 }
 
 
+/**
+ * Helper function.
+ * Updates an existing user with given parameters.
+ * Hashes the password and applies xss to input, but no validation.
+ *
+ * @param {number} id
+ * @param {string} password
+ * @param {string} email
+ */
 async function updateUser(id, password, email) {
   if (!isInt(id)) {
     return null;
@@ -214,9 +245,6 @@ async function updateUser(id, password, email) {
   if (password) {
     hashedPassword = await bcrypt.hash(password, bcryptRounds);
   }
-
-  // Delete the password from memory - no longer required.
-  delete password;
 
   const values = [
     hashedPassword,

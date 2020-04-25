@@ -4,6 +4,16 @@
 #### Final Project
 #### Author: Erling Óskar Kristjánsson
 
+## Setup
+
+TODO: Finish description
+
+### Users
+
+* Admin with username `matthias` and password `doctor-who-2020`.
+* Non-admin user with username `kristjan` and password `mister-master-2020`.
+  * Has some default notebooks with sections and pages.
+
 ## The author's notes
 
 The file `reqs.txt` contains commands used to set up the development environment.
@@ -112,14 +122,12 @@ Create a web service with:
   * Belong to a section.
   * Users can create, rename and delete their pages.
   * Written in [Markdown with rendering and live preview](https://www.npmjs.com/package/react-markdown-renderer).
+  * TODO: Keep in mind [Markdown's XSS vulnerabilities](https://github.com/showdownjs/showdown/wiki/Markdown's-XSS-Vulnerability-(and-how-to-mitigate-it))
 * ImageURLs
   * Belong to a user.
-  * Users can create and delete their images.
-  * Users can view a list of their images.
-  * Upload images through the platform that can be stored on [Cloudinary](https://cloudinary.com/) 
+  * Users can create and delete their images. Images are uploaded through the platform and stored on [Cloudinary](https://cloudinary.com/) 
     and the link can be embedded into the markdown-formatted blog post.
-
-A list of ImageURLs must be available.
+  * Users can view a list of their images.
 
 (Optional) *About* section for the webpage must be viewable by all and editable by admins.
 
@@ -133,7 +141,7 @@ A list of ImageURLs must be available.
   * PostgreSQL must be used as a DB, in which all the data will be stored.
   * All data provided by the user must be validated and sanitized, using `xss`.
   * There should be a way to populate the DB with data.
-  * Fake pages created with `faker`.
+  * Fake pages created with `faker`. TODO: Consider if necessary? Use some available dataset instead?
 * User Management
   * You should be able to register a user and login.
   * JWT with Passport should be used for authentication.
@@ -207,7 +215,6 @@ When a new user is created, one sample notebook is created for him. This noteboo
 * 1 section with 2 pages.
 * 2 images.
 
-Populate the pages by creating fake data with [faker](https://github.com/Marak/faker.js):
 Some pages will contain the images.
 
 
@@ -283,6 +290,8 @@ Never return or show password hash.
 * `/images/:id`
   * `GET` returns an image, only if it belong to the user who performs the request.
   * `DELETE` deletes the image, only if the user who performs the request is the owner.
+  * (Optional TODO): Allow patching to change names of images.
+  * (Optional TODO): Delete images from cloudinary when deleted.
 
 Each time when data is created or updated, the web service should verify that the user has permission and that the data is valid. If not, then the web service should return the appropriate HTTP status code and error message.
 

@@ -3,9 +3,9 @@ INSERT INTO
   users 
     (username, email, password, admin) 
   VALUES
-    ( 'admin'
-    , 'admin@example.org'
-    , '$2b$11$S/0nSIFH6oLalwYB/6XW4u9IIP.IN5oug/K3b.ZF7F4NL1cWyw8R6'
+    ( 'matthias'
+    , 'book@hi.is'
+    , '$2a$12$jJkmyl9xPtV3nGqJJ9YbgejfbyU8dlQNeRWbIgQOb6RxmFTLE8XXe'
     , true
     );
 
@@ -13,8 +13,8 @@ INSERT INTO
   users
     (username, email, password, admin)
   VALUES
-    ( 'erling'
-    , 'eok4@hi.is'
-    , '$2b$11$pzXL.B8mMVOEAaGrtNa.KObIhJnpC6VBYsbNzF6F93TIUE/J2WLJ2'
+    ( 'kristjan'
+    , 'kth130@hi.is'
+    , '$2a$12$KJpUbfbVCDaWzgNoSgHiJOQ.4VTbDAD6wGT2.N64S.mR9z32CObJS'
     , false
     );

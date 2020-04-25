@@ -134,7 +134,6 @@ async function createNotebookRoute(req, res) {
   const { title } = req.body;
 
   // Validate input
-  const entityName = 'notebook';
   const validations = await validateTitleForEntity(user.id, title, 1);
 
   // Return validation error if any
@@ -147,7 +146,7 @@ async function createNotebookRoute(req, res) {
   // Prepare query
   const q = `
     INSERT INTO 
-      ${entityName}s
+      notebooks
         (user_id, title)
       VALUES
         ($1, $2)
@@ -183,7 +182,6 @@ async function updateNotebookRoute(req, res) {
   }
 
   // Validate input
-  const entityName = 'notebook';
   const validations = await validateTitleForEntity(user.id, title, 1);
 
   // Return validation error if any
@@ -195,8 +193,7 @@ async function updateNotebookRoute(req, res) {
 
   // Prepare query (only title can be updated)
   const q = `
-    UPDATE
-      ${entityName}s
+    UPDATE notebooks
     SET title = $1, updated = current_timestamp
     WHERE id = $2
       RETURNING *

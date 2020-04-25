@@ -1,4 +1,7 @@
-// A beaute learned from Olafur Sverrir Kjartansson
+/**
+ * Heavily based on functions from Olafur Sverrir Kjartansson.
+ * Contains various helper methods for uploading pictures to Cloudinary.
+*/
 
 const util = require('util');
 const fs = require('fs');
@@ -58,12 +61,12 @@ async function uploadImageIfNotUploaded(imagePath) {
   const alreadyUploaded = await getImageIfUploaded(imagePath);
 
   if (alreadyUploaded) {
-    debug(`Mynd ${imagePath} þegar uploadað`);
+    debug(`Picture ${imagePath} already uploaded`);
     return alreadyUploaded.secure_url;
   }
 
   const uploaded = await uploadAsync(imagePath);
-  debug(`Mynd ${imagePath} uploadað`);
+  debug(`Picture ${imagePath} uploaded`);
 
   return uploaded.secure_url;
 }
@@ -74,7 +77,7 @@ async function uploadImagesFromDisk(imageDir) {
   const filteredImages = imagesFromDisk
     .filter(i => path.extname(i).toLowerCase() === '.jpg');
 
-  debug(`Bæti við ${filteredImages.length} myndum`);
+  debug(`Adding ${filteredImages.length} pictures`);
 
   const images = [];
 
@@ -86,7 +89,7 @@ async function uploadImagesFromDisk(imageDir) {
     images.push(uploaded);
   }
 
-  debug('Búið að senda myndir á Cloudinary');
+  debug('Finished uploading pictures to Cloudinary');
 
   return images;
 }

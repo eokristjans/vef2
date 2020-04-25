@@ -2,6 +2,8 @@
 Contains functions that can't be placed elsewhere due to circular imports
 (e.g. notebook imports from section and section from notebook)
 */
+const util = require('util');
+const fs = require('fs');
 const xss = require('xss');
 const { query } = require('../utils/db');
 
@@ -10,6 +12,9 @@ const {
   isNotEmptyString,
   lengthValidationError,
 } = require('../utils/validation');
+
+
+const readFileAsync = util.promisify(fs.readFile);
 
 /** HELPER FUNCTIONS */
 
@@ -274,6 +279,51 @@ async function deleteUserContents(userId) {
   await deleteUserContentsFromTable(userId, tableNames[3]);
 }
 
+/**
+ * Creates some default content for a user with given user id.
+ *
+ * @param {number} userId
+ */
+async function createUserContents(userId) {
+  // Default titles
+  const notebookTitle = 'Your first notebook';
+  const sectionTitle = 'Your first section';
+  const pageTitle1 = 'Your first page';
+  const pageTitle2 = 'Markdown Cheatsheet';
+  const markdownCheatsheetPath = './data/markdown-cheatsheet.md';
+
+  // Prepare query and insert notebook
+  const q1 = `
+    INSERT INTO notebooks (user_id, title) VALUES ($1, $2) RETURNING id
+  `;
+  const result1 = await query(q1, [userId, notebookTitle]);
+  const notebook = result1.rows[0];
+
+  // Prepare query and insert section
+  const q2 = `
+    INSERT INTO sections (user_id, notebook_id, title)
+    VALUES ($1, $2, $3) RETURNING id
+  `;
+  const result2 = await query(q2, [userId, notebook.id, sectionTitle]);
+  const section = result2.rows[0];
+
+  // Prepare query and insert page 1
+  const q3 = `
+    INSERT INTO pages (user_id, notebook_id, section_id, title, body)
+    VALUES ($1, $2, $3, $4, $5)
+  `;
+  await query(q3, [
+    userId, notebook.id, section.id, pageTitle1, '# Your first header',
+  ]);
+
+  // Read markdown cheatsheet file into memory and insert page 2
+  const markdownCheatsheet = await readFileAsync(markdownCheatsheetPath);
+  await query(q3, [
+    userId, notebook.id, section.id, pageTitle2, markdownCheatsheet,
+  ]);
+}
+
+
 module.exports = {
   validateTitleForEntity,
   readNotebookSections,
@@ -281,4 +331,5 @@ module.exports = {
   deleteSectionPages,
   deleteNotebookSections,
   deleteUserContents,
+  createUserContents,
 };

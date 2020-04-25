@@ -14,7 +14,7 @@ INSERT INTO
   sections
     (user_id, notebook_id, title)
   VALUES
-    (2, 1, 'Öryggi Tölvukerfa');
+    (2, 1, 'Hugbúnaðarverkefni 2');
 
 INSERT INTO
   pages
@@ -32,10 +32,10 @@ INSERT INTO
   pages
     (user_id, notebook_id, section_id, title, body)
   VALUES
-    (2, 1, 2, 'Exploitation Software', '# Exploitation Software ... TODO: figure out how to make new lines and add content.');
+    (2, 1, 2, 'Android Control Flow', '# Android Control Flow ... TODO: figure out how to make new lines and add content.');
 
 INSERT INTO
   pages
     (user_id, notebook_id, section_id, title, body)
   VALUES
-    (2, 1, 2, 'Public & private keys', '# Public & private keys ... TODO: figure out how to make new lines and add content.');
+    (2, 1, 2, 'Software Architecture', '# Software Architecture ... TODO: figure out how to make new lines and add content.');
