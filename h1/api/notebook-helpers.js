@@ -238,42 +238,40 @@ async function deleteNotebookSections(notebookId, userId) {
 
 /**
  * Helper function.
- * Delete all pages, sections and notebooks with a user_id
+ * Delete all entities with the given user_id from the specified table.
+ *
+ * @param {number} userId
+ */
+async function deleteUserContentsFromTable(userId, tableName) {
+  const q = `
+    DELETE FROM 
+      ${tableName}
+    WHERE 
+      user_id = $1
+  `;
+  await query(q, [userId]);
+}
+
+/**
+ * Helper function.
+ * Delete all images, pages, sections and notebooks with a user_id
  * matching the given userId.
  *
- * @param {number} notebookId
  * @param {number} userId
  */
 async function deleteUserContents(userId) {
-  // Prepare query to delete pages owned by the user
-  const q1 = `
-    DELETE FROM 
-      pages
-    WHERE 
-      user_id = $1
-  `;
+  const tableNames = [
+    'images',
+    'pages',
+    'sections',
+    'notebooks',
+  ];
 
-  await query(q1, [userId]);
-
-  // Prepare query to delete sections owned by the user
-  const q2 = `
-    DELETE FROM 
-      sections
-    WHERE 
-      user_id = $1
-  `;
-
-  await query(q2, [userId]);
-
-  // Prepare query to delete pages owned by the user
-  const q3 = `
-    DELETE FROM 
-      notebooks
-    WHERE 
-      user_id = $1
-  `;
-
-  await query(q3, [userId]);
+  // Looping with await and foreign key restraints is an unnecessary hassle
+  await deleteUserContentsFromTable(userId, tableNames[0]);
+  await deleteUserContentsFromTable(userId, tableNames[1]);
+  await deleteUserContentsFromTable(userId, tableNames[2]);
+  await deleteUserContentsFromTable(userId, tableNames[3]);
 }
 
 module.exports = {
