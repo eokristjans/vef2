@@ -1,0 +1,57 @@
+@import '../../config.scss';
+
+.categories {
+  @include container;
+
+  &__title {
+    margin-bottom: $gutter;
+  }
+
+  &__list {
+    @include row;
+    flex-wrap: wrap;
+    list-style: none;
+  }
+
+  &__item {
+    @include columns(12);
+    margin-bottom: $gutter;
+    display: flex;
+
+    @media (min-width: 600px) {
+      @include columns(6);
+    }
+
+    @media (min-width: 900px) {
+      @include columns(4);
+    }
+  }
+
+  &__link {
+    position: relative;
+    display: flex;
+
+    width: 100%;
+    padding: 4rem 0;
+    border: 1px solid $color-font;
+    font-size: 4rem;
+    transition: background-color $transition;
+
+    &:hover {
+      background-color: $color-font;
+    }
+  }
+
+  // TODO
+  &__link span {
+    display: block;
+    margin: auto;
+    color: $color-font;
+
+    transition: background-color $transition;
+  }
+
+  &__link:hover span {
+    color: $color-background;
+  }
+}

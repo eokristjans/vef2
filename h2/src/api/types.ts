@@ -7,3 +7,15 @@ export interface IApiResult {
   ok: boolean;
   status: number;
 }
+
+export interface IUser {
+  id: number;
+  username: string;
+  email: string;
+}
+
+export interface IHeaders {
+  method: string;
+  headers?: any;
+  body?: string;
+}

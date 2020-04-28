@@ -1,0 +1,103 @@
+@import '../../config.scss';
+
+.header {
+  margin-bottom: $gutter * 2;
+  padding: $gutter 0;
+
+  // vá, invertaðir litir, such design
+  background-color: $color-font;
+  color: $color-background;
+
+  &__content {
+    margin: 0 auto;
+    width: 100%;
+    max-width: $max-width;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+
+    @media (min-width: 650px) {
+      flex-direction: row;
+    }
+
+    @media (max-width: $max-width - 1) {
+      padding-right: $gutter;
+      padding-left: $gutter;
+    }
+  }
+
+  &__title {
+    margin-bottom: $gutter / 2;
+
+    word-break: break-all;
+
+    @media (min-width: 650px) {
+      margin-bottom: 0;
+    }
+  }
+
+  &__titleLink {
+    color: $color-background;
+  }
+
+  &__meta {
+    display: flex;
+    flex-direction: column;
+  }
+
+  &__user {
+    margin-bottom: $gutter / 2;
+    text-align: center;
+
+    @media (min-width: 650px) {
+      margin-bottom: 0;
+      margin-right: $gutter;
+      text-align: left;
+    }
+  }
+
+  &__cart {
+    text-align: center;
+
+    a {
+      color: $color-background;
+    }
+
+    @media (min-width: 650px) {
+      text-align: left;
+    }
+  }
+
+  &__top {
+    display: flex;
+    margin-bottom: $gutter / 2;
+
+    flex-direction: column;
+    justify-content: center;
+
+    @media (min-width: 650px) {
+      flex-direction: row;
+    }
+  }
+
+  &__list {
+    list-style: none;
+    display: flex;
+  }
+
+  &__item {
+    margin-right: $gutter / 2;
+  }
+
+  &__item a {
+    color: $color-background;
+  }
+
+  &__link {
+    &--selected {
+      font-weight: bold;
+    }
+  }
+}

@@ -1,0 +1,37 @@
+@import '../../config.scss';
+
+.register {
+  @include container;
+
+  &__row {
+    @include row;
+  }
+
+  &__col {
+    @include columns(12);
+  }
+
+  &__heading {
+    margin-bottom: $gutter / 2;
+  }
+
+  &__form {
+    margin-bottom: $gutter;
+  }
+
+  &__error {
+    margin-bottom: $gutter;
+  }
+
+  &__input {
+    margin-bottom: $gutter / 2;
+  }
+
+  &__input label {
+    flex: 0 1 150px;
+  }
+
+  &__link {
+    color: $color-font;
+  }
+}

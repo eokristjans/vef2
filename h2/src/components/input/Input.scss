@@ -1,0 +1,44 @@
+@import '../../config.scss';
+
+.input {
+  display: flex;
+  flex-wrap: wrap;
+
+  align-items: center;
+
+  &__label {
+    display: block;
+    margin-right: $gutter / 2;
+  }
+
+  &__input {
+    padding: 5px 10px;
+    font-size: 1rem;
+  }
+
+  &__textarea {
+    border: 1px solid $color-invalid;
+    border-radius: 5px;
+    padding: 10px ;
+    width: 100%;
+    max-width: 600px;
+    min-height: 10rem;
+    font-size: 1rem;
+  }
+
+  &__select {
+    padding: 5px 10px;
+    font-size: 1rem;
+    min-width: 100px;
+  }
+}
+
+.input--invalid .input__label {
+  color: $color-invalid;
+}
+
+.input--invalid .input__input,
+.input--invalid .input__textarea,
+.input--invalid .input__select {
+  border-color: $color-invalid;
+}

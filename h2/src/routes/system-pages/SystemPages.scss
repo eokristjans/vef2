@@ -1,0 +1,17 @@
+@import '../../config.scss';
+
+.system-page {
+  @include container;
+
+  &__row {
+    @include row;
+  }
+
+  &__col {
+    @include columns(12);
+  }
+
+  &__heading {
+    margin-bottom: $gutter / 2;
+  }
+}

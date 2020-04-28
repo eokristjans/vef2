@@ -2,6 +2,7 @@
  * Defines and exports functions that map JSON objects to corresponding interfaces (types).
  */
 
+ /**
 import { ICategory, IProduct, IOrder, ICart } from './types';
 
 export function mapCategory(item: any): ICategory {
@@ -9,4 +10,9 @@ export function mapCategory(item: any): ICategory {
     id: item.id,
     title: item.title,
   }
+}
+*/
+
+export function mapNotebook(item: any) {
+  return { }
 }

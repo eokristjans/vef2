@@ -1,0 +1,25 @@
+@import '../../config.scss';
+
+.user {
+  &__link {
+    color: $color-background;
+
+    &--selected {
+      font-weight: bold;
+    }
+
+    &:first-child {
+      margin-right: $gutter / 2;
+    }
+  }
+
+  // TODO
+  span {
+    margin-right: $gutter / 2;
+    font-weight: bold;
+  }
+
+  a {
+    color: $color-background;
+  }
+}

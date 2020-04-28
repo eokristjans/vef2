@@ -29,7 +29,6 @@ npm run start
 Header should contain:
 
 * Title of the page, link to front page.
-* (Optional) Link to *About* section.
 * If the user is **not** logged in:
   * Links to register and login pages.
 * If the user is logged in:
