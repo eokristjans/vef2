@@ -6,7 +6,12 @@
 
 This is a React Web App that consumes [this](https://github.com/eokristjans/vef2/tree/master/h1) Restful API web service.
 
-The project was created with [`create-react-app` with `typescript`](https://facebook.github.io/create-react-app/docs/adding-typescript) with `react-router` and `react-helmet`.
+The project was created with [`create-react-app` with `typescript`](https://facebook.github.io/create-react-app/docs/adding-typescript) with `react-router` and `react-helmet`:
+
+```bash
+npm install --save typescript @types/node @types/react @types/react-dom @types/jest
+npm install react-router react-router-dom react-helmet
+```
 
 ## Setup
 
