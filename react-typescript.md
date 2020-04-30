@@ -77,7 +77,7 @@ interface IProps {
 }
 ```
 
-**Interfaces can replace React `PropTypes`.**
+**Interfaces geta komið í stað React `PropTypes`.**
 
 ### Generics
 
@@ -105,7 +105,7 @@ See [React, adding TypeScript](https://create-react-app.dev/docs/adding-typescri
   * `npx create-react-app my-app --template typescript` 
 
 
-
+****
 
 ## React - fyrirlestrar 8-10
 
@@ -119,7 +119,7 @@ Fáum ný gögn frá vefþjón með `Ajax` eða álíka.
 
 Þeir halda því fram að aðskilnaður milli markup í formi template og lógíkar (JS) er órökréttur því template mál hafa öðruvísi og ekki jafn kröftugan syntax og JS. 
 
-- **High cohesion**: Her hluti inniheldur langflest sem þarf til birtingar og notkunar.
+- **High cohesion**: Hver hluti inniheldur langflest sem þarf til birtingar og notkunar.
 - **Loose coupling**: Hver hluti er sjálfum sér nægur og þarf ekki aðra hluti.
 
 Notum ES6/2015, þ.e. `import` og `export` í stað `require` og `module.exports`.
@@ -238,7 +238,7 @@ const element = <Welcome
                 />;
 ```
 
-Components geta skila Elements, JSX segð, fylkjum af þessu, eða falsy gildi (ekkert verður skrifað út í DOM tréið).
+Components geta skilað Elements, JSX segð, fylkjum af þessu, eða falsy gildi (ekkert verður skrifað út í DOM tréið).
 
 ```jsx
 const numbers = [1, 2, 3, 4];
@@ -252,6 +252,9 @@ const listItems = numbers.map((number) =>
 ```
 
 ### Fragments
+
+* Stundum viljum við skila mörgum elementum.
+* Getum skilað fragment sem útbýr ekki element.
 
 ```jsx
 function Columns(props) {
@@ -277,7 +280,7 @@ function Table(props) {
 
 Best að skipta forriti upp í fleiri, minni components.
 
-### App component
+### `App` component
 
 Rót fyrir UI, geymt í `App.js`.
 
@@ -389,6 +392,83 @@ Components nota JSX til að birta sig, `props` til að fá inn einhverja stöðu
 
 ### Atburðir í react
 
-[Vef2 Fl8.3 React 9:30](https://www.youtube.com/watch?v=x7FJNbgq4-Y&list=PLRj-ccg8iozy9xtBk-02VNOnOoIFR84Oe&index=26)
+* Replace Events. Are synthetic versions, not exactly the same.
+* Sendum fallið inn með `<button onClick={handleClick}>`
 
+```jsx
+function ActionLink() {
+  function handleClick(e) {
+    // Prevents us from going to whatever is defined in `href`
+    e.preventDefault();
+    console.log('The link was clicked.');
+  }
+
+  return (
+    <a href="#" onClick={handleClick}>
+      Click me
+    </a>
+  );
+}
+
+```
+
+* Nokkrar leiðir til að binda þetta
+  * Binding method in constructor:
+    * `this.handleClick = this.handleclick.bind(this);`
+  * Binding method í event'inum sjálfum:
+    * `<button onClick={(e) => this.handleClick(e)}>`
+  * Public Class field binding (RÉTTA LEIÐIN Í CRA)...
+
+```jsx
+class Foo extends Component {
+  handleClick = (e) => {
+    console.log(this, e);
+  }
+
+  render() {
+    return (
+      <button onClick={this.handleClick}>
+        click
+      </button>
+    );
+  }
+}
+
+// Or alternatively with argument event handler
+handler = (foo) => (e) => {
+  e.preventDefault();
+
+  // Lokun (closure) yfir foo
+  // foo er aðgengilegt þegar
+  // atburður á sér stað
+}
+
+// ...
+
+return (<button onClick={this.handler('foo')}>);
+```
+
+
+### `react-router`
+
+* Leiðarkerfi í react
+* Notar declarative API
+* Notar *dynamic* routing
+  * Getur búið til ný routes á keyrslutíma
+  * Route er skilgreint með component sem hægt er að rendera hér og þar, hvenær sem er.
+* 
+
+```jsx
+const App = () => (
+  <div>
+    <nav>
+      <Link to="/dashboard">Dashboard</Link> 
+    </nav>
+    <Route
+      path="/dashboard"
+      component={Dashboard}
+    /> // this component is only rendered out when the path is /dashboard
+  </div>
+);
+```
 

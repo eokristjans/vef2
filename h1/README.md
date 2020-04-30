@@ -213,7 +213,7 @@ Tables should have unique Ids and use [foreign keys](https://www.postgresql.org/
 
 When a new user is created, one sample notebook is created for him. This notebook contains:
 * 1 section with 2 pages.
-* 2 images.
+* 2 images. TODO: Add or change?
 
 Some pages will contain the images.
 

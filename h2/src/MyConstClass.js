@@ -21,8 +21,25 @@ const EnglishConstants = {
   PASSWORD_LABEL: 'Password:',
   USERNAME_LABEL: 'Username:',
   EMAIL_LABEL: 'E-mail:',
+
+  YOUR_NOTEBOOKS: 'Your notebooks',
+
+  
 };
+
+const ConsoleErrorMessages = {
+  ERROR_FETCHING: 'Error fetching ',
+
+}
+
+const EnglishErrorMessages = {
+  LOGIN_ERROR: 'Unable to log user in',
+  SIGN_UP_ERROR: 'Unable to sign user up',
+  FETCHING_ERROR: 'Could not fetch ',
+}
 
 module.exports = {
   EnglishConstants,
+  ConsoleErrorMessages,
+  EnglishErrorMessages,
 }

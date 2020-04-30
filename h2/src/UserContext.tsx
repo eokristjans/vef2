@@ -38,7 +38,7 @@ export default class User extends Component {
         const user = result.data;
         localStorage.setItem('user', JSON.stringify(user));
         this.setState({ user, fetching: false, authenticated: true });
-        window.location.replace('/');
+        window.location.replace('/notebooks');
       }
     } catch (e) {
       this.setState({ message: e.message });

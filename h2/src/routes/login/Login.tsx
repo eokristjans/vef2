@@ -10,7 +10,7 @@ import { EnglishConstants } from '../../MyConstClass';
 
 import './Login.scss';
 
-export default function Register() {
+export default function Login() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);

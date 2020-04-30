@@ -1,5 +1,10 @@
 import { IApiResult, IHeaders } from './types';
-// import { mapCart, mapOrder, mapCategory, mapProduct } from './mapping';
+import { IPage, ISection, INotebook, IImage } from './types';
+import { mapPage, mapSection, mapNotebook, mapImage } from './mapping';
+
+import { EnglishErrorMessages, ConsoleErrorMessages } from '../MyConstClass';
+
+import { debug } from '../utils/debug';
 
 const baseurl:string | undefined = process.env.REACT_APP_API_URL;
 
@@ -58,34 +63,148 @@ async function request(method: string, path: string, data?: any) {
   }
 }
 
-
+/**
+ * Registers a user with the given input if they are valid.
+ * @param username
+ * @param password
+ * @param email
+ */
 async function registerUser(username: string, password: string, email: string): Promise<IApiResult> {
   let result: IApiResult;
 
   try {
     result = await post('/users/register', { username, password, email });
   } catch (e) {
-    throw new Error('Gat ekki skráð notanda');
+    throw new Error(EnglishErrorMessages.SIGN_UP_ERROR);
   }
 
   return result;
 }
 
-
+/**
+ * Logs a user in if the given credentials match those of a user in the system.
+ * @param username
+ * @param password
+ */
 async function loginUser(username: string, password: string): Promise<any> {
   let result: IApiResult;
 
   try {
     result = await post('/users/login', { username, password });
   } catch (e) {
-    throw new Error('Gat ekki skráð notanda inn');
+    throw new Error(EnglishErrorMessages.LOGIN_ERROR);
   }
 
   return result;
 }
 
+async function getNotebooks(): Promise<INotebook[]> {
+  let result: IApiResult;
+
+  debug('src api index.ts getNotebooks()');
+
+  try {
+    result = await get('/notebooks');
+  } catch (e) {
+    console.error(ConsoleErrorMessages.ERROR_FETCHING + 'notebooks', e);
+    throw new Error(
+      EnglishErrorMessages.FETCHING_ERROR + 'notebooks'
+    );
+  }
+
+  if (result && !result.ok) {
+    const { data: {
+      error = EnglishErrorMessages.FETCHING_ERROR + 'notebooks',
+    }
+    } = result;
+    throw new Error(error);
+  }
+
+  return result.data.results.map(mapNotebook);
+}
+
+
+async function getNotebook(id: number | string): Promise<INotebook> {
+  let result: IApiResult;
+
+  debug(`src api index.ts getNotebook(${id})`);
+
+  try {
+    result = await get(`/notebooks/${id}`);
+  } catch (e) {
+    console.error(ConsoleErrorMessages.ERROR_FETCHING + 'notebook', e);
+    throw new Error(
+      EnglishErrorMessages.FETCHING_ERROR + 'notebook'
+    );
+  }
+
+  if (result && !result.ok) {
+    const { data: {
+      error = EnglishErrorMessages.FETCHING_ERROR + 'notebook',
+    }
+    } = result;
+    throw new Error(error);
+  }
+
+  return mapNotebook(result.data);
+}
+
+async function getSection(id: number | string): Promise<ISection> {
+  let result: IApiResult;
+
+  debug(`src api index.ts getSection(${id})`);
+
+  try {
+    result = await get(`/sections/${id}`);
+  } catch (e) {
+    console.error(ConsoleErrorMessages.ERROR_FETCHING + 'section', e);
+    throw new Error(
+      EnglishErrorMessages.FETCHING_ERROR + 'section'
+    );
+  }
+
+  if (result && !result.ok) {
+    const { data: {
+      error = EnglishErrorMessages.FETCHING_ERROR + 'section',
+    }
+    } = result;
+    throw new Error(error);
+  }
+
+  return mapSection(result.data);
+}
+
+
+async function getPage(id: number | string): Promise<IPage> {
+  let result: IApiResult;
+
+  debug(`src api index.ts getPage(${id})`);
+
+  try {
+    result = await get(`/pages/${id}`);
+  } catch (e) {
+    console.error(ConsoleErrorMessages.ERROR_FETCHING + 'page', e);
+    throw new Error(
+      EnglishErrorMessages.FETCHING_ERROR + 'page'
+    );
+  }
+
+  if (result && !result.ok) {
+    const { data: {
+      error = EnglishErrorMessages.FETCHING_ERROR + 'page',
+    }
+    } = result;
+    throw new Error(error);
+  }
+
+  return mapPage(result.data);
+}
 
 export {
   registerUser,
   loginUser,
+  getNotebooks,
+  getNotebook,
+  getSection,
+  getPage,
 };
