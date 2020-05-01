@@ -151,11 +151,15 @@ async function readNotebooksWithSectionsWithPagesRoute(req, res) {
 
   const notebooks = result.rows;
 
+  // Get the sections of each notebook
   for (let i = 0; i < notebooks.length; i++) {
-    notebooks[i].sections = await readNotebookSections(notebooks[i].id, notebooks[i].userId);
+    notebooks[i].sections = await readNotebookSections(
+      notebooks[i].id, notebooks[i].userId);
 
+    // Get the pages of each section
     for (let j = 0; j < notebooks[i].sections.length; j++) {
-      notebooks[i].sections[j].pages = readSectionPages(notebooks[i].sections[j].id, notebooks[i].userId)
+      notebooks[i].sections[j].pages = await readSectionPages(
+        notebooks[i].sections[j].id, notebooks[i].userId);
     }
   }
   
