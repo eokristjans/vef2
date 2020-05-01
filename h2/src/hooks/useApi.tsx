@@ -11,6 +11,10 @@ export default function useApi<T>(apiCall: () => Promise<T>, defaultValue: T, de
 
   debug('useApi() ' + new Date().toLocaleString());
 
+  /**
+   * Make an asyncronous apiCall and store the result in items and
+   * any potential error in error. Sets loading as true while making the request.
+   */
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
