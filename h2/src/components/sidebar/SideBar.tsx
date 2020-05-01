@@ -2,6 +2,7 @@ import React, { Fragment } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 
 import {
+  getNotebooksWithContents,
   getNotebooks,
   getNotebook,
   getSection,
@@ -26,58 +27,42 @@ interface ISectionProps {
   id: number,
 }
 
-function Section(props: ISideBarProps) {
+function Section(props: ISideBarSubProps) {
   
   const {
-    notebookId, sectionId, pageId, setNotebookId, setSectionId, setPageId
+    notebookId, sectionId, pageId, setNotebookId, setSectionId, setPageId, notebooksWithContents,
   } = props;
   
-  const {items: section, loading, error} = useApi<ISection|null>(getSection.bind(null, sectionId), null);
+  let section;
+  const notebook = notebooksWithContents[notebookId];
+  if (notebook.sections) {
+    section = notebook.sections[0];
 
-  if (error && error === 'invalid token') {
-    return (<NoAccess />);
-  }
-
-  // TODO ekki gott að matcha á streng
-  if (error && error === 'Section not found') {
-    return (<NotFound />);
-  }
-  
-  if (loading) {
-    return ( <p></p> );
-  }
-  
-  debug('section: ' + section)
-  
-  if (error || !section) {
+    debug(section.pages ? 'yes pages' : 'no pages')
+      
     return (
-      <p>{EnglishErrorMessages.FETCHING_ERROR} section: {error}</p>
-    );
+      <Fragment>
+      {<span key={section.id} className="sections__item" >
+          <span>{section.title}</span>
+          <ul>
+            {section.pages && section.pages.map(page => (
+              (pageId === page.id) && 
+                // Draw the entire page if it matches the pageId
+                <li key={page.id}>
+                  {/* <Page id={page.id}/> */}
+                  {page.title}
+                </li> || 
+                <li key={page.id}><a href='#' onClick={() => setPageId(page.id)}>{page.title}</a></li>
+            ))}
+          </ul>
+        </span>
+      }
+      </Fragment>
+    )
   }
-
-  debug(section.pages ? 'yes pages' : 'no pages')
-
-  
-  debug('Section() pageId: ' + pageId)
 
   return (
     <Fragment>
-    {!loading && !error && 
-      <span key={section.id} className="sections__item" >
-        <span>{section.title}</span>
-        <ul>
-          {section.pages && section.pages.map(page => (
-            (pageId === page.id) && 
-              // Draw the entire page if it matches the pageId
-              <li key={page.id}>
-                {/* <Page id={page.id}/> */}
-                {page.title}
-              </li> || 
-              <li key={page.id}><a href='#' onClick={() => setPageId(page.id)}>{page.title}</a></li>
-          ))}
-        </ul>
-      </span>
-    }
     </Fragment>
   )
 }
@@ -86,42 +71,18 @@ interface INotebookProps {
   id: number,
 }
 
-function Notebook(props: ISideBarProps) {
+function Notebook(props: ISideBarSubProps) {
   
   const {
-    notebookId, sectionId, pageId, setNotebookId, setSectionId, setPageId
+    notebookId, sectionId, pageId, setNotebookId, setSectionId, setPageId, notebooksWithContents,
   } = props;
-    
-  const {items: notebook, loading, error} = useApi<INotebook|null>(getNotebook.bind(null, notebookId), null);
 
-  if (error && error === 'invalid token') {
-    return (<NoAccess />);
-  }
-
-  // TODO ekki gott að matcha á streng
-  if (error && error === 'Notebook not found') {
-    return (<NotFound />);
-  }
-  
-  if (loading) {
-    return (
-      <span>
-        {/* Fetching notebook... */}
-      </span>
-    );
-  }
-    
-  if (error || !notebook) {
-    return (
-      <span>{EnglishErrorMessages.FETCHING_ERROR} notebook: {error}</span>
-    );
-  }
+  const notebook = notebooksWithContents[notebookId];
 
   // Draw the Notebook
   return (
     <Fragment>
-      {!loading && !error && 
-        <span key={notebook.id} className="notebooks__item" >
+      {<span key={notebook.id} className="notebooks__item" >
           <a>{notebook.title}</a>
           <ul>
             {notebook.sections && notebook.sections.map(section => (
@@ -135,6 +96,7 @@ function Notebook(props: ISideBarProps) {
                     setNotebookId={setNotebookId}
                     setSectionId={setSectionId}
                     setPageId={setPageId}
+                    notebooksWithContents={notebooksWithContents}
                   />
                   </li> || 
                 <li key={section.id}><a href='#' onClick={() => setSectionId(section.id)}>{section.title}</a></li>
@@ -155,13 +117,27 @@ interface ISideBarProps {
   setPageId: (id: number) => void,
 }
 
+interface ISideBarSubProps {
+  notebookId: number,
+  sectionId: number,
+  pageId: number,
+  setNotebookId: (id: number) => void,
+  setSectionId: (id: number) => void,
+  setPageId: (id: number) => void,
+  notebooksWithContents: INotebook[],
+}
+
 export default function SideBar(props: ISideBarProps) {
 
   const {
     notebookId, sectionId, pageId, setNotebookId, setSectionId, setPageId
   } = props;
 
-  const {items: notebooks, loading, error} = useApi<INotebook[]>(getNotebooks.bind(null), []);
+  const {
+    items: notebooks,
+    loading,
+    error,
+  } = useApi<INotebook[]>(getNotebooksWithContents.bind(null), []);
     
   if (error && error === 'invalid token') {
     return (<NoAccess />);
@@ -184,11 +160,43 @@ export default function SideBar(props: ISideBarProps) {
     );
   }
 
+  if (notebooks[0]){
+    debug('notebook 0 has sections? ' + (notebooks[0].sections ? 'yep' : 'nope'));
+    if (notebooks[0].sections) {
+      debug('section 0 has pages? ' + (notebooks[0].sections[0].pages ? 'yep' : 'nope'));
+    }
+  }
+
+
   return (
     <Fragment>
       {!loading && !error && notebooks.map(notebook => (
         <li key={notebook.id} className="notebooks__item">
-            {(notebookId === notebook.id) &&
+          <a href='#' onClick={() => setNotebookId(notebook.id)}>{notebook.title}</a>
+          {
+            (notebookId === notebook.id) && (notebook.sections !== undefined) &&
+            <ul>
+              {notebook.sections.map(section => (
+                <li key={section.id} className="sections__item">
+                  <a href='#' onClick={() => setSectionId(section.id)}>{section.title}</a>
+                  {
+                    (sectionId === section.id) && (section.pages !== undefined) &&
+                    <ul>
+                      {
+                        section.pages.map(page => (
+                          <li>
+                            <a href='#' onClick={() => setPageId(page.id)}>{page.title}</a>
+                          </li>
+                        ))
+                      }
+                    </ul>
+                  }
+                </li>
+              ))}
+            </ul>
+          }
+          
+            {/* {(notebookId === notebook.id) &&
               <Notebook
                 notebookId={notebookId}
                 sectionId={sectionId}
@@ -196,9 +204,10 @@ export default function SideBar(props: ISideBarProps) {
                 setNotebookId={setNotebookId}
                 setSectionId={setSectionId}
                 setPageId={setPageId}
+                notebooksWithContents={notebooks}
               />
               || <a href='#' onClick={() => setNotebookId(notebook.id)}>{notebook.title}</a>
-            }
+            } */}
         </li>
       ))}
     </Fragment>

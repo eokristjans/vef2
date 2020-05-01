@@ -21,12 +21,12 @@ import { debug } from '../../utils/debug';
 
 
 interface ISideBarProps {
-  notebookId: number,
-  sectionId: number,
+  // notebookId: number,
+  // sectionId: number,
   pageId: number,
-  setNotebookId: (id: number) => void,
-  setSectionId: (id: number) => void,
-  setPageId: (id: number) => void,
+  // setNotebookId: (id: number) => void,
+  // setSectionId: (id: number) => void,
+  // setPageId: (id: number) => void,
 }
 
 export default function Page(props: ISideBarProps) {
@@ -34,7 +34,9 @@ export default function Page(props: ISideBarProps) {
   debug('Page() invoked...');
 
   const {
-    notebookId, sectionId, pageId, setNotebookId, setSectionId, setPageId
+    // notebookId, sectionId, 
+    pageId, 
+    // setNotebookId, setSectionId, setPageId
   } = props;
 
   debug('Page() pageId: ' + pageId);

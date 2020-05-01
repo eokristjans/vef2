@@ -45,12 +45,7 @@ export default function NotebooksRoute() {
       </div>
       <div className="column">
         <Page
-          notebookId={notebookId}
-          sectionId={sectionId}
           pageId={pageId}
-          setNotebookId={setNotebookId}
-          setSectionId={setSectionId}
-          setPageId={setPageId}
         />
       </div>
     </div>

@@ -98,6 +98,33 @@ async function loginUser(username: string, password: string): Promise<any> {
   return result;
 }
 
+
+async function getNotebooksWithContents(): Promise<INotebook[]> {
+  let result: IApiResult;
+
+  debug('src api index.ts getNotebooks()');
+
+  try {
+    result = await get('/notebooks-with-contents');
+  } catch (e) {
+    console.error(ConsoleErrorMessages.ERROR_FETCHING + 'notebooks-with-contents', e);
+    throw new Error(
+      EnglishErrorMessages.FETCHING_ERROR + 'notebooks with contents'
+    );
+  }
+
+  if (result && !result.ok) {
+    const { data: {
+      error = EnglishErrorMessages.FETCHING_ERROR + 'notebooks with contents',
+    }
+    } = result;
+    throw new Error(error);
+  }
+
+  return result.data.results.map(mapNotebook);
+}
+
+
 async function getNotebooks(): Promise<INotebook[]> {
   let result: IApiResult;
 
@@ -203,6 +230,7 @@ async function getPage(id: number | string): Promise<IPage> {
 export {
   registerUser,
   loginUser,
+  getNotebooksWithContents,
   getNotebooks,
   getNotebook,
   getSection,
