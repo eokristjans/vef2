@@ -22,7 +22,7 @@ const EnglishConstants = {
   USERNAME_LABEL: 'Username:',
   EMAIL_LABEL: 'E-mail:',
 
-  YOUR_NOTEBOOKS: 'Your notebooks',
+  YOUR_NOTEBOOKS: 'My Notebooks',
 
   
 };

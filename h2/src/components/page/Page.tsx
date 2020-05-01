@@ -1,5 +1,6 @@
 import React, { Fragment } from 'react';
 import { Link, NavLink } from 'react-router-dom';
+import { useState, useEffect } from 'react';
 
 import {
   getNotebooks,
@@ -40,8 +41,10 @@ export default function Page(props: ISideBarProps) {
   } = props;
 
   debug('Page() pageId: ' + pageId);
+  
+  const [myPageId, setMyPageId] = useState(pageId);
     
-  const {items: page, loading, error} = useApi<IPage|null>(getPage.bind(null, pageId), null);
+  const {items: page, loading, error} = useApi<IPage|null>(getPage.bind(null, myPageId), null);
 
   if (error && error === 'invalid token') {
     return (<NoAccess />);

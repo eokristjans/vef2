@@ -1,5 +1,6 @@
 import React, { Fragment } from 'react';
 import { Link, NavLink } from 'react-router-dom';
+import { useState, useEffect } from 'react';
 
 import {
   getNotebooksWithContents,
@@ -127,64 +128,40 @@ interface ISideBarSubProps {
   notebooksWithContents: INotebook[],
 }
 
-export default function SideBar(props: ISideBarProps) {
+export default function SideBar(props: ISideBarSubProps) {
 
   const {
-    notebookId, sectionId, pageId, setNotebookId, setSectionId, setPageId
+    notebookId, sectionId, pageId, setNotebookId, setSectionId, setPageId, notebooksWithContents,
   } = props;
 
-  const {
-    items: notebooks,
-    loading,
-    error,
-  } = useApi<INotebook[]>(getNotebooksWithContents.bind(null), []);
-    
-  if (error && error === 'invalid token') {
-    return (<NoAccess />);
-  }
-
-  // TODO ekki gott að matcha á streng
-  if (error && error === 'Notebook not found') {
-    return (<NotFound />);
-  }
-  
-  if (loading) {
-    return (
-      <span>Fetching notebooks...</span>
-    );
-  }
-  
-  if (error || !notebooks) {
-    return (
-      <span>{EnglishErrorMessages.FETCHING_ERROR} notebooks: {error}</span>
-    );
-  }
-
-  if (notebooks[0]){
-    debug('notebook 0 has sections? ' + (notebooks[0].sections ? 'yep' : 'nope'));
-    if (notebooks[0].sections) {
-      debug('section 0 has pages? ' + (notebooks[0].sections[0].pages ? 'yep' : 'nope'));
+  if (notebooksWithContents[0]){
+    debug('notebook 0 has sections? ' + (notebooksWithContents[0].sections ? 'yep' : 'nope'));
+    if (notebooksWithContents[0].sections) {
+      debug('section 0 has pages? ' + (notebooksWithContents[0].sections[0].pages ? 'yep' : 'nope'));
     }
   }
+
+  const [mySectionId, setMySectionId] = useState(sectionId);
+  const [myNotebookId, setMyNotebookId] = useState(notebookId);
 
 
   return (
     <Fragment>
-      {!loading && !error && notebooks.map(notebook => (
+      {notebooksWithContents.map(notebook => (
         <li key={notebook.id} className="notebooks__item">
-          <a href='#' onClick={() => setNotebookId(notebook.id)}>{notebook.title}</a>
+          <a href='#' onClick={() => setMyNotebookId(notebook.id)}>{notebook.title}</a>
           {
-            (notebookId === notebook.id) && (notebook.sections !== undefined) &&
+            (myNotebookId === notebook.id) && (notebook.sections !== undefined) &&
             <ul>
               {notebook.sections.map(section => (
                 <li key={section.id} className="sections__item">
-                  <a href='#' onClick={() => setSectionId(section.id)}>{section.title}</a>
+                  <a href='#' onClick={() => setMySectionId(section.id)}>{section.title}</a>
                   {
-                    (sectionId === section.id) && (section.pages !== undefined) &&
+                    (mySectionId === section.id) && (section.pages !== undefined) &&
                     <ul>
                       {
                         section.pages.map(page => (
-                          <li>
+                          <li key={page.id} className="pages__item">
                             <a href='#' onClick={() => setPageId(page.id)}>{page.title}</a>
                           </li>
                         ))
@@ -195,19 +172,6 @@ export default function SideBar(props: ISideBarProps) {
               ))}
             </ul>
           }
-          
-            {/* {(notebookId === notebook.id) &&
-              <Notebook
-                notebookId={notebookId}
-                sectionId={sectionId}
-                pageId={pageId}
-                setNotebookId={setNotebookId}
-                setSectionId={setSectionId}
-                setPageId={setPageId}
-                notebooksWithContents={notebooks}
-              />
-              || <a href='#' onClick={() => setNotebookId(notebook.id)}>{notebook.title}</a>
-            } */}
         </li>
       ))}
     </Fragment>
