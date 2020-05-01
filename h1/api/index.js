@@ -21,6 +21,7 @@ const {
 const {
   readNotebooksRoute,
   readNotebookRoute,
+  readNotebooksWithSectionsWithPagesRoute,
   createNotebookRoute,
   updateNotebookRoute,
   deleteNotebookRoute,
@@ -67,6 +68,7 @@ function indexRoute(req, res) {
     notebooks: {
       notebooks: '/notebooks',
       notebook: '/notebooks/{id}',
+      notebooksWithSectionsWithPagesRoute: '/notebooks-with-contents',
     },
     sections: {
       sections: '/sections/',
@@ -97,7 +99,8 @@ router.delete('/users/:id', requireAdmin, catchErrors(deleteUserRoute));
 router.get('/users/me', requireAuth, catchErrors(currentUser));
 router.patch('/users/me', requireAuth, catchErrors(updateCurrentUser));
 
-// Notebook actinons by users
+// Notebook actions by users
+router.get('/notebooks-with-contents', requireAuth, catchErrors(readNotebooksWithSectionsWithPagesRoute));
 router.get('/notebooks', requireAuth, catchErrors(readNotebooksRoute));
 router.post('/notebooks', requireAuth, catchErrors(createNotebookRoute));
 router.get('/notebooks/:id', requireAuth, catchErrors(readNotebookRoute));

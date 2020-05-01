@@ -121,6 +121,44 @@ async function readNotebooksRoute(req, res) {
   });
 }
 
+
+/**
+ * Return res.json with all notebooks that req.user has access to.
+ *
+ * @param {Object} req
+ * @param {Object} res
+ */
+async function readNotebooksWithSectionsWithPagesRoute(req, res) {
+  const { user } = req;
+
+  // Only admins can access all notebooks
+  const filterUser = !user.admin ? 'WHERE user_id = $1' : '';
+
+  // Prepare query
+  const q = `
+    SELECT
+      *
+    FROM
+      notebooks
+      ${filterUser}
+  `;
+
+  const result = await query(
+    q,
+    [!user.admin ? user.id : null].filter(Boolean),
+  );
+
+  const notebooks = result.rows;
+
+  for (let i = 0; i < notebooks.length; i++) {
+    notebooks[i].sections = await readNotebookSections(notebooks[i].id, notebooks[i].userId);
+  }
+  
+  return res.json({
+    results: notebooks,
+  });
+}
+
 /**
  * Creates and inserts a new Notebook entity with title from
  * req.body for the current user. Validates the input.
@@ -241,6 +279,7 @@ module.exports = {
   readNotebook,
   readNotebookRoute,
   readNotebooksRoute,
+  readNotebooksWithSectionsWithPagesRoute,
   createNotebookRoute,
   updateNotebookRoute,
   deleteNotebookRoute,
