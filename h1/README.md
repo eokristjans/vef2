@@ -40,7 +40,7 @@ npm install -g heroku
 # Navigate to git root folder, in my case it's vef2-eok4 and backend is contained within directory h1/
 
 # Login
-heroku login 
+heroku login
 
 # Connect to remote
 heroku git:remote -a noteworthy-md-eok4

@@ -41,8 +41,8 @@ async function main() {
 
   // Drop tables
   try {
-    const createTable = await readFileAsync('./sql/drop-tables.sql');
-    await query(createTable.toString('utf8'));
+    const dropTable = await readFileAsync('./sql/drop-tables.sql');
+    await query(dropTable.toString('utf8'));
     console.info('Tables dropped.');
   } catch (e) {
     console.error('Error while dropping tables:', e.message);
