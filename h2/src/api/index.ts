@@ -178,7 +178,7 @@ async function getSection(id: number | string): Promise<ISection> {
 async function getPage(id: number | string): Promise<IPage> {
   let result: IApiResult;
 
-  debug(`src api index.ts getPage(${id})`);
+  console.log(`getPage(${id})`);
 
   try {
     result = await get(`/pages/${id}`);

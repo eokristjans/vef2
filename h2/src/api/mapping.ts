@@ -6,6 +6,8 @@ import { IPage, ISection, INotebook, IImage } from './types';
 
 
 export function mapPage(item: any): IPage {
+  console.log('mapping page..')
+
   const page: IPage = {
     id: item.id,
     userId: item.userId,

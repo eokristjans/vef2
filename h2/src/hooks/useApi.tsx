@@ -9,7 +9,7 @@ export default function useApi<T>(apiCall: () => Promise<T>, defaultValue: T, de
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
-  debug('useApi()');
+  debug('useApi() ' + new Date().toLocaleString());
 
   useEffect(() => {
     const fetchData = async () => {

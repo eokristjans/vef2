@@ -7,10 +7,12 @@ import { getNotebooks, getNotebook } from '../../api';
 import { INotebook } from '../../api/types';
 import { Context } from '../../UserContext';
 import useApi from '../../hooks/useApi';
+import useSideBar from '../../hooks/useSideBar';
 import NotFound from '../system-pages/NotFound';
 import NoAccess from '../system-pages/NoAccess';
 
 import SideBar from '../../components/sidebar/SideBar';
+import Page from '../../components/page/Page';
 
 import { EnglishConstants, EnglishErrorMessages } from '../../MyConstClass';
 
@@ -20,15 +22,38 @@ import './Notebook.scss';
 
 
 
-interface INotebookProps {
-  // TODO correct type
-  match: any,
-}
-
 // TODO: Add Page here
 export default function NotebooksRoute() {
 
+  
+  const {
+    notebookId, sectionId, pageId, setNotebookId, setSectionId, setPageId
+  } = useSideBar();
+
+
   return (
-    <SideBar/>
+    <div className="row">
+      <div className="column">
+        <SideBar
+          notebookId={notebookId}
+          sectionId={sectionId}
+          pageId={pageId}
+          setNotebookId={setNotebookId}
+          setSectionId={setSectionId}
+          setPageId={setPageId}
+        />
+      </div>
+      <div className="column">
+        <Page
+          notebookId={notebookId}
+          sectionId={sectionId}
+          pageId={pageId}
+          setNotebookId={setNotebookId}
+          setSectionId={setSectionId}
+          setPageId={setPageId}
+        />
+      </div>
+    </div>
+    
   )
 }

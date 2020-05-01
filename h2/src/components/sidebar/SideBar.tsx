@@ -22,58 +22,17 @@ import './SideBar.scss';
 // TODO: Add `preventDefault` to onClicks?
 
 
-interface IPageProps {
-  id: number,
-}
-
-function Page(props: IPageProps) {
-
-  const {
-    notebookId, sectionId, pageId, setNotebookId, setSectionId, setPageId
-  } = useSideBar();
-  
-  const {items: page, loading, error} = useApi<IPage|null>(getPage.bind(null, props.id), null);
-
-  if (error && error === 'invalid token') {
-    return (<NoAccess />);
-  }
-
-  // TODO ekki gott að matcha á streng
-  if (error && error === 'Page not found') {
-    return (<NotFound />);
-  }
-  
-  if (loading) {
-    return ( <span></span> );
-  }
-  
-  debug('page: ' + page)
-  
-  if (error || !page) {
-    return (
-      <span>{EnglishErrorMessages.FETCHING_ERROR} page: {error}</span>
-    );
-  }
-
-  return (
-    <Fragment>
-      {/* {page.body} */}
-    </Fragment>
-  )
-}
-
-
 interface ISectionProps {
   id: number,
 }
 
-function Section(props: ISectionProps) {
+function Section(props: ISideBarProps) {
   
   const {
     notebookId, sectionId, pageId, setNotebookId, setSectionId, setPageId
-  } = useSideBar();
+  } = props;
   
-  const {items: section, loading, error} = useApi<ISection|null>(getSection.bind(null, props.id), null);
+  const {items: section, loading, error} = useApi<ISection|null>(getSection.bind(null, sectionId), null);
 
   if (error && error === 'invalid token') {
     return (<NoAccess />);
@@ -98,6 +57,9 @@ function Section(props: ISectionProps) {
 
   debug(section.pages ? 'yes pages' : 'no pages')
 
+  
+  debug('Section() pageId: ' + pageId)
+
   return (
     <Fragment>
     {!loading && !error && 
@@ -107,7 +69,10 @@ function Section(props: ISectionProps) {
           {section.pages && section.pages.map(page => (
             (pageId === page.id) && 
               // Draw the entire page if it matches the pageId
-              <li key={page.id}><Page id={page.id}/><a href='#' onClick={() => setPageId(page.id)}>{page.title}</a></li> || 
+              <li key={page.id}>
+                {/* <Page id={page.id}/> */}
+                {page.title}
+              </li> || 
               <li key={page.id}><a href='#' onClick={() => setPageId(page.id)}>{page.title}</a></li>
           ))}
         </ul>
@@ -121,13 +86,13 @@ interface INotebookProps {
   id: number,
 }
 
-function Notebook(props: INotebookProps) {
+function Notebook(props: ISideBarProps) {
   
   const {
     notebookId, sectionId, pageId, setNotebookId, setSectionId, setPageId
-  } = useSideBar();
+  } = props;
     
-  const {items: notebook, loading, error} = useApi<INotebook|null>(getNotebook.bind(null, props.id), null);
+  const {items: notebook, loading, error} = useApi<INotebook|null>(getNotebook.bind(null, notebookId), null);
 
   if (error && error === 'invalid token') {
     return (<NoAccess />);
@@ -162,7 +127,16 @@ function Notebook(props: INotebookProps) {
             {notebook.sections && notebook.sections.map(section => (
               (sectionId === section.id) && 
                 // Draw the entire section if it matches the sectionId
-                <li key={section.id}><Section id={section.id}/></li> || 
+                <li key={section.id}>
+                  <Section
+                    notebookId={notebookId}
+                    sectionId={sectionId}
+                    pageId={pageId}
+                    setNotebookId={setNotebookId}
+                    setSectionId={setSectionId}
+                    setPageId={setPageId}
+                  />
+                  </li> || 
                 <li key={section.id}><a href='#' onClick={() => setSectionId(section.id)}>{section.title}</a></li>
             ))}
           </ul>
@@ -172,11 +146,20 @@ function Notebook(props: INotebookProps) {
   )
 }
 
-export default function SideBar() {
+interface ISideBarProps {
+  notebookId: number,
+  sectionId: number,
+  pageId: number,
+  setNotebookId: (id: number) => void,
+  setSectionId: (id: number) => void,
+  setPageId: (id: number) => void,
+}
+
+export default function SideBar(props: ISideBarProps) {
 
   const {
     notebookId, sectionId, pageId, setNotebookId, setSectionId, setPageId
-  } = useSideBar();
+  } = props;
 
   const {items: notebooks, loading, error} = useApi<INotebook[]>(getNotebooks.bind(null), []);
     
@@ -206,7 +189,14 @@ export default function SideBar() {
       {!loading && !error && notebooks.map(notebook => (
         <li key={notebook.id} className="notebooks__item">
             {(notebookId === notebook.id) &&
-              <Notebook id={notebook.id}/>
+              <Notebook
+                notebookId={notebookId}
+                sectionId={sectionId}
+                pageId={pageId}
+                setNotebookId={setNotebookId}
+                setSectionId={setSectionId}
+                setPageId={setPageId}
+              />
               || <a href='#' onClick={() => setNotebookId(notebook.id)}>{notebook.title}</a>
             }
         </li>
