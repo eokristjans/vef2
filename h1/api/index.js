@@ -127,3 +127,4 @@ router.delete('/images/:id', requireAuth, catchErrors(deleteImageRoute));
 
 // export the router
 module.exports = router;
+
