@@ -29,6 +29,8 @@ const EnglishConstants = {
 
 const ConsoleErrorMessages = {
   ERROR_FETCHING: 'Error fetching ',
+  PATCH_ERROR: 'Error patching ',
+  POST_ERROR: 'Error posting ',
 
 }
 
@@ -36,6 +38,8 @@ const EnglishErrorMessages = {
   LOGIN_ERROR: 'Unable to log user in',
   SIGN_UP_ERROR: 'Unable to sign user up',
   FETCHING_ERROR: 'Could not fetch ',
+  PATCH_ERROR: 'Failed to save changes to ',
+  POST_ERROR: 'Failed to create new ',
 }
 
 module.exports = {

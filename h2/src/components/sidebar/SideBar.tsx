@@ -134,13 +134,6 @@ export default function SideBar(props: ISideBarSubProps) {
     notebookId, sectionId, pageId, setNotebookId, setSectionId, setPageId, notebooksWithContents,
   } = props;
 
-  if (notebooksWithContents[0]){
-    debug('notebook 0 has sections? ' + (notebooksWithContents[0].sections ? 'yep' : 'nope'));
-    if (notebooksWithContents[0].sections) {
-      debug('section 0 has pages? ' + (notebooksWithContents[0].sections[0].pages ? 'yep' : 'nope'));
-    }
-  }
-
   return (
     <Fragment>
       {notebooksWithContents.map(notebook => (

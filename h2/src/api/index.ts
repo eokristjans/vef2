@@ -205,7 +205,7 @@ async function getSection(id: number | string): Promise<ISection> {
 async function getPage(id: number | string): Promise<IPage> {
   let result: IApiResult;
 
-  console.log(`getPage(${id})`);
+  console.warn(`getPage(${id})`);
 
   try {
     result = await get(`/pages/${id}`);
@@ -227,6 +227,36 @@ async function getPage(id: number | string): Promise<IPage> {
   return mapPage(result.data);
 }
 
+
+async function patchPage(page: IPage): Promise<IPage> {
+  let result: IApiResult;
+
+  console.warn(`before patchPage(${page.updated})`);
+
+  try {
+    result = await patch(`/pages/${page.id}`, page);
+  } catch (e) {
+    console.error(ConsoleErrorMessages.PATCH_ERROR + 'page', e);
+    throw new Error(
+      EnglishErrorMessages.PATCH_ERROR + 'page'
+    );
+  }
+
+  if (result && !result.ok) {
+    const { data: {
+      error = EnglishErrorMessages.PATCH_ERROR + 'page',
+    }
+    } = result;
+    throw new Error(error);
+  }
+
+  const patchedPage = mapPage(result.data);
+
+  console.warn(`after patchPage(${patchedPage.updated})`);
+
+  return patchedPage;
+}
+
 export {
   registerUser,
   loginUser,
@@ -235,4 +265,5 @@ export {
   getNotebook,
   getSection,
   getPage,
+  patchPage,
 };

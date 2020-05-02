@@ -30,8 +30,8 @@ export interface IPage {
   sectionId: number;
   title: string;
   body: string;
-  created?: Date;
-  updated?: Date;
+  created: Date;
+  updated: Date;
 }
 
 export interface ISection {
@@ -39,8 +39,8 @@ export interface ISection {
   userId: number;
   notebookId: number;
   title: string;
-  created?: Date;
-  updated?: Date;
+  created: Date;
+  updated: Date;
   pages?: IPage[];
 }
 
@@ -48,8 +48,8 @@ export interface INotebook {
   id: number;
   userId: number;
   title: string;
-  created?: Date;
-  updated?: Date;
+  created: Date;
+  updated: Date;
   sections?: ISection[];
 }
 
@@ -58,5 +58,5 @@ export interface IImage {
   userId: number;
   title: string;
   url: string;
-  created?: Date;
+  created: Date;
 }

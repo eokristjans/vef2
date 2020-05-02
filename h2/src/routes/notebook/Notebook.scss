@@ -4,6 +4,10 @@
   display: flex;
 }
 
-.column {
-  flex: 50%;
+.col-3 {
+  flex: 25%;
+}
+
+.col-9 {
+  flex: 75%;
 }

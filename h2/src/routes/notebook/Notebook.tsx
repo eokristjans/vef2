@@ -9,7 +9,7 @@ import {
 } from '../../api';
 
 
-import { INotebook, ISection, IPage } from '../../api/types';
+import { INotebook, IPage } from '../../api/types';
 import { Context } from '../../UserContext';
 import useApi from '../../hooks/useApi';
 import useSideBar from '../../hooks/useSideBar';
@@ -51,56 +51,50 @@ interface IMyNotebookContainerProps {
 
 export default class MyNotebooksContainer extends Component<IMyNotebookContainerProps, IMyNotebookContainerState> {
 
-  
   constructor(props: IMyNotebookContainerProps) {
     super(props);
     this.state = initialState;
+    this.setNotebookId = this.setNotebookId.bind(this);
+    this.setSectionId = this.setSectionId.bind(this);
+    this.setPageId = this.setPageId.bind(this);
   }
 
   async componentDidMount() {
-
-    debug('componentDidMount()');
+    // Get the notebooks and set the state
     const notebooksWithContents = await getNotebooksWithContents();
-
     this.setState({
       notebooksWithContents: notebooksWithContents,
     });
   }
 
   async componentDidUpdate() {
-    debug('componentDidUpdate');
-    debug('state.prevPageId ' + this.state.prevPageId);
-    debug('state.pageId ' + this.state.pageId);
-    debug(' ')
-
+    // Get new Page if pageId changed
     if (this.state.pageId !== this.state.prevPageId) {
-      debug('page changed');
       this.setState({
         page: await getPage(this.state.pageId),
         prevPageId: this.state.pageId,
-      })
+      });
     }
-
-    debug('has page? ' + (this.state.page ? 'yes' : 'no'));
   }
 
   setNotebookId = (id: number) => {
     this.setState({
       notebookId: id,
-    })
+    });
   }
   setSectionId = (id: number) => {
     this.setState({
       sectionId: id,
-    })
+    });
   }
   setPageId = (id: number) => {
+    debug('Notebook setPageId: ' + id);
     this.setState({
       pageId: id,
-    })
+    });
+    this.forceUpdate();
   }
 
-  
   render() {
     const {
       notebookId,
@@ -111,7 +105,7 @@ export default class MyNotebooksContainer extends Component<IMyNotebookContainer
     return (
       <Fragment>
         <div className="row">
-          <div className="column">
+          <div className="col-3">
             <SideBar
               notebookId={notebookId}
               sectionId={sectionId}
@@ -122,11 +116,12 @@ export default class MyNotebooksContainer extends Component<IMyNotebookContainer
               notebooksWithContents={this.state.notebooksWithContents}
             />
           </div>
-          <div className="column">
+          <div className="col-9">
             {
               (this.state.page !== undefined) && 
               <Page
                 page={this.state.page}
+                prevPageId={this.state.prevPageId}
               />
             }
           </div>
@@ -134,55 +129,4 @@ export default class MyNotebooksContainer extends Component<IMyNotebookContainer
       </Fragment>
     )
   }
-}
-
-
-
-
-// TODO: Add Page here
-function NotebooksRoute() {
-
-  let {
-    items: notebooksWithContents,
-    loading,
-    error,
-  } = useApi<INotebook[]>(getNotebooksWithContents.bind(null), [], []);
-
-
-  // TODO: Try to get page here and be done with it
-
-  const {
-    notebookId, sectionId, pageId, setNotebookId, setSectionId, setPageId,
-  } = useSideBar();
-
-  const {items: page } = useApi<IPage|null>(getPage.bind(null, pageId), null, []);
-
-
-  return (
-    <Fragment>
-      <div className="row">
-        <div className="column">
-          <SideBar
-            notebookId={notebookId}
-            sectionId={sectionId}
-            pageId={pageId}
-            setNotebookId={setNotebookId}
-            setSectionId={setSectionId}
-            setPageId={setPageId}
-            notebooksWithContents={notebooksWithContents}
-          />
-        </div>
-        <div className="column">
-          {/* <Page
-            pageId={pageId}
-          /> */}
-        </div>
-      </div>
-    </Fragment>
-    // <Fragment>
-    //   <MyNotebooksContainer
-    //     notebooksWithContents={notebooksWithContents}
-    //   />
-    // </Fragment>
-  )
 }
