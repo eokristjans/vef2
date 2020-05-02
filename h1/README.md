@@ -121,7 +121,7 @@ Create a web service with:
   * Belong to a user.
   * Belong to a section.
   * Users can create, rename and delete their pages.
-  * Written in [Markdown with rendering and live preview](https://www.npmjs.com/package/react-markdown-renderer).
+  * Written in [Markdown with rendering and live preview](https://www.npmjs.com/package/react-markdown).
   * TODO: Keep in mind [Markdown's XSS vulnerabilities](https://github.com/showdownjs/showdown/wiki/Markdown's-XSS-Vulnerability-(and-how-to-mitigate-it))
 * ImageURLs
   * Belong to a user.
