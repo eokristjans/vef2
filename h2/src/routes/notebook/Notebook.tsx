@@ -71,6 +71,7 @@ export default class MyNotebooksContainer extends Component<IMyNotebookContainer
     // Get new Page if pageId changed
     if (this.state.pageId !== this.state.prevPageId) {
       this.setState({
+        // TODO: Switch order?
         page: await getPage(this.state.pageId),
         prevPageId: this.state.pageId,
       });
@@ -92,7 +93,6 @@ export default class MyNotebooksContainer extends Component<IMyNotebookContainer
     this.setState({
       pageId: id,
     });
-    this.forceUpdate();
   }
 
   render() {
@@ -120,8 +120,8 @@ export default class MyNotebooksContainer extends Component<IMyNotebookContainer
             {
               (this.state.page !== undefined) && 
               <Page
+                key={this.state.page.id}
                 page={this.state.page}
-                prevPageId={this.state.prevPageId}
               />
             }
           </div>

@@ -27,21 +27,13 @@ import { debug } from '../../utils/debug';
 
 interface IPageProps {
   page: IPage,
-  prevPageId: number,
-  // notebookId: number,
-  // sectionId: number,
-  // pageId: number,
-  // setNotebookId: (id: number) => void,
-  // setSectionId: (id: number) => void,
-  // setPageId: (id: number) => void,
 }
 
 interface IPageState {
   page: IPage,
-  prevPageId: number,
+  pageBody: string,
   saving: boolean,
-  lastUpdated: Date,
-  updateCount: number,
+  error: string,
 }
 
 const mdParser = new MarkdownIt({
@@ -54,27 +46,12 @@ export default class Page extends React.Component<IPageProps, IPageState> {
     super(props);
     this.state = {
       saving: false,
-      updateCount: 0,
       page: this.props.page,
-      prevPageId: this.props.prevPageId,
-      lastUpdated: this.props.page.updated,
+      pageBody: this.props.page.body,
+      error: '',
     };
     this.renderHTML = this.renderHTML.bind(this);
-    this.saveChanges = this.saveChanges.bind(this);
-  }
-  
-  componentDidMount() {
-  }
-
-  componentDidUpdate(prevProps: IPageProps) {
-    if(prevProps.page.id !== this.props.page.id) {
-      // update something
-    }
-  }
-
-  async () {
-    // Save all changes
-    // this.saveChanges(this.props.page.body);
+    this.saveChangesHandler = this.saveChangesHandler.bind(this);
   }
 
   setPage = (page: IPage) => {
@@ -82,9 +59,9 @@ export default class Page extends React.Component<IPageProps, IPageState> {
       page: page,
     });
   }
-  setPrevPageId = (id: number) => {
+  setPageBody = (pageBody: string) => {
     this.setState({
-      prevPageId: id,
+      pageBody: pageBody,
     });
   }
   setSaving = (saving: boolean) => {
@@ -92,39 +69,34 @@ export default class Page extends React.Component<IPageProps, IPageState> {
       saving: saving,
     });
   }
-  setLastUpdated = (lastUpdated: Date) => {
+  setError = (error: string) => {
     this.setState({
-      lastUpdated: lastUpdated,
-    });
-  }
-  setUpdateCount = (updateCount: number) => {
-    this.setState({
-      updateCount: updateCount,
+      error: error,
     });
   }
 
-  saveChanges(text: string) {
+  /**
+   * Saves the page with the most recently rendered body.
+   */
+  async saveChangesHandler() {
+    if (!this.state.saving) {
+      // Can only save if not already saving
+      this.setSaving(true);
 
-    const now = new Date().getTime();
-    const lastUpdated = this.state.page.updated.getTime();
-    const timeDiff = (now - lastUpdated);
-    const timeToUpdate = (timeDiff > 5000);
-    const pageChanged = (this.state.prevPageId !== this.state.page.id);
-
-    if (!this.state.saving && timeToUpdate) {
-      // IIFE to patch the changes made to the page
-      (async () => {
-        this.setSaving(true);
-        // save the changes (TODO: Handle error and loading)
-        try {
-          this.state.page.body = text;
-          const patchedPage = await patchPage(this.state.page);
-          this.setPage(patchedPage);
-        } catch (e) {
-          console.error(e);
-        }
-        this.setSaving(false);
-      })();
+      // Clear error if it wasn't empty
+      if (this.state.error !== '') {
+        this.setError(''); 
+      }
+      try {
+        // Patch the page and set state
+        this.state.page.body = this.state.pageBody;
+        const patchedPage = await patchPage(this.state.page);
+        this.setPage(patchedPage);
+      } catch (e) {
+        this.setError(e);
+      }
+      // Finished saving
+      this.setSaving(false);
     }
   }
 
@@ -133,30 +105,31 @@ export default class Page extends React.Component<IPageProps, IPageState> {
    * @param text 
    */
   renderHTML(text: string) {
-    // Save changes
-    this.saveChanges(text);
+    // Store changes in state
+    this.setPageBody(text);
     // markdown-it
     return mdParser.render(text);
   }
 
   render() {
-
-    const pageBody = this.props.page.body;
-
     return (
       <div>
         <div key="page-info">
+          {/* TODO : Remove and make it obvious on the sidebar and maybe tab title */}
           <p>Current Page: {this.props.page.id} - {this.props.page.title}</p>
         </div>
 
-        <div>
-          <button>Save Changes!</button>
-          <span>Last updated: {this.state.page.updated.toTimeString()}</span>
+        <div> 
+          <button onClick={this.saveChangesHandler}>
+            {this.state.saving && 'Saving...' || 'Save Changes!'}
+          </button>
+          <span> Last saved: {this.state.page.updated.toLocaleString()}</span>
+          <span>{this.state.error}</span>
         </div>
   
         <MdEditor 
           key="mdEditor"
-          value={pageBody}
+          value={this.props.page.body}
           style={{ 
             // might be able to remove this simplistic unresponsive styling 
             // by adding my own htmlClass and markdownClass
