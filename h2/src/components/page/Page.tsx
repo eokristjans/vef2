@@ -21,58 +21,25 @@ import { debug } from '../../utils/debug';
 // TODO: Add `preventDefault` to onClicks?
 
 
-interface ISideBarProps {
+interface IPageProps {
+  page: IPage,
   // notebookId: number,
   // sectionId: number,
-  pageId: number,
+  //pageId: number,
   // setNotebookId: (id: number) => void,
   // setSectionId: (id: number) => void,
   // setPageId: (id: number) => void,
 }
 
-export default function Page(props: ISideBarProps) {
+export default function Page(props: IPageProps) {
 
   debug('Page() invoked...');
 
-  const {
-    // notebookId, sectionId, 
-    pageId, 
-    // setNotebookId, setSectionId, setPageId
-  } = props;
-
-  debug('Page() pageId: ' + pageId);
-  
-  const [myPageId, setMyPageId] = useState(pageId);
-    
-  const {items: page, loading, error} = useApi<IPage|null>(getPage.bind(null, myPageId), null);
-
-  if (error && error === 'invalid token') {
-    return (<NoAccess />);
-  }
-
-  // TODO ekki gott að matcha á streng
-  if (error && error === 'Page not found') {
-    return (<NotFound />);
-  }
-  
-  if (loading) {
-    return ( <span>Loading page...</span> );
-  }
-  
-  if (!page) {
-    return (
-    <span>no page + {new Date().toLocaleString()}</span>
-    );
-  }
-
-  if (!loading && !error) {
-    debug('page: ' + page);
-  }
+  const { page } = props;
 
   return (
     <Fragment>
-      {!loading && !error && 
-        <div>
+      {<div>
           <h2>{page.title}</h2>
           <div>{page.body}</div>
         </div>}

@@ -141,23 +141,19 @@ export default function SideBar(props: ISideBarSubProps) {
     }
   }
 
-  const [mySectionId, setMySectionId] = useState(sectionId);
-  const [myNotebookId, setMyNotebookId] = useState(notebookId);
-
-
   return (
     <Fragment>
       {notebooksWithContents.map(notebook => (
         <li key={notebook.id} className="notebooks__item">
-          <a href='#' onClick={() => setMyNotebookId(notebook.id)}>{notebook.title}</a>
+          <a href='#' onClick={() => setNotebookId(notebook.id)}>{notebook.title}</a>
           {
-            (myNotebookId === notebook.id) && (notebook.sections !== undefined) &&
+            (notebookId === notebook.id) && (notebook.sections !== undefined) &&
             <ul>
               {notebook.sections.map(section => (
                 <li key={section.id} className="sections__item">
-                  <a href='#' onClick={() => setMySectionId(section.id)}>{section.title}</a>
+                  <a href='#' onClick={() => setSectionId(section.id)}>{section.title}</a>
                   {
-                    (mySectionId === section.id) && (section.pages !== undefined) &&
+                    (sectionId === section.id) && (section.pages !== undefined) &&
                     <ul>
                       {
                         section.pages.map(page => (

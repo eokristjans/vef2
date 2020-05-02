@@ -8,7 +8,8 @@ import {
   getPage,
 } from '../../api';
 
-import { INotebook } from '../../api/types';
+
+import { INotebook, ISection, IPage } from '../../api/types';
 import { Context } from '../../UserContext';
 import useApi from '../../hooks/useApi';
 import useSideBar from '../../hooks/useSideBar';
@@ -25,17 +26,63 @@ import { debug } from '../../utils/debug';
 import './Notebook.scss';
 
 
-interface IMyNotebookContainerProps {
-  notebooksWithContents: INotebook[]
+interface IMyNotebookContainerState {
+  notebooksWithContents: INotebook[],
+  page?: IPage,
+  notebookId: number, 
+  sectionId: number,
+  pageId: number,
+  prevPageId: number,
 }
 
-class MyNotebooksContainer extends Component<IMyNotebookContainerProps,{}> {
+const initialState: IMyNotebookContainerState = {
+  notebooksWithContents: [],
+  notebookId: 0,
+  sectionId: 0,
+  pageId: 0,
+  prevPageId: 0,
+};
 
-  state = {
-    notebookId: 0, 
-    sectionId: 0, 
-    pageId: 0, 
-  };
+// TODO: ??
+interface IMyNotebookContainerProps {
+  pageId?: number,
+  match?: any,
+}
+
+export default class MyNotebooksContainer extends Component<IMyNotebookContainerProps, IMyNotebookContainerState> {
+
+  
+  constructor(props: IMyNotebookContainerProps) {
+    super(props);
+    this.state = initialState;
+  }
+
+  async componentDidMount() {
+
+    debug('componentDidMount()');
+    const notebooksWithContents = await getNotebooksWithContents();
+
+    this.setState({
+      notebooksWithContents: notebooksWithContents,
+    });
+  }
+
+  async componentDidUpdate() {
+    debug('componentDidUpdate');
+    debug('state.prevPageId ' + this.state.prevPageId);
+    debug('state.pageId ' + this.state.pageId);
+    debug(' ')
+
+    if (this.state.pageId !== this.state.prevPageId) {
+      debug('page changed');
+      this.setState({
+        page: await getPage(this.state.pageId),
+        prevPageId: this.state.pageId,
+      })
+    }
+
+    debug('has page? ' + (this.state.page ? 'yes' : 'no'));
+  }
 
   setNotebookId = (id: number) => {
     this.setState({
@@ -61,8 +108,6 @@ class MyNotebooksContainer extends Component<IMyNotebookContainerProps,{}> {
       pageId,
     } = this.state;
 
-    const { notebooksWithContents } = this.props;
-
     return (
       <Fragment>
         <div className="row">
@@ -74,13 +119,16 @@ class MyNotebooksContainer extends Component<IMyNotebookContainerProps,{}> {
               setNotebookId={this.setNotebookId}
               setSectionId={this.setSectionId}
               setPageId={this.setPageId}
-              notebooksWithContents={notebooksWithContents}
+              notebooksWithContents={this.state.notebooksWithContents}
             />
           </div>
           <div className="column">
-            <Page
-              pageId={pageId}
-            />
+            {
+              (this.state.page !== undefined) && 
+              <Page
+                page={this.state.page}
+              />
+            }
           </div>
         </div>
       </Fragment>
@@ -92,13 +140,13 @@ class MyNotebooksContainer extends Component<IMyNotebookContainerProps,{}> {
 
 
 // TODO: Add Page here
-export default function NotebooksRoute() {
+function NotebooksRoute() {
 
-  const {
+  let {
     items: notebooksWithContents,
     loading,
     error,
-  } = useApi<INotebook[]>(getNotebooksWithContents.bind(null), []);
+  } = useApi<INotebook[]>(getNotebooksWithContents.bind(null), [], []);
 
 
   // TODO: Try to get page here and be done with it
@@ -106,6 +154,8 @@ export default function NotebooksRoute() {
   const {
     notebookId, sectionId, pageId, setNotebookId, setSectionId, setPageId,
   } = useSideBar();
+
+  const {items: page } = useApi<IPage|null>(getPage.bind(null, pageId), null, []);
 
 
   return (
@@ -123,9 +173,9 @@ export default function NotebooksRoute() {
           />
         </div>
         <div className="column">
-          <Page
+          {/* <Page
             pageId={pageId}
-          />
+          /> */}
         </div>
       </div>
     </Fragment>
