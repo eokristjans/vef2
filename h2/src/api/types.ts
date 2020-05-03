@@ -41,7 +41,7 @@ export interface ISection {
   title: string;
   created: Date;
   updated: Date;
-  pages?: IPage[];
+  pages: IPage[];
 }
 
 export interface INotebook {
@@ -50,7 +50,7 @@ export interface INotebook {
   title: string;
   created: Date;
   updated: Date;
-  sections?: ISection[];
+  sections: ISection[];
 }
 
 export interface IImage {

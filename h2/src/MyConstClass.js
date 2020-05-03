@@ -23,13 +23,15 @@ const EnglishConstants = {
   EMAIL_LABEL: 'E-mail:',
 
   YOUR_NOTEBOOKS: 'My Notebooks',
-
+  DELETE_BUTTON: 'D',
+  RENAME_BUTTON: 'R',
   
 };
 
 const ConsoleErrorMessages = {
   ERROR_FETCHING: 'Error fetching ',
   PATCH_ERROR: 'Error patching ',
+  DELETE_ERROR: 'Error deleting ',
   POST_ERROR: 'Error posting ',
 
 }
@@ -39,6 +41,7 @@ const EnglishErrorMessages = {
   SIGN_UP_ERROR: 'Unable to sign user up',
   FETCHING_ERROR: 'Could not fetch ',
   PATCH_ERROR: 'Failed to save changes to ',
+  DELETE_ERROR: 'Failed to delete ',
   POST_ERROR: 'Failed to create new ',
 }
 

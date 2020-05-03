@@ -14,7 +14,7 @@ export default function Button(props: IButtonProps) {
   const { children, onClick = () => {}, disabled = false, className = '', small = false } = props;
 
   const classes = [
-    'button', className ? className : null,
+    className ? className : null,
     disabled ? 'button--disabled' : null,
     small ? 'button--small' : null
   ].filter(Boolean).join(' ');

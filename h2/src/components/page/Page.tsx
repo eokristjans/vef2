@@ -79,6 +79,8 @@ export default class Page extends React.Component<IPageProps, IPageState> {
    * Saves the page with the most recently rendered body.
    */
   async saveChangesHandler() {
+    // TODO: Consider autosave with throttle
+    // https://reactjs.org/docs/faq-functions.html#throttle
     if (!this.state.saving) {
       // Can only save if not already saving
       this.setSaving(true);
@@ -93,6 +95,7 @@ export default class Page extends React.Component<IPageProps, IPageState> {
         const patchedPage = await patchPage(this.state.page);
         this.setPage(patchedPage);
       } catch (e) {
+        // TODO: NoAccess or NotFound?
         this.setError(e);
       }
       // Finished saving

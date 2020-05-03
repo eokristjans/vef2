@@ -89,7 +89,7 @@ export default function Login() {
                       onChange={onPasswordChange}
                     />
 
-                    <Button className="login__button" disabled={loading}>{EnglishConstants.LOGIN}</Button>
+                    <Button className="button login__button" disabled={loading}>{EnglishConstants.LOGIN}</Button>
                   </form>
                 )}
                 <p><Link className="login__link" to="/register">{EnglishConstants.SIGN_UP}</Link></p>

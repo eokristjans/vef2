@@ -110,7 +110,7 @@ export default function Register() {
                 onChange={onEmailChange}
               />
 
-                  <Button className="register__button" disabled={loading}>{EnglishConstants.SIGN_UP}</Button>
+                  <Button className="button register__button" disabled={loading}>{EnglishConstants.SIGN_UP}</Button>
             </form>
           )}
 

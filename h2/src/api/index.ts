@@ -231,8 +231,6 @@ async function getPage(id: number | string): Promise<IPage> {
 async function patchPage(page: IPage): Promise<IPage> {
   let result: IApiResult;
 
-  console.warn(`before patchPage(${page.updated})`);
-
   try {
     result = await patch(`/pages/${page.id}`, page);
   } catch (e) {
@@ -252,9 +250,34 @@ async function patchPage(page: IPage): Promise<IPage> {
 
   const patchedPage = mapPage(result.data);
 
-  console.warn(`after patchPage(${patchedPage.updated})`);
-
   return patchedPage;
+}
+
+async function deletePage(id: number): Promise<IApiResult> {
+  let result: IApiResult;
+
+  console.warn(`before deletePage(${id})`);
+
+  try {
+    result = await deleteMethod(`/pages/${id}`);
+  } catch (e) {
+    console.error(ConsoleErrorMessages.DELETE_ERROR + 'page', e);
+    throw new Error(
+      EnglishErrorMessages.DELETE_ERROR + 'page'
+    );
+  }
+
+  if (result && !result.ok) {
+    const { data: {
+      error = EnglishErrorMessages.DELETE_ERROR + 'page',
+    }
+    } = result;
+    throw new Error(error);
+  }
+
+  console.warn(`after deletePage(${result.status})`);
+
+  return result;
 }
 
 export {
@@ -266,4 +289,5 @@ export {
   getSection,
   getPage,
   patchPage,
+  deletePage,
 };

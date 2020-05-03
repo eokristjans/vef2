@@ -43,7 +43,7 @@ export default function User() {
             >
               {user.user.username} {EnglishConstants.LOGOUT}
             </NavLink>
-            <NavLink activeClassName="user__link--selected" className="user__link" to="/notebooks">
+            <NavLink activeClassName="user__link--selected" className="user__link" to="/my-notebooks">
               {EnglishConstants.YOUR_NOTEBOOKS}
             </NavLink>
           </p>

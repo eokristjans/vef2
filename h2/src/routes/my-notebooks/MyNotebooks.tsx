@@ -23,7 +23,7 @@ import { EnglishConstants, EnglishErrorMessages } from '../../MyConstClass';
 
 import { debug } from '../../utils/debug';
 
-import './Notebook.scss';
+import './MyNotebooks.scss';
 
 
 interface IMyNotebookContainerState {
@@ -49,6 +49,12 @@ interface IMyNotebookContainerProps {
   match?: any,
 }
 
+/**
+ * Route to /my-notebooks.
+ * Manages which notebooks, section and page is open.
+ * Fetches the notebooks when mounted,
+ * Fetches a page when opened.
+ */
 export default class MyNotebooksContainer extends Component<IMyNotebookContainerProps, IMyNotebookContainerState> {
 
   constructor(props: IMyNotebookContainerProps) {
@@ -57,6 +63,7 @@ export default class MyNotebooksContainer extends Component<IMyNotebookContainer
     this.setNotebookId = this.setNotebookId.bind(this);
     this.setSectionId = this.setSectionId.bind(this);
     this.setPageId = this.setPageId.bind(this);
+    this.setNotebooksWithContents = this.setNotebooksWithContents.bind(this);
   }
 
   async componentDidMount() {
@@ -70,14 +77,22 @@ export default class MyNotebooksContainer extends Component<IMyNotebookContainer
   async componentDidUpdate() {
     // Get new Page if pageId changed
     if (this.state.pageId !== this.state.prevPageId) {
-      this.setState({
-        // TODO: Switch order?
-        page: await getPage(this.state.pageId),
-        prevPageId: this.state.pageId,
-      });
+      try {
+        this.setState({
+          page: await getPage(this.state.pageId),
+          prevPageId: this.state.pageId,
+        });
+      } catch(e) {
+        console.error(e)
+      }
     }
   }
 
+  setNotebooksWithContents = (notebooksWithContents: INotebook[]) => {
+    this.setState({
+      notebooksWithContents: notebooksWithContents,
+    });
+  }
   setNotebookId = (id: number) => {
     this.setState({
       notebookId: id,
@@ -100,6 +115,7 @@ export default class MyNotebooksContainer extends Component<IMyNotebookContainer
       notebookId,
       sectionId,
       pageId,
+      notebooksWithContents,
     } = this.state;
 
     return (
@@ -113,7 +129,8 @@ export default class MyNotebooksContainer extends Component<IMyNotebookContainer
               setNotebookId={this.setNotebookId}
               setSectionId={this.setSectionId}
               setPageId={this.setPageId}
-              notebooksWithContents={this.state.notebooksWithContents}
+              notebooksWithContents={notebooksWithContents}
+              setNotebooksWithContents={this.setNotebooksWithContents}
             />
           </div>
           <div className="col-9">
