@@ -117,16 +117,17 @@ async function getNotebooksWithContents(): Promise<INotebook[]> {
   } catch (e) {
     console.error(ConsoleErrorMessages.ERROR_FETCHING + 'notebooks-with-contents', e);
     throw new Error(
-      EnglishErrorMessages.FETCHING_ERROR + 'notebooks with contents'
+      EnglishErrorMessages.FETCHING_ERROR
+      + 'notebooks with contents.'
+      + EnglishErrorMessages.ERROR_ADVICE
     );
   }
 
   if (result && !result.ok) {
-    const { data: {
-      error = EnglishErrorMessages.FETCHING_ERROR + 'notebooks with contents',
-    }
-    } = result;
-    throw new Error(error);
+    const { data: { error } } = result;
+    throw new Error(EnglishErrorMessages.FETCHING_ERROR
+      + 'notebooks with contents, with error: ' + error
+      + EnglishErrorMessages.ERROR_ADVICE,);
   }
 
   return result.data.results.map(mapNotebook);
@@ -143,16 +144,17 @@ async function getNotebooks(): Promise<INotebook[]> {
   } catch (e) {
     console.error(ConsoleErrorMessages.ERROR_FETCHING + 'notebooks', e);
     throw new Error(
-      EnglishErrorMessages.FETCHING_ERROR + 'notebooks'
+      EnglishErrorMessages.FETCHING_ERROR
+      + 'notebooks'
+      + EnglishErrorMessages.ERROR_ADVICE
     );
   }
 
   if (result && !result.ok) {
-    const { data: {
-      error = EnglishErrorMessages.FETCHING_ERROR + 'notebooks',
-    }
-    } = result;
-    throw new Error(error);
+    const { data: { error } } = result;
+    throw new Error(EnglishErrorMessages.FETCHING_ERROR 
+      + 'notebooks, with Error: ' + error
+      + EnglishErrorMessages.ERROR_ADVICE);
   }
 
   return result.data.results.map(mapNotebook);
@@ -169,16 +171,16 @@ async function getNotebook(id: number | string): Promise<INotebook> {
   } catch (e) {
     console.error(ConsoleErrorMessages.ERROR_FETCHING + 'notebook', e);
     throw new Error(
-      EnglishErrorMessages.FETCHING_ERROR + 'notebook'
+      EnglishErrorMessages.FETCHING_ERROR 
+      + 'notebook.'
     );
   }
 
   if (result && !result.ok) {
-    const { data: {
-      error = EnglishErrorMessages.FETCHING_ERROR + 'notebook',
-    }
-    } = result;
-    throw new Error(error);
+    const { data: { error } } = result;
+    throw new Error(EnglishErrorMessages.FETCHING_ERROR 
+      + 'notebook, with Error: ' + error
+      + EnglishErrorMessages.ERROR_ADVICE);
   }
 
   return mapNotebook(result.data);
@@ -194,16 +196,17 @@ async function getSection(id: number | string): Promise<ISection> {
   } catch (e) {
     console.error(ConsoleErrorMessages.ERROR_FETCHING + 'section', e);
     throw new Error(
-      EnglishErrorMessages.FETCHING_ERROR + 'section'
+      EnglishErrorMessages.FETCHING_ERROR 
+      + 'section.'
+      + EnglishErrorMessages.ERROR_ADVICE
     );
   }
 
   if (result && !result.ok) {
-    const { data: {
-      error = EnglishErrorMessages.FETCHING_ERROR + 'section',
-    }
-    } = result;
-    throw new Error(error);
+    const { data: { error } } = result;
+    throw new Error(EnglishErrorMessages.FETCHING_ERROR
+      + 'section, with Error: ' + error + 
+      + EnglishErrorMessages.ERROR_ADVICE);
   }
 
   return mapSection(result.data);
@@ -225,11 +228,8 @@ async function getPage(id: number | string): Promise<IPage> {
   }
 
   if (result && !result.ok) {
-    const { data: {
-      error = EnglishErrorMessages.FETCHING_ERROR + 'page',
-    }
-    } = result;
-    throw new Error(error);
+    const { data: { error } } = result;
+    throw new Error(EnglishErrorMessages.FETCHING_ERROR + 'page, with Error: ' + error);
   }
 
   return mapPage(result.data);
@@ -249,11 +249,8 @@ async function patchPage(page: IPage): Promise<IPage> {
   }
 
   if (result && !result.ok) {
-    const { data: {
-      error = EnglishErrorMessages.PATCH_ERROR + 'page',
-    }
-    } = result;
-    throw new Error(error);
+    const { data: { error } } = result;
+    throw new Error(EnglishErrorMessages.PATCH_ERROR + 'page with Error: ' + error);
   }
 
   const patchedPage = mapPage(result.data);
@@ -286,11 +283,8 @@ async function deleteEntity(id: number, entityType: string): Promise<IApiResult>
   }
 
   if (result && !result.ok) {
-    const { data: {
-      error = EnglishErrorMessages.DELETE_ERROR + entityType,
-    }
-    } = result;
-    throw new Error(error);
+    const { data: { error } } = result;
+    throw new Error(EnglishErrorMessages.DELETE_ERROR + entityType + ', with Error: ' + error);
   }
 
   console.warn(`after deleting ${entityType} with id (${id})`);
@@ -315,24 +309,20 @@ async function postEntity(
 
   let result: IApiResult;
 
-  console.warn(`before creating ${entityType} with title (${data.title})
-  and sectionId (${data.sectionId})`);
+  console.warn(`before creating ${entityType} with title (${data.title}) and sectionId (${data.sectionId})`);
 
   try {
     result = await post(`/${entityType}s`, data);
   } catch (e) {
     console.error(ConsoleErrorMessages.POST_ERROR + entityType, e);
-    throw new Error(
-      EnglishErrorMessages.POST_ERROR + entityType
-    );
+    throw new Error(e);
   }
 
   if (result && !result.ok) {
-    const { data: {
-      error = EnglishErrorMessages.POST_ERROR + entityType,
-    }
-    } = result;
-    throw new Error(error);
+    const { data: { errors } } = result;
+    const { error } = errors;
+    console.error(error ? 'error defined ' + error : 'error undefined');
+    throw new Error(errors);
   }
 
   console.warn(`before creating ${entityType} with title (${data.title})`);

@@ -45,6 +45,9 @@ const EnglishErrorMessages = {
   PATCH_ERROR: 'Failed to save changes to ',
   DELETE_ERROR: 'Failed to delete ',
   POST_ERROR: 'Failed to create new ',
+  HANDLE_EDITABLE_ERROR: 'Failed to handle editable text area. Refresh the page and try again.',
+  
+  ERROR_ADVICE: '. If the error persists, contact a system administrator.',
 }
 
 const EntityTypes = {

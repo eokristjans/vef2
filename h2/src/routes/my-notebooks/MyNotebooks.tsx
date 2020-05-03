@@ -44,7 +44,7 @@ interface IMyNotebookContainerState {
   prevPageId: number,
   deleting: boolean,
   saving: boolean,
-  error?: any,
+  error: string,
   sectionIdOfNewPage?: number,
 }
 
@@ -56,6 +56,7 @@ const initialState: IMyNotebookContainerState = {
   prevPageId: 0,
   deleting: false,
   saving: false,
+  error: '',
 };
 
 // TODO: ??
@@ -110,10 +111,14 @@ export default class MyNotebooksContainer extends Component<IMyNotebookContainer
     }
   }
 
+  /**
+   * Currently does nothing.
+   * @param text 
+   * @param entityType 
+   * @param entityId 
+   */
   handleEditableFocus(text: string, entityType: string, entityId: number) {
-    debug(text);
-    debug(entityType);
-    debug(entityId);
+    return;
   }
 
   /**
@@ -127,11 +132,11 @@ export default class MyNotebooksContainer extends Component<IMyNotebookContainer
    * @param entityId of the entity within which the new one shall be nested.
    */
   async handleEditableFocusOut(text: string, entityType: string, entityId: number) {
-    debug(text);
-    debug(entityType);
-    debug(entityId);
 
-    this.setState({saving: true});
+    this.setState({
+      saving: true,
+      error: '',
+    });
     if (entityType === EntityTypes.PAGE) {
       // entityType and entityId imply where to place the new entity
       try {
@@ -161,14 +166,15 @@ export default class MyNotebooksContainer extends Component<IMyNotebookContainer
         await this.setNotebooksWithContents();
       } catch (e) {
         console.error(e);
-        this.setState({ error: e });
+        this.setState({ error: '' });
       }
     }
     else {
-      this.setState({saving: false});
+      this.setState({ saving: false });
+      this.setState({ error: EnglishErrorMessages.HANDLE_EDITABLE_ERROR });
       console.error('Can only handle Editable Focus Out for notebooks and sections');
     }
-    this.setState({saving: false});
+    this.setState({ saving: false });
   }
   
   
@@ -189,9 +195,10 @@ export default class MyNotebooksContainer extends Component<IMyNotebookContainer
         this.setState({ error: result.data.errors });
       } else {
         await this.setNotebooksWithContents();
-        this.setState({ error: null });
+        this.setState({ error: '' });
       }
     } catch (e) {
+      this.setState({ error: 'Error deleting: ' + e});
       console.error(e);
     }
     this.setState({deleting: false});
@@ -230,9 +237,12 @@ export default class MyNotebooksContainer extends Component<IMyNotebookContainer
 
     return (
       <Fragment>
+        <div>
+          {this.state.saving && <span>Saving...</span> || this.state.error}
+        </div>
         <div className="row">
           <div className="col-3">
-            <div>{this.state.deleting && <span>'Deleting...'</span>}</div>
+            <div>{this.state.deleting && <span>Deleting...</span>}</div>
             <SideBar
               notebookId={notebookId}
               sectionId={sectionId}
