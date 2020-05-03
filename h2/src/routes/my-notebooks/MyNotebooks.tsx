@@ -39,6 +39,7 @@ interface IMyNotebookContainerState {
   pageId: number,
   prevPageId: number,
   deleting: boolean,
+  saving: boolean,
   error?: any,
 }
 
@@ -49,6 +50,7 @@ const initialState: IMyNotebookContainerState = {
   pageId: 0,
   prevPageId: 0,
   deleting: false,
+  saving: false,
 };
 
 // TODO: ??
@@ -158,6 +160,7 @@ export default class MyNotebooksContainer extends Component<IMyNotebookContainer
       <Fragment>
         <div className="row">
           <div className="col-3">
+            <div>{this.state.deleting && <span>'Deleting...'</span>}</div>
             <SideBar
               notebookId={notebookId}
               sectionId={sectionId}
