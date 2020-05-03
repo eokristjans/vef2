@@ -2,7 +2,11 @@ import { IApiResult, IHeaders } from './types';
 import { IPage, ISection, INotebook, IImage } from './types';
 import { mapPage, mapSection, mapNotebook, mapImage } from './mapping';
 
-import { EnglishErrorMessages, ConsoleErrorMessages } from '../MyConstClass';
+import { 
+  EnglishErrorMessages, 
+  ConsoleErrorMessages,
+  EntityTypes,
+ } from '../MyConstClass';
 
 import { debug } from '../utils/debug';
 
@@ -253,29 +257,39 @@ async function patchPage(page: IPage): Promise<IPage> {
   return patchedPage;
 }
 
-async function deletePage(id: number): Promise<IApiResult> {
+async function deleteEntity(id: number, entityType: string): Promise<IApiResult> {
+
+  // Validate entityType
+  if ( entityType !== EntityTypes.IMAGE
+    && entityType !== EntityTypes.NOTEBOOK
+    && entityType !== EntityTypes.SECTION
+    && entityType !== EntityTypes.PAGE    
+  ) {
+    throw new Error('Cannot delete entity of unknown type.')
+  }
+
   let result: IApiResult;
 
-  console.warn(`before deletePage(${id})`);
+  console.warn(`before deleting ${entityType} with id (${id})`);
 
   try {
-    result = await deleteMethod(`/pages/${id}`);
+    result = await deleteMethod(`/${entityType}s/${id}`);
   } catch (e) {
-    console.error(ConsoleErrorMessages.DELETE_ERROR + 'page', e);
+    console.error(ConsoleErrorMessages.DELETE_ERROR + entityType, e);
     throw new Error(
-      EnglishErrorMessages.DELETE_ERROR + 'page'
+      EnglishErrorMessages.DELETE_ERROR + entityType
     );
   }
 
   if (result && !result.ok) {
     const { data: {
-      error = EnglishErrorMessages.DELETE_ERROR + 'page',
+      error = EnglishErrorMessages.DELETE_ERROR + entityType,
     }
     } = result;
     throw new Error(error);
   }
 
-  console.warn(`after deletePage(${result.status})`);
+  console.warn(`after deleting ${entityType} with id (${id})`);
 
   return result;
 }
@@ -289,5 +303,5 @@ export {
   getSection,
   getPage,
   patchPage,
-  deletePage,
+  deleteEntity,
 };

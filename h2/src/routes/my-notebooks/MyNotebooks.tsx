@@ -6,10 +6,11 @@ import Button from '../../components/button/Button';
 import {
   getNotebooksWithContents,
   getPage,
+  deleteEntity,
 } from '../../api';
 
 
-import { INotebook, IPage } from '../../api/types';
+import { INotebook, IPage, IApiResult } from '../../api/types';
 import { Context } from '../../UserContext';
 import useApi from '../../hooks/useApi';
 import useSideBar from '../../hooks/useSideBar';
@@ -19,7 +20,11 @@ import NoAccess from '../system-pages/NoAccess';
 import SideBar from '../../components/sidebar/SideBar';
 import Page from '../../components/page/Page';
 
-import { EnglishConstants, EnglishErrorMessages } from '../../MyConstClass';
+import { 
+  EnglishConstants, 
+  EnglishErrorMessages,
+  EntityTypes,
+} from '../../MyConstClass';
 
 import { debug } from '../../utils/debug';
 
@@ -33,6 +38,8 @@ interface IMyNotebookContainerState {
   sectionId: number,
   pageId: number,
   prevPageId: number,
+  deleting: boolean,
+  error?: any,
 }
 
 const initialState: IMyNotebookContainerState = {
@@ -41,6 +48,7 @@ const initialState: IMyNotebookContainerState = {
   sectionId: 0,
   pageId: 0,
   prevPageId: 0,
+  deleting: false,
 };
 
 // TODO: ??
@@ -64,6 +72,7 @@ export default class MyNotebooksContainer extends Component<IMyNotebookContainer
     this.setSectionId = this.setSectionId.bind(this);
     this.setPageId = this.setPageId.bind(this);
     this.setNotebooksWithContents = this.setNotebooksWithContents.bind(this);
+    this.handleDeleteEntity = this.handleDeleteEntity.bind(this);
   }
 
   async componentDidMount() {
@@ -87,10 +96,38 @@ export default class MyNotebooksContainer extends Component<IMyNotebookContainer
       }
     }
   }
+  
+  
+  /**
+   * Deletes an entity
+   * @param {number} id of the entity being deleted.
+   * @param {string} entityType Type of entity that is being deleted, i.e.
+   * one of 'notebook', 'section', 'page' or 'image'.
+   */
+  async handleDeleteEntity(id: number, entityType: string) {
 
-  setNotebooksWithContents = (notebooksWithContents: INotebook[]) => {
+    let result;
+    this.setState({deleting: true});
+    // Delete the entity
+    try {
+      result = await deleteEntity(id, entityType);
+      if (!result.ok) {
+        this.setState({ error: result.data.errors });
+      } else {
+        await this.setNotebooksWithContents();
+        this.setState({ error: null });
+      }
+    } catch (e) {
+      console.error(e);
+    }
+    this.setState({deleting: false});
+  }
+
+  setNotebooksWithContents = async () => {
+    // Get the notebooks and set the state
+    const newNotebooksWithContents = await getNotebooksWithContents();
     this.setState({
-      notebooksWithContents: notebooksWithContents,
+      notebooksWithContents: newNotebooksWithContents,
     });
   }
   setNotebookId = (id: number) => {
@@ -114,7 +151,6 @@ export default class MyNotebooksContainer extends Component<IMyNotebookContainer
     const {
       notebookId,
       sectionId,
-      pageId,
       notebooksWithContents,
     } = this.state;
 
@@ -125,12 +161,11 @@ export default class MyNotebooksContainer extends Component<IMyNotebookContainer
             <SideBar
               notebookId={notebookId}
               sectionId={sectionId}
-              pageId={pageId}
               setNotebookId={this.setNotebookId}
               setSectionId={this.setSectionId}
               setPageId={this.setPageId}
               notebooksWithContents={notebooksWithContents}
-              setNotebooksWithContents={this.setNotebooksWithContents}
+              handleDeleteEntity={this.handleDeleteEntity}
             />
           </div>
           <div className="col-9">

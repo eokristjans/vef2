@@ -45,8 +45,16 @@ const EnglishErrorMessages = {
   POST_ERROR: 'Failed to create new ',
 }
 
+const EntityTypes = {
+  NOTEBOOK: 'notebook',
+  SECTION: 'section',
+  PAGE: 'page',
+  IMAGE: 'image',
+}
+
 module.exports = {
   EnglishConstants,
   ConsoleErrorMessages,
   EnglishErrorMessages,
+  EntityTypes,
 }
