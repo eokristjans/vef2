@@ -73,7 +73,11 @@ async function request(method: string, path: string, data?: any) {
  * @param password
  * @param email
  */
-async function registerUser(username: string, password: string, email: string): Promise<IApiResult> {
+async function registerUser(
+  username: string, 
+  password: string, 
+  email: string
+): Promise<IApiResult> {
   let result: IApiResult;
 
   try {
@@ -294,6 +298,94 @@ async function deleteEntity(id: number, entityType: string): Promise<IApiResult>
   return result;
 }
 
+
+async function postEntity(
+  data: any, 
+  entityType: string
+): Promise<IApiResult> {
+
+  // Validate entityType
+  if ( entityType !== EntityTypes.IMAGE
+    && entityType !== EntityTypes.NOTEBOOK
+    && entityType !== EntityTypes.SECTION
+    && entityType !== EntityTypes.PAGE    
+  ) {
+    throw new Error('Cannot create entity of unknown type.')
+  }
+
+  let result: IApiResult;
+
+  console.warn(`before creating ${entityType} with title (${data.title})
+  and sectionId (${data.sectionId})`);
+
+  try {
+    result = await post(`/${entityType}s`, data);
+  } catch (e) {
+    console.error(ConsoleErrorMessages.POST_ERROR + entityType, e);
+    throw new Error(
+      EnglishErrorMessages.POST_ERROR + entityType
+    );
+  }
+
+  if (result && !result.ok) {
+    const { data: {
+      error = EnglishErrorMessages.POST_ERROR + entityType,
+    }
+    } = result;
+    throw new Error(error);
+  }
+
+  console.warn(`before creating ${entityType} with title (${data.title})`);
+
+  return result;
+}
+
+async function postPage(
+  title: string,
+  sectionId: number
+): Promise<IPage> {
+
+  let result = await postEntity(
+    {
+      sectionId: sectionId,
+      title: title,
+    },
+    EntityTypes.PAGE,
+  );
+
+  return mapPage(result.data);
+}
+
+async function postSection(
+  title: string,
+  notebookId: number
+): Promise<ISection> {
+
+  let result = await postEntity(
+    {
+      notebookId: notebookId,
+      title: title,
+    },
+    EntityTypes.SECTION,
+  );
+
+  return mapSection(result.data);
+}
+
+async function postNotebook(
+  title: string,
+): Promise<INotebook> {
+
+  let result = await postEntity(
+    {
+      title: title,
+    },
+    EntityTypes.NOTEBOOK,
+  );
+
+  return mapNotebook(result.data);
+}
+
 export {
   registerUser,
   loginUser,
@@ -304,4 +396,7 @@ export {
   getPage,
   patchPage,
   deleteEntity,
+  postPage,
+  postSection,
+  postNotebook,
 };

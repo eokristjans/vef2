@@ -1,12 +1,16 @@
 import React, { Component, Fragment, ReactNode } from 'react';
 
 import { Link, NavLink } from 'react-router-dom';
+
 import Button from '../../components/button/Button';
 
 import {
   getNotebooksWithContents,
   getPage,
   deleteEntity,
+  postPage,
+  postSection,
+  postNotebook,
 } from '../../api';
 
 
@@ -41,6 +45,7 @@ interface IMyNotebookContainerState {
   deleting: boolean,
   saving: boolean,
   error?: any,
+  sectionIdOfNewPage?: number,
 }
 
 const initialState: IMyNotebookContainerState = {
@@ -70,11 +75,17 @@ export default class MyNotebooksContainer extends Component<IMyNotebookContainer
   constructor(props: IMyNotebookContainerProps) {
     super(props);
     this.state = initialState;
+
+    // Basic setters
     this.setNotebookId = this.setNotebookId.bind(this);
     this.setSectionId = this.setSectionId.bind(this);
     this.setPageId = this.setPageId.bind(this);
     this.setNotebooksWithContents = this.setNotebooksWithContents.bind(this);
+
     this.handleDeleteEntity = this.handleDeleteEntity.bind(this);
+
+    this.handleEditableFocus = this.handleEditableFocus.bind(this);
+    this.handleEditableFocusOut = this.handleEditableFocusOut.bind(this);
   }
 
   async componentDidMount() {
@@ -97,6 +108,67 @@ export default class MyNotebooksContainer extends Component<IMyNotebookContainer
         console.error(e)
       }
     }
+  }
+
+  handleEditableFocus(text: string, entityType: string, entityId: number) {
+    debug(text);
+    debug(entityType);
+    debug(entityId);
+  }
+
+  /**
+   * Creates a new entity of given entityType, with title from text.
+   * If entityType==='notebook' then entityId will be ignored
+   * if entityType==='section' then entityId indicates id of the nesting notebook,
+   * if entityType==='page' then entityId indicates id of the nesting section,
+   * @param text title of the 
+   * @param entityType The type of entity to be created;
+   * can be one of 'notebook', 'section' or 'page'.
+   * @param entityId of the entity within which the new one shall be nested.
+   */
+  async handleEditableFocusOut(text: string, entityType: string, entityId: number) {
+    debug(text);
+    debug(entityType);
+    debug(entityId);
+
+    this.setState({saving: true});
+    if (entityType === EntityTypes.PAGE) {
+      // entityType and entityId imply where to place the new entity
+      try {
+        const page = await postPage(text, entityId);
+        await this.setNotebooksWithContents();
+      } catch (e) {
+        console.error(e);
+        this.setState({ error: e });
+      }
+    }
+    else if (entityType === EntityTypes.SECTION) {
+      // entityType and entityId imply where to place the new entity
+      this.setState({saving: true});
+      try {
+        const page = await postSection(text, entityId);
+        await this.setNotebooksWithContents();
+      } catch (e) {
+        console.error(e);
+        this.setState({ error: e });
+      }
+    }
+    else if (entityType === EntityTypes.NOTEBOOK) {
+      // entityType and entityId imply where to place the new entity
+      this.setState({saving: true});
+      try {
+        const page = await postNotebook(text);
+        await this.setNotebooksWithContents();
+      } catch (e) {
+        console.error(e);
+        this.setState({ error: e });
+      }
+    }
+    else {
+      this.setState({saving: false});
+      console.error('Can only handle Editable Focus Out for notebooks and sections');
+    }
+    this.setState({saving: false});
   }
   
   
@@ -169,6 +241,8 @@ export default class MyNotebooksContainer extends Component<IMyNotebookContainer
               setPageId={this.setPageId}
               notebooksWithContents={notebooksWithContents}
               handleDeleteEntity={this.handleDeleteEntity}
+              handleEditableFocus={this.handleEditableFocus}
+              handleEditableFocusOut={this.handleEditableFocusOut}
             />
           </div>
           <div className="col-9">

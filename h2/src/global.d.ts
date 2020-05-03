@@ -4,3 +4,4 @@ declare module 'history';
 declare module 'react-markdown';
 declare module 'markdown-it';
 declare module 'react-md-editor';
+declare module 'react-inline-editing';

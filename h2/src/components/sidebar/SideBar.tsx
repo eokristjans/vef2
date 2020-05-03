@@ -2,6 +2,8 @@ import React, { Fragment, Component } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 
+import EditableLabel from '../editable-label/EditableLabel';
+
 import {
   // deleteNotebook,
   // deleteSection
@@ -36,6 +38,8 @@ interface ISideBarProps {
   setPageId: (id: number) => void,
   notebooksWithContents: INotebook[],
   handleDeleteEntity: (id: number, entityType: string) => Promise<void>,
+  handleEditableFocus: (text: string, entityType: string, entityId: number) => void,
+  handleEditableFocusOut: (text: string, entityType: string, entityId: number) => Promise<void>,
 }
 
 
@@ -54,11 +58,14 @@ export default function SideBar(props: ISideBarProps) {
     setPageId,
     notebooksWithContents,
     handleDeleteEntity,
+    handleEditableFocus,
+    handleEditableFocusOut,
   } = props;
 
   // Draw the SideBar
   return (
     <Fragment>
+      <ul>
       {notebooksWithContents.map(notebook => (
         // Draw each Notebook
         <li key={notebook.id} className="notebooks__item">
@@ -101,14 +108,60 @@ export default function SideBar(props: ISideBarProps) {
                         </li>
                       ))
                     }
+                    <li>
+                      <EditableLabel
+                        text={EnglishConstants.CLICK_TO_CREATE_NEW + EntityTypes.PAGE}
+                        labelClassName='myLabelClass'
+                        inputClassName='myInputClass'
+                        inputWidth='200px'
+                        inputHeight='25px'
+                        inputMaxLength={100}
+                        inputFontWeight='bold'
+                        onFocus={handleEditableFocus}
+                        onFocusOut={handleEditableFocusOut}
+                        entityType={EntityTypes.PAGE}
+                        entityTypeId={section.id}
+                      />
+                    </li>
                   </ul>
                 }
                 </li>
               ))}
+              <li>                
+                <EditableLabel
+                  text={EnglishConstants.CLICK_TO_CREATE_NEW + EntityTypes.SECTION}
+                  labelClassName='myLabelClass'
+                  inputClassName='myInputClass'
+                  inputWidth='200px'
+                  inputHeight='25px'
+                  inputMaxLength={100}
+                  inputFontWeight='bold'
+                  onFocus={handleEditableFocus}
+                  onFocusOut={handleEditableFocusOut}
+                  entityType={EntityTypes.SECTION}
+                  entityTypeId={notebook.id}
+                />
+              </li>
             </ul>
           }
         </li>
       ))}
+      <li> 
+        <EditableLabel
+          text={EnglishConstants.CLICK_TO_CREATE_NEW + EntityTypes.NOTEBOOK}
+          labelClassName='myLabelClass' 
+          inputClassName='myInputClass'
+          inputWidth='200px'
+          inputHeight='25px'
+          inputMaxLength={100}
+          inputFontWeight='bold'
+          onFocus={handleEditableFocus}
+          onFocusOut={handleEditableFocusOut}
+          entityType={EntityTypes.NOTEBOOK}
+          entityTypeId={0}
+        />
+      </li>
+      </ul>
     </Fragment>
   );
 }

@@ -26,6 +26,8 @@ const EnglishConstants = {
   DELETE_BUTTON: 'D',
   RENAME_BUTTON: 'R',
   
+  CLICK_TO_CREATE_NEW: 'Click to create new ',
+  CREATE_NEW_SECTION: 'Click to create new page',
 };
 
 const ConsoleErrorMessages = {
