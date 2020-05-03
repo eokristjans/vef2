@@ -166,7 +166,7 @@ export default class MyNotebooksContainer extends Component<IMyNotebookContainer
         await this.setNotebooksWithContents();
       } catch (e) {
         console.error(e);
-        this.setState({ error: '' });
+        this.setState({ error: e });
       }
     }
     else {

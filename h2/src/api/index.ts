@@ -319,10 +319,8 @@ async function postEntity(
   }
 
   if (result && !result.ok) {
-    const { data: { errors } } = result;
-    const { error } = errors;
-    console.error(error ? 'error defined ' + error : 'error undefined');
-    throw new Error(errors);
+    const { data: { error } } = result;
+    throw new Error(error);
   }
 
   console.warn(`before creating ${entityType} with title (${data.title})`);
