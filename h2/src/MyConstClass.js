@@ -22,7 +22,9 @@ const EnglishConstants = {
   USERNAME_LABEL: 'Username:',
   EMAIL_LABEL: 'E-mail:',
 
-  YOUR_NOTEBOOKS: 'My Notebooks',
+  MY_NOTEBOOKS: 'My Notebooks',
+  MY_IMAGES: 'My Images',
+
   DELETE_BUTTON: 'D',
   RENAME_BUTTON: 'R',
   

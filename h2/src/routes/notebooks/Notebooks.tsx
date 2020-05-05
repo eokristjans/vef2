@@ -32,11 +32,11 @@ import {
 
 import { debug } from '../../utils/debug';
 
-import './MyNotebooks.scss';
+import './Notebooks.scss';
 import Login from '../login/Login';
 
 
-interface IMyNotebookContainerState {
+interface INotebooksState {
   notebooksWithContents: INotebook[],
   page?: IPage,
   notebookId: number, 
@@ -49,7 +49,7 @@ interface IMyNotebookContainerState {
   sectionIdOfNewPage?: number,
 }
 
-const initialState: IMyNotebookContainerState = {
+const initialState: INotebooksState = {
   notebooksWithContents: [],
   notebookId: 0,
   sectionId: 0,
@@ -61,7 +61,7 @@ const initialState: IMyNotebookContainerState = {
 };
 
 // TODO: ??
-interface IMyNotebookContainerProps {
+interface INotebooksProps {
   pageId?: number,
   match?: any,
 }
@@ -72,9 +72,9 @@ interface IMyNotebookContainerProps {
  * Fetches the notebooks when mounted,
  * Fetches a page when opened.
  */
-export default class MyNotebooksContainer extends Component<IMyNotebookContainerProps, IMyNotebookContainerState> {
+export default class Notebooks extends Component<INotebooksProps, INotebooksState> {
 
-  constructor(props: IMyNotebookContainerProps) {
+  constructor(props: INotebooksProps) {
     super(props);
     this.state = initialState;
 
@@ -224,12 +224,12 @@ export default class MyNotebooksContainer extends Component<IMyNotebookContainer
 
     // TODO: Not good to match on strings
     if (error == 'Error: invalid token') {
-      console.error('MyNotebooks ' + error);
+      console.error('Notebooks ' + error);
       return (<NoAccess/>);
     }
     
     if (error == 'Error: expired token') {
-      console.error('MyNotebooks ' + error);
+      console.error('Notebooks ' + error);
       // Remove the user from localStorage
       localStorage.removeItem('user');
 
@@ -240,12 +240,12 @@ export default class MyNotebooksContainer extends Component<IMyNotebookContainer
     }
 
     if (error.endsWith('not found.')){
-      console.error('MyNotebooks ' + error);
+      console.error('Notebooks ' + error);
     }
 
     if (error != '') {
       // TODO: Handle error from failed server request or other unknown error.
-      console.error('MyNotebooks UNHANDLED ' + error);
+      console.error('Notebooks UNHANDLED ' + error);
     }
 
     return (

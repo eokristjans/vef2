@@ -7,7 +7,9 @@ import Header from './components/header/Header';
 import Home from './routes/home/Home';
 import Register from './routes/register/Register';
 import Login from './routes/login/Login';
-import MyNotebooksContainer from './routes/my-notebooks/MyNotebooks';
+import Notebooks from './routes/notebooks/Notebooks';
+import Images from './routes/images/Images';
+import Users from './routes/users/Users';
 
 // import Admin from './routes/admin/Admin';
 import NotFound from './routes/system-pages/NotFound';
@@ -36,7 +38,9 @@ function App(props: Props) {
             <Route path="/" exact component={Home} />
             <Route path="/register" exact component={Register} />
             <Route path="/login" exact component={Login} />
-            <Route path="/my-notebooks" component={MyNotebooksContainer} />
+            <Route path="/notebooks" component={Notebooks} />
+            <Route path="/images" component={Images} />
+            <Route path="/users" component={Users} />
             {/* <Route path="/admin" component={Admin} /> */}
             <Route component={NotFound} />
           </Switch>

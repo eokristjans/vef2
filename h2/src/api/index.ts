@@ -417,7 +417,6 @@ async function postEntity(
  * @param sectionId 
  */
 async function postPage(title: string, sectionId: number): Promise<IPage> {
-
   let result;
   try {
     result = await postEntity(
@@ -427,7 +426,6 @@ async function postPage(title: string, sectionId: number): Promise<IPage> {
   } catch (e) {
     throw new Error(e);
   }
-
   return mapPage(result.data);
 }
 
@@ -438,7 +436,6 @@ async function postPage(title: string, sectionId: number): Promise<IPage> {
  * @param notebookId 
  */
 async function postSection(title: string, notebookId: number): Promise<ISection> {
-
   let result;
   try {
     result = await postEntity(
@@ -448,7 +445,6 @@ async function postSection(title: string, notebookId: number): Promise<ISection>
   } catch (e) {
     throw new Error(e);
   }
-
   return mapSection(result.data);
 }
 
@@ -459,8 +455,6 @@ async function postSection(title: string, notebookId: number): Promise<ISection>
  * @param title 
  */
 async function postNotebook(title: string): Promise<INotebook> {
-
-  
   let result;
   try {
     result = await postEntity(
@@ -470,8 +464,84 @@ async function postNotebook(title: string): Promise<INotebook> {
 } catch (e) {
   throw new Error(e);
 }
-
   return mapNotebook(result.data);
+}
+
+/**
+ * Calls postEntity with data created from title and url.
+ * Maps the result to image.
+ * @param title 
+ */
+async function postImage(title: string, url: string): Promise<IImage> {
+  let result;
+  try {
+    result = await postEntity(
+    { title: title },
+    EntityTypes.IMAGE,
+  );
+} catch (e) {
+  throw new Error(e);
+}
+  return mapImage(result.data);
+}
+
+/**
+ * Async function that fetches a images and returns them.
+ * Throws unspecified error if HTTP request is unsuccessful.
+ * Throws error: 'expired token' if the user's token is expired.
+ * Throws error: 'invalid token' if the user's token doesn't match any user.
+ * @param param0 {limit, offset}
+ */
+async function getImages({ limit = 10, offset = 0 } = {}): Promise<IImage[]> {
+  let result: IApiResult;
+
+  try {
+    result = await get(`/images?limit=${limit}&offset=${offset}`);
+  } catch (e) {
+    console.error(ConsoleErrorMessages.ERROR_FETCHING + 'images', e);
+    throw new Error(e);
+  }
+  if (result && !result.ok) {
+  	// Throws error: 'expired token' if the user's token is expired.
+    // Throws error: 'invalid token' if the user's token doesn't match any user.
+    const { data: { error } } = result;
+    throw new Error(error);
+  }
+
+  return result.data.items.map(mapImage);
+}
+
+
+/**
+ * Async function that fetches an image and returns it.
+ * Throws unspecified error if HTTP request is unsuccessful.
+ * Throws error: 'expired token' if the user's token is expired.
+ * Throws error: 'invalid token' if the user's token doesn't match any user.
+ * Throws error: 'image not found' if the image was not found or does not belong to the user.
+ */
+async function getImage(id: number | string): Promise<IImage> {
+  let result: IApiResult;
+
+  debug(`src api index.ts getImage(${id})`);
+
+  try {
+    result = await get(`/images/${id}`);
+  } catch (e) {
+    // Throws unspecified error if HTTP request is unsuccessful.
+    console.error(ConsoleErrorMessages.ERROR_FETCHING + 'image' + e);
+    throw new Error(e);
+  }
+
+  if (result && !result.ok) {
+    const { data: { error } } = result;
+  	// Throws error: 'expired token' if the user's token is expired.
+    // Throws error: 'invalid token' if the user's token doesn't match any user.
+    // Throws error: 'image not found' if the image was not found or does not belong to the user.
+    console.error(ConsoleErrorMessages.ERROR_FETCHING + 'image' + error);
+    throw new Error(error);
+  }
+
+  return mapImage(result.data);
 }
 
 export {
@@ -487,4 +557,7 @@ export {
   postPage,
   postSection,
   postNotebook,
+  getImages,
+  getImage,
+  postImage,
 };

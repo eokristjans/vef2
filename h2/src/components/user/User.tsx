@@ -34,6 +34,30 @@ export default function User() {
           )
         }
 
+        if (user.user.admin) {
+          return (
+            <p className="user__info">
+              <NavLink
+                activeClassName="user__link--selected"
+                className="user__link" to="/logout"
+                onClick={onClick(logoutUser)}
+              >
+                {user.user.username} {EnglishConstants.LOGOUT}
+              </NavLink>
+              {/* TODO: Style */}
+              <NavLink activeClassName="user__link--selected" className="user__link" to="/notebooks">
+                <span> All Notebooks </span>
+              </NavLink>
+              <NavLink activeClassName="user__link--selected" className="user__link" to="/images">
+                <span> All Images </span>
+              </NavLink>            
+              <NavLink activeClassName="user__link--selected" className="user__link" to="/users">
+                <span> All Users </span>
+              </NavLink>
+            </p>
+          )
+        }
+
         return (
           <p className="user__info">
             <NavLink
@@ -43,8 +67,12 @@ export default function User() {
             >
               {user.user.username} {EnglishConstants.LOGOUT}
             </NavLink>
-            <NavLink activeClassName="user__link--selected" className="user__link" to="/my-notebooks">
-              {EnglishConstants.YOUR_NOTEBOOKS}
+            {/* TODO: Style */}
+            <NavLink activeClassName="user__link--selected" className="user__link" to="/notebooks">
+              <span>{EnglishConstants.MY_NOTEBOOKS}  </span>
+            </NavLink>
+            <NavLink activeClassName="user__link--selected" className="user__link" to="/images">
+              <span> {EnglishConstants.MY_IMAGES}</span>
             </NavLink>
           </p>
         );
