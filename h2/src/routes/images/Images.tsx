@@ -159,7 +159,10 @@ export default class Images extends Component<{}, IImagesState> {
             {!loading && !error && images.map(image => (
               <li key={image.id} className="images__item">
                 <span>{image.title} </span>
-                <span> ({image.url})</span>
+                <p>{image.url} </p>
+                <a href={image.url}>
+                  <img alt={image.title} src={image.url} width="150" height="150"/>
+                </a>
               </li>
             ))}
             </Fragment>
