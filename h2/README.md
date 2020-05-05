@@ -50,7 +50,7 @@ If the user is logged in, there should be a sidebar which contains:
       * Overview of contained pages.
       * Create page button.
       * If the user clicks a page, it will open, revealing its contents.
-        * The page is an editable document into written in [Markdown with rendering and live preview](https://www.npmjs.com/package/react-markdown) side-by-side.
+        * The page is an editable document written in [Markdown with rendering and live preview](https://www.npmjs.com/package/react-markdown) side-by-side.
         * The user can easily save changes to his page.
         * (Optional) Changes are saved automatically a few seconds after some changes have been made.
 * Link to list of images.

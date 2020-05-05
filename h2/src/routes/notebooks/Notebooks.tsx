@@ -67,7 +67,7 @@ interface INotebooksProps {
 }
 
 /**
- * Route to /my-notebooks.
+ * Route to /notebooks.
  * Manages which notebooks, section and page is open.
  * Fetches the notebooks when mounted,
  * Fetches a page when opened.
