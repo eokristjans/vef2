@@ -26,8 +26,7 @@ const EnglishConstants = {
   DELETE_BUTTON: 'D',
   RENAME_BUTTON: 'R',
   
-  CLICK_TO_CREATE_NEW: 'Click to create new ',
-  CREATE_NEW_SECTION: 'Click to create new page',
+  CLICK_TO_CREATE_NEW: 'Click to create a new ',
 };
 
 const ConsoleErrorMessages = {
@@ -45,9 +44,11 @@ const EnglishErrorMessages = {
   PATCH_ERROR: 'Failed to save changes to ',
   DELETE_ERROR: 'Failed to delete ',
   POST_ERROR: 'Failed to create new ',
-  HANDLE_EDITABLE_ERROR: 'Failed to handle editable text area. Refresh the page and try again.',
+  HANDLE_EDITABLE_ERROR: 'Failed to handle editable text area.',
+  ADMIN_CAN_NOT: 'This is most likely because admins can not delete or modify content created by other users.',
   
-  ERROR_ADVICE: '. If the error persists, contact a system administrator.',
+  ERROR_ADVICE: '. Refresh the page and try again. If the error persists, contact a system administrator.',
+  UNKNOWN_ERROR: 'An unknown error occurred.'
 }
 
 const EntityTypes = {

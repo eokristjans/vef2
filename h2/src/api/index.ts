@@ -9,6 +9,7 @@ import {
  } from '../MyConstClass';
 
 import { debug } from '../utils/debug';
+import { isUndefined } from 'util';
 
 const baseurl:string | undefined = process.env.REACT_APP_API_URL;
 
@@ -56,7 +57,15 @@ async function request(method: string, path: string, data?: any) {
 
   const response = await fetch(url.href, options);
 
-  const json = method.toLowerCase() !== 'delete' ? await response.json() : null;
+  // Olafur's method does not handle failed delete requests
+  // const json = method.toLowerCase() !== 'delete' ? await response.json() : null;
+
+  let json = null;
+  try {
+    json = await response.json();
+  } catch (e) {
+    console.error('No JSON resposne from request. Probably would have been null: ' + e);
+  }
 
   const { status, ok } = response;
 
@@ -106,7 +115,12 @@ async function loginUser(username: string, password: string): Promise<any> {
   return result;
 }
 
-
+/**
+ * Async function that returns a promise with an array of INotebooks.
+ * Throws unspecified error if HTTP request is unsuccessful.
+ * Throws error: 'expired token' if the user's token is expired.
+ * Throws error: 'invalid token' if the user's token doesn't match any user.
+ */
 async function getNotebooksWithContents(): Promise<INotebook[]> {
   let result: IApiResult;
 
@@ -115,25 +129,29 @@ async function getNotebooksWithContents(): Promise<INotebook[]> {
   try {
     result = await get('/notebooks-with-contents');
   } catch (e) {
-    console.error(ConsoleErrorMessages.ERROR_FETCHING + 'notebooks-with-contents', e);
-    throw new Error(
-      EnglishErrorMessages.FETCHING_ERROR
-      + 'notebooks with contents.'
-      + EnglishErrorMessages.ERROR_ADVICE
-    );
+    // Throws unspecified error if HTTP request is unsuccessful.
+    console.error(ConsoleErrorMessages.ERROR_FETCHING + 'notebooks-with-contents' + e);
+    throw new Error(e);
   }
 
   if (result && !result.ok) {
     const { data: { error } } = result;
-    throw new Error(EnglishErrorMessages.FETCHING_ERROR
-      + 'notebooks with contents, with error: ' + error
-      + EnglishErrorMessages.ERROR_ADVICE,);
+  	// Throws error: 'expired token' if the user's token is expired.
+  	// Throws error: 'invalid token' if the user's token doesn't match any user.
+    console.error(ConsoleErrorMessages.ERROR_FETCHING + 'notebooks-with-contents' + error);
+    throw new Error(error);
   }
 
   return result.data.results.map(mapNotebook);
 }
 
 
+/**
+ * Async function that returns a promise with an array of INotebooks.
+ * Throws unspecified error if HTTP request is unsuccessful.
+ * Throws error: 'expired token' if the user's token is expired.
+ * Throws error: 'invalid token' if the user's token doesn't match any user.
+ */
 async function getNotebooks(): Promise<INotebook[]> {
   let result: IApiResult;
 
@@ -142,25 +160,30 @@ async function getNotebooks(): Promise<INotebook[]> {
   try {
     result = await get('/notebooks');
   } catch (e) {
-    console.error(ConsoleErrorMessages.ERROR_FETCHING + 'notebooks', e);
-    throw new Error(
-      EnglishErrorMessages.FETCHING_ERROR
-      + 'notebooks'
-      + EnglishErrorMessages.ERROR_ADVICE
-    );
+    // Throws unspecified error if HTTP request is unsuccessful.
+    console.error(ConsoleErrorMessages.ERROR_FETCHING + 'notebooks' + e);
+    throw new Error(e);
   }
 
   if (result && !result.ok) {
     const { data: { error } } = result;
-    throw new Error(EnglishErrorMessages.FETCHING_ERROR 
-      + 'notebooks, with Error: ' + error
-      + EnglishErrorMessages.ERROR_ADVICE);
+  	// Throws error: 'expired token' if the user's token is expired.
+  	// Throws error: 'invalid token' if the user's token doesn't match any user.
+    console.error(ConsoleErrorMessages.ERROR_FETCHING + 'notebooks' + error);
+    throw new Error(error);
   }
 
   return result.data.results.map(mapNotebook);
 }
 
 
+/**
+ * Async function that fetches a notebook and returns it.
+ * Throws unspecified error if HTTP request is unsuccessful.
+ * Throws error: 'expired token' if the user's token is expired.
+ * Throws error: 'invalid token' if the user's token doesn't match any user.
+ * Throws error: 'notebook not found' if the notebook was not found or does not belong to the user.
+ */
 async function getNotebook(id: number | string): Promise<INotebook> {
   let result: IApiResult;
 
@@ -169,23 +192,31 @@ async function getNotebook(id: number | string): Promise<INotebook> {
   try {
     result = await get(`/notebooks/${id}`);
   } catch (e) {
-    console.error(ConsoleErrorMessages.ERROR_FETCHING + 'notebook', e);
-    throw new Error(
-      EnglishErrorMessages.FETCHING_ERROR 
-      + 'notebook.'
-    );
+    // Throws unspecified error if HTTP request is unsuccessful.
+    console.error(ConsoleErrorMessages.ERROR_FETCHING + 'notebook' + e);
+    throw new Error(e);
   }
 
   if (result && !result.ok) {
     const { data: { error } } = result;
-    throw new Error(EnglishErrorMessages.FETCHING_ERROR 
-      + 'notebook, with Error: ' + error
-      + EnglishErrorMessages.ERROR_ADVICE);
+  	// Throws error: 'expired token' if the user's token is expired.
+    // Throws error: 'invalid token' if the user's token doesn't match any user.
+    // Throws error: 'notebook not found' if the notebook was not found or does not belong to the user.
+    console.error(ConsoleErrorMessages.ERROR_FETCHING + 'notebook' + error);
+    throw new Error(error);
   }
 
   return mapNotebook(result.data);
 }
 
+
+/**
+ * Async function that fetches a section and returns it.
+ * Throws unspecified error if HTTP request is unsuccessful.
+ * Throws error: 'expired token' if the user's token is expired.
+ * Throws error: 'invalid token' if the user's token doesn't match any user.
+ * Throws error: 'section not found' if the page was not found or does not belong to the user.
+ */
 async function getSection(id: number | string): Promise<ISection> {
   let result: IApiResult;
 
@@ -194,25 +225,31 @@ async function getSection(id: number | string): Promise<ISection> {
   try {
     result = await get(`/sections/${id}`);
   } catch (e) {
-    console.error(ConsoleErrorMessages.ERROR_FETCHING + 'section', e);
-    throw new Error(
-      EnglishErrorMessages.FETCHING_ERROR 
-      + 'section.'
-      + EnglishErrorMessages.ERROR_ADVICE
-    );
+    // Throws unspecified error if HTTP request is unsuccessful.
+    console.error(ConsoleErrorMessages.ERROR_FETCHING + EntityTypes.SECTION + e);
+    throw new Error(e);
   }
 
   if (result && !result.ok) {
+  	// Throws error: 'expired token' if the user's token is expired.
+    // Throws error: 'invalid token' if the user's token doesn't match any user.
+    // Throws error: 'section not found' if the section was not found or does not belong to the user.
     const { data: { error } } = result;
-    throw new Error(EnglishErrorMessages.FETCHING_ERROR
-      + 'section, with Error: ' + error + 
-      + EnglishErrorMessages.ERROR_ADVICE);
+    console.error(ConsoleErrorMessages.ERROR_FETCHING + EntityTypes.SECTION + error);
+    throw new Error(error);
   }
 
   return mapSection(result.data);
 }
 
 
+/**
+ * Async function that fetches a page and returns it.
+ * Throws unspecified error if HTTP request is unsuccessful.
+ * Throws error: 'expired token' if the user's token is expired.
+ * Throws error: 'invalid token' if the user's token doesn't match any user.
+ * Throws error: 'page not found' if the page was not found or does not belong to the user.
+ */
 async function getPage(id: number | string): Promise<IPage> {
   let result: IApiResult;
 
@@ -221,43 +258,65 @@ async function getPage(id: number | string): Promise<IPage> {
   try {
     result = await get(`/pages/${id}`);
   } catch (e) {
-    console.error(ConsoleErrorMessages.ERROR_FETCHING + 'page', e);
-    throw new Error(
-      EnglishErrorMessages.FETCHING_ERROR + 'page'
-    );
+    // Throws unspecified error if HTTP request is unsuccessful.
+    console.error(ConsoleErrorMessages.ERROR_FETCHING + EntityTypes.PAGE + e);
+    throw new Error(e);
   }
 
   if (result && !result.ok) {
+  	// Throws error: 'expired token' if the user's token is expired.
+    // Throws error: 'invalid token' if the user's token doesn't match any user.
+    // Throws error: 'page not found' if the page was not found or does not belong to the user.
     const { data: { error } } = result;
-    throw new Error(EnglishErrorMessages.FETCHING_ERROR + 'page, with Error: ' + error);
+    console.error(ConsoleErrorMessages.ERROR_FETCHING + EntityTypes.PAGE + error);
+    throw new Error(error);
   }
 
   return mapPage(result.data);
 }
 
-
+/**
+ * Async function that patches a page and returns it.
+ * Throws unspecified error if HTTP request is unsuccessful.
+ * Throws error: 'expired token' if the user's token is expired.
+ * Throws error: 'invalid token' if the user's token doesn't match any user.
+ * Throws error: 'page not found' if the page was not found or does not belong to the user.
+ * @param page 
+ */
 async function patchPage(page: IPage): Promise<IPage> {
   let result: IApiResult;
 
   try {
     result = await patch(`/pages/${page.id}`, page);
   } catch (e) {
-    console.error(ConsoleErrorMessages.PATCH_ERROR + 'page', e);
-    throw new Error(
-      EnglishErrorMessages.PATCH_ERROR + 'page'
-    );
+    // Throws unspecified error if HTTP request is unsuccessful.
+    console.error(ConsoleErrorMessages.PATCH_ERROR + EntityTypes.PAGE + e);
+    throw new Error(e);
   }
 
   if (result && !result.ok) {
+  	// Throws error: 'expired token' if the user's token is expired.
+    // Throws error: 'invalid token' if the user's token doesn't match any user.
+    // Throws error: 'page not found' if the page was not found or does not belong to the user.
     const { data: { error } } = result;
-    throw new Error(EnglishErrorMessages.PATCH_ERROR + 'page with Error: ' + error);
+    console.error(ConsoleErrorMessages.PATCH_ERROR + EntityTypes.PAGE + error);
+    throw new Error(error);
   }
-
-  const patchedPage = mapPage(result.data);
-
-  return patchedPage;
+  
+  return mapPage(result.data);
 }
 
+/**
+ * Async function that deletes an entity.
+ * Throws unspecified error if HTTP request is unsuccessful.
+ * Throws error: 'expired token' if the user's token is expired.
+ * Throws error: 'invalid token' if the user's token doesn't match any user.
+ * Throws error: '${entityType} not found' if the entityType was not found or does not belong to the user.
+ * Throws error: 'Cannot delete entity of unknown type.' if the type is not one of the four options.
+ * @param id 
+ * @param entityType Type of entity to delete, must be one of 'notebook', 'section',
+ * 'page' or 'image'.
+ */
 async function deleteEntity(id: number, entityType: string): Promise<IApiResult> {
 
   // Validate entityType
@@ -266,25 +325,26 @@ async function deleteEntity(id: number, entityType: string): Promise<IApiResult>
     && entityType !== EntityTypes.SECTION
     && entityType !== EntityTypes.PAGE    
   ) {
+    // Throws error: 'Cannot delete entity of unknown type.' if the type is not one of the four options.
     throw new Error('Cannot delete entity of unknown type.')
   }
 
   let result: IApiResult;
-
-  console.warn(`before deleting ${entityType} with id (${id})`);
-
   try {
     result = await deleteMethod(`/${entityType}s/${id}`);
   } catch (e) {
+    // Throws unspecified error if HTTP request is unsuccessful.
     console.error(ConsoleErrorMessages.DELETE_ERROR + entityType, e);
-    throw new Error(
-      EnglishErrorMessages.DELETE_ERROR + entityType
-    );
+    throw new Error(e);
   }
 
   if (result && !result.ok) {
+  	// Throws error: 'expired token' if the user's token is expired.
+    // Throws error: 'invalid token' if the user's token doesn't match any user.
+    // Throws error: '${entityType} not found' if the entityType was not found or does not belong to the user.
     const { data: { error } } = result;
-    throw new Error(EnglishErrorMessages.DELETE_ERROR + entityType + ', with Error: ' + error);
+    console.error(ConsoleErrorMessages.DELETE_ERROR + entityType + error);
+    throw new Error(error);
   }
 
   console.warn(`after deleting ${entityType} with id (${id})`);
@@ -293,6 +353,17 @@ async function deleteEntity(id: number, entityType: string): Promise<IApiResult>
 }
 
 
+/**
+ * Posts an entity owned by the user.
+ * Throws unspecified error if HTTP request is unsuccessful.
+ * Throws error: 'expired token' if the user's token is expired.
+ * Throws error: 'invalid token' if the user's token doesn't match any user.
+ * Throws error: '${entityType} not found' if the entityType was not found or does not belong to the user.
+ * Throws error: 'Cannot create entity of unknown type.' if the type is not one of the four options.
+ * @param data Body of the request, shaped as JSON Object.
+ * @param entityType Type of entity to create, must be one of 'notebook', 'section',
+ * 'page' or 'image'.
+ */
 async function postEntity(
   data: any, 
   entityType: string
@@ -304,22 +375,33 @@ async function postEntity(
     && entityType !== EntityTypes.SECTION
     && entityType !== EntityTypes.PAGE    
   ) {
+    // Throws error: 'Cannot create entity of unknown type.' if the type is not one of the four options.
     throw new Error('Cannot create entity of unknown type.')
   }
 
   let result: IApiResult;
-
-  console.warn(`before creating ${entityType} with title (${data.title}) and sectionId (${data.sectionId})`);
-
   try {
     result = await post(`/${entityType}s`, data);
   } catch (e) {
+    // Throws unspecified error if HTTP request is unsuccessful.
     console.error(ConsoleErrorMessages.POST_ERROR + entityType, e);
     throw new Error(e);
   }
 
   if (result && !result.ok) {
-    const { data: { error } } = result;
+  	// Throws error: 'expired token' if the user's token is expired.
+    // Throws error: 'invalid token' if the user's token doesn't match any user.
+    // Throws error: '${entityType} not found' if the entityType was not found or does not belong to the user.
+    let { data: { error } } = result;
+
+    // In case of field error, in which case they are returned as an array
+    if (isUndefined(error)) {
+      console.error('postEntity() undefined error');
+      const { data: { errors } } = result;
+      error = errors[0]['error'];
+    }
+
+    console.error(ConsoleErrorMessages.POST_ERROR + entityType + ': ' + error);
     throw new Error(error);
   }
 
@@ -328,48 +410,66 @@ async function postEntity(
   return result;
 }
 
-async function postPage(
-  title: string,
-  sectionId: number
-): Promise<IPage> {
+/**
+ * Calls postEntity with data created from title and sectionId.
+ * Maps the result to Page.
+ * @param title 
+ * @param sectionId 
+ */
+async function postPage(title: string, sectionId: number): Promise<IPage> {
 
-  let result = await postEntity(
-    {
-      sectionId: sectionId,
-      title: title,
-    },
-    EntityTypes.PAGE,
-  );
+  let result;
+  try {
+    result = await postEntity(
+      { sectionId: sectionId, title: title },
+      EntityTypes.PAGE,
+    );  
+  } catch (e) {
+    throw new Error(e);
+  }
 
   return mapPage(result.data);
 }
 
-async function postSection(
-  title: string,
-  notebookId: number
-): Promise<ISection> {
+/**
+ * Calls postEntity with data created from title and notebookId.
+ * Maps the result to Section
+ * @param title 
+ * @param notebookId 
+ */
+async function postSection(title: string, notebookId: number): Promise<ISection> {
 
-  let result = await postEntity(
-    {
-      notebookId: notebookId,
-      title: title,
-    },
-    EntityTypes.SECTION,
-  );
+  let result;
+  try {
+    result = await postEntity(
+      { notebookId: notebookId, title: title },
+      EntityTypes.SECTION,
+    );
+  } catch (e) {
+    throw new Error(e);
+  }
 
   return mapSection(result.data);
 }
 
-async function postNotebook(
-  title: string,
-): Promise<INotebook> {
 
-  let result = await postEntity(
-    {
-      title: title,
-    },
+/**
+ * Calls postEntity with data created from title.
+ * Maps the result to notebook.
+ * @param title 
+ */
+async function postNotebook(title: string): Promise<INotebook> {
+
+  
+  let result;
+  try {
+    result = await postEntity(
+    { title: title },
     EntityTypes.NOTEBOOK,
   );
+} catch (e) {
+  throw new Error(e);
+}
 
   return mapNotebook(result.data);
 }

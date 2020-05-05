@@ -75,9 +75,6 @@ export default function SideBar(props: ISideBarProps) {
           <li key={notebook.id} className="notebooks__item">
             <a href='#' onClick={() => setNotebookId(notebook.id)}>{notebook.title}</a>
             <Button
-              children={EnglishConstants.RENAME_BUTTON}
-            />
-            <Button
               children={EnglishConstants.DELETE_BUTTON}
               onClick={() => handleDeleteEntity(notebook.id, EntityTypes.NOTEBOOK)}
             />
@@ -89,9 +86,6 @@ export default function SideBar(props: ISideBarProps) {
                   <li key={section.id} className="sections__item">
                   <a href='#' onClick={() => setSectionId(section.id)}>{section.title}</a>
                   <Button
-                    children={EnglishConstants.RENAME_BUTTON}
-                  />
-                  <Button
                     children={EnglishConstants.DELETE_BUTTON}
                     onClick={() => handleDeleteEntity(section.id, EntityTypes.SECTION)}
                   />
@@ -102,9 +96,6 @@ export default function SideBar(props: ISideBarProps) {
                           // Render each Page
                           <li key={page.id} className="pages__item">
                             <a href='#' onClick={() => setPageId(page.id)}>{page.title}</a>
-                            <Button
-                              children={EnglishConstants.RENAME_BUTTON}
-                            />
                             <Button
                               children={EnglishConstants.DELETE_BUTTON}
                               onClick={() => handleDeleteEntity(page.id, EntityTypes.PAGE)}

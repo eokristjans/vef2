@@ -71,7 +71,7 @@ export default class Page extends React.Component<IPageProps, IPageState> {
   }
   setError = (error: string) => {
     this.setState({
-      error: error,
+      error: error + '',
     });
   }
 
@@ -115,6 +115,7 @@ export default class Page extends React.Component<IPageProps, IPageState> {
   }
 
   render() {
+
     return (
       <div>
         <div key="page-info">
@@ -127,6 +128,7 @@ export default class Page extends React.Component<IPageProps, IPageState> {
             {this.state.saving && 'Saving...' || 'Save Changes!'}
           </button>
           <span> Last saved: {this.state.page.updated.toLocaleString()}</span>
+          {/*  TODO: Display better error messages, like in MyNotebooks.tsx */}
           <span>{this.state.error}</span>
         </div>
   
