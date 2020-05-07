@@ -11,7 +11,7 @@ export interface IApiResult {
 export interface IHeaders {
   method: string;
   headers?: any;
-  body?: string;
+  body?: string | FormData;
 }
 
 export interface IUser {

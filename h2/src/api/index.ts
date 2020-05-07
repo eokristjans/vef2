@@ -29,6 +29,9 @@ async function deleteMethod(path: string): Promise<IApiResult> {
   return request('DELETE', path);
 }
 
+async function postFile(path: string, data: FormData): Promise<IApiResult> {
+  return fileRequest('POST', path, data);
+}
 
 async function request(method: string, path: string, data?: any) {
   const url = new URL(path, baseurl);
@@ -41,6 +44,51 @@ async function request(method: string, path: string, data?: any) {
   if (data) {
     options.headers = { 'content-type': 'application/json' };
     options.body = JSON.stringify(data);
+  }
+
+  const user = window.localStorage.getItem('user');
+
+  if (user) {
+    try {
+      const userData = JSON.parse(user);
+      console.log('data', userData)
+      options.headers['Authorization'] = `Bearer ${userData.token}`;
+    } catch (e) {
+      console.warn('Unable to parse user from localStorage', e);
+    }
+  }
+
+  const response = await fetch(url.href, options);
+
+  // Olafur's method does not handle failed delete requests
+  // const json = method.toLowerCase() !== 'delete' ? await response.json() : null;
+
+  let json = null;
+  try {
+    json = await response.json();
+  } catch (e) {
+    console.error('No JSON resposne from request. Probably would have been null: ' + e);
+  }
+
+  const { status, ok } = response;
+
+  return {
+    data: json,
+    ok,
+    status,
+  }
+}
+
+async function fileRequest(method: string, path: string, data: FormData) {
+  const url = new URL(path, baseurl);
+
+  const options: IHeaders = {
+    method,
+    headers: {},
+  };
+
+  if (data) {
+    options.body = data;
   }
 
   const user = window.localStorage.getItem('user');
@@ -326,7 +374,7 @@ async function deleteEntity(id: number, entityType: string): Promise<IApiResult>
     && entityType !== EntityTypes.PAGE    
   ) {
     // Throws error: 'Cannot delete entity of unknown type.' if the type is not one of the four options.
-    throw new Error('Cannot delete entity of unknown type.')
+    throw new Error('Cannot delete entity of unknown type.');
   }
 
   let result: IApiResult;
@@ -472,16 +520,40 @@ async function postNotebook(title: string): Promise<INotebook> {
  * Maps the result to image.
  * @param title 
  */
-async function postImage(title: string, url: string): Promise<IImage> {
-  let result;
+async function postImage(title: string, file: File): Promise<IImage> {
+
+  const data = new FormData();
+  data.append('title', file.name);
+  data.append('url', file);
+   
+
+  let result: IApiResult;
+
   try {
-    result = await postEntity(
-    { title: title },
-    EntityTypes.IMAGE,
-  );
-} catch (e) {
-  throw new Error(e);
-}
+    result = await postFile('/images', data);
+  } catch (e) {
+    // Throws unspecified error if HTTP request is unsuccessful.
+    console.error(ConsoleErrorMessages.POST_ERROR + EntityTypes.IMAGE, e);
+    throw new Error(e);
+  }
+
+  if (result && !result.ok) {
+  	// Throws error: 'expired token' if the user's token is expired.
+    // Throws error: 'invalid token' if the user's token doesn't match any user.
+    // Throws error: '${entityType} not found' if the entityType was not found or does not belong to the user.
+    let { data: { error } } = result;
+
+    // In case of field error, in which case they are returned as an array
+    if (isUndefined(error)) {
+      console.error('postImage() undefined error');
+      const { data: { errors } } = result;
+      error = errors[0]['error'];
+    }
+
+    console.error(ConsoleErrorMessages.POST_ERROR + EntityTypes.IMAGE + ': ' + error);
+    throw new Error(error);
+  }
+
   return mapImage(result.data);
 }
 
@@ -507,6 +579,11 @@ async function getImages({ limit = 10, offset = 0 } = {}): Promise<IImage[]> {
     const { data: { error } } = result;
     throw new Error(error);
   }
+
+  //  TODO: Return link 
+  console.warn('limit:' + limit);
+  console.warn(result.data.items.length);
+  console.warn(result.data._links.next);
 
   return result.data.items.map(mapImage);
 }

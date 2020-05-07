@@ -48,6 +48,7 @@ const EnglishErrorMessages = {
   POST_ERROR: 'Failed to create new ',
   HANDLE_EDITABLE_ERROR: 'Failed to handle editable text area.',
   ADMIN_CAN_NOT: 'This is most likely because admins can not delete or modify content created by other users.',
+  PERMITTED_FILE_TYPES: 'The only permitted file types are JPG and PNG.',
   
   ERROR_ADVICE: '. Refresh the page and try again. If the error persists, contact a system administrator.',
   UNKNOWN_ERROR: 'An unknown error occurred.'
