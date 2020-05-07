@@ -1,0 +1,14 @@
+@import '../../config.scss';
+
+.paging {
+  display: flex;
+  align-items: center;
+
+  &__prev {
+    margin-right: $gutter;
+  }
+
+  &__page {
+    margin-right: $gutter;
+  }
+}
