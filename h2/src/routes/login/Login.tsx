@@ -46,6 +46,7 @@ export default function Login() {
             <div className="login__row">
               <div className="login__col">
                 <h1 className="login__heading">{EnglishConstants.LOGIN}</h1>
+                {/* TODO: Get unauthorized error message to display correctly */}
                 {message && typeof message === 'string' && (
                   <p>{message}</p>
                 )}

@@ -95,7 +95,6 @@ export default class Users extends Component<{}, IUsersState> {
     });
   }
 
-
   render() {
     const {
       saving,
