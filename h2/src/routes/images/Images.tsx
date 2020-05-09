@@ -2,7 +2,7 @@
 import React, { Component, Fragment, ReactNode } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 
-import Button from '../../components/button/Button';
+
 
 import {
   getImages,
@@ -14,11 +14,10 @@ import {
 import { IImage, IApiResult } from '../../api/types';
 import { Context } from '../../UserContext';
 import useApi from '../../hooks/useApi';
-import useSideBar from '../../hooks/useSideBar';
 import NotFound from '../system-pages/NotFound';
 import NoAccess from '../system-pages/NoAccess';
-import SideBar from '../../components/sidebar/SideBar';
-import Page from '../../components/page/Page';
+import Button from '../../components/button/Button';
+import ImagesComponentWithRouter from '../../components/images/ImagesWithRouter';
 
 import { 
   EnglishConstants, 
@@ -30,20 +29,6 @@ import { debug } from '../../utils/debug';
 
 import './Images.scss';
 import Login from '../login/Login';
-
-
-interface IImagesProps {
-  children: (data: IImage[], loading: boolean, error: string) => JSX.Element;
-}
-
-function ImagesComponent({ children }: IImagesProps) {
-  // TODO: Add link to next page of images
-  const {items, loading, error} = useApi<IImage[]>(getImages.bind(null, { limit: 10 }), []);
-
-  return children(items, loading, error);
-}
-
-
 
 interface IImagesState {
   images: IImage[],
@@ -122,6 +107,7 @@ export default class Images extends Component<{}, IImagesState> {
       } finally {
         this.setSaving(false);
       }
+      if (!this.state.saving && !this.state.error) window.location.reload(false);
     }
   }
 
@@ -212,30 +198,10 @@ export default class Images extends Component<{}, IImagesState> {
           {/* <input type="text" value={this.state.fileTitle} onChange={ (e) => this.handleFileTextChange(e)}/> */}
           <button onClick={this.handleFileUpload}>Upload image</button>
         </div> 
-        <ul className="images__list">
-        <ImagesComponent>
-          {(images, loading, error) => (
-            <Fragment>
-            {loading && (
-              <li>Loading...</li>
-            )}
-            {error && (
-              <li>{error}</li>
-            )}
-            {!loading && !error && images.map(image => (
-              <li key={image.id} className="images__item">
-                <span>{image.title} </span>
-                <p>{image.url} </p>
-                <a href={image.url}>
-                  <img alt={image.title} src={image.url} width="150" height="150"/>
-                </a>
-              </li>
-            ))}
-            </Fragment>
-          )}
-        </ImagesComponent>
-      </ul>
-
+        <ImagesComponentWithRouter
+          limit={10}
+          paging={true}
+        />
       </Fragment>
     )
   }

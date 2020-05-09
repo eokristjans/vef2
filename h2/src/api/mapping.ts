@@ -2,7 +2,7 @@
  * Defines and exports functions that map JSON objects to corresponding interfaces (types).
  */
 
-import { IPage, ISection, INotebook, IImage } from './types';
+import { IPage, ISection, INotebook, IImage, IUser } from './types';
 
 
 export function mapPage(item: any): IPage {
@@ -55,4 +55,15 @@ export function mapImage(item: any): IImage {
   return image;
 }
 
+export function mapUser(item: any): IUser {
+  const user: IUser = {
+    id: item.id,
+    username: item.username,
+    email: item.email,
+    admin: item.admin,
+    created: new Date(item.created),
+    updated: new Date(item.updated),
+  }
+  return user;
+}
 

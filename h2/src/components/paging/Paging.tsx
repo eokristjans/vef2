@@ -27,13 +27,13 @@ export default function Paging(props: IPagingProps) {
     <div className="paging">
       {prev && (
         <div className="paging__prev">
-          <Button small onClick={handleOnClick('prev')}>Previous page</Button>
+          <Button className="button" small onClick={handleOnClick('prev')}>Previous page</Button>
         </div>
       )}
       <span className="paging__page">Page {page}</span>
       {next && (
         <div className="paging__next">
-          <Button small onClick={handleOnClick('next')}>Next Page</Button>
+          <Button className="button" small onClick={handleOnClick('next')}>Next Page</Button>
         </div>
       )}
     </div>

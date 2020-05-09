@@ -1,6 +1,6 @@
 import { IApiResult, IHeaders } from './types';
-import { IPage, ISection, INotebook, IImage } from './types';
-import { mapPage, mapSection, mapNotebook, mapImage } from './mapping';
+import { IPage, ISection, INotebook, IImage, IUser } from './types';
+import { mapPage, mapSection, mapNotebook, mapImage, mapUser } from './mapping';
 
 import { 
   EnglishErrorMessages, 
@@ -67,7 +67,7 @@ async function request(method: string, path: string, data?: any) {
   try {
     json = await response.json();
   } catch (e) {
-    console.error('No JSON resposne from request. Probably would have been null: ' + e);
+    console.error('No JSON response from request. Probably would have been null: ' + e);
   }
 
   const { status, ok } = response;
@@ -112,7 +112,7 @@ async function fileRequest(method: string, path: string, data: FormData) {
   try {
     json = await response.json();
   } catch (e) {
-    console.error('No JSON resposne from request. Probably would have been null: ' + e);
+    console.error(ConsoleErrorMessages.NO_JSON_RESPONSE + e);
   }
 
   const { status, ok } = response;
@@ -368,11 +368,8 @@ async function patchPage(page: IPage): Promise<IPage> {
 async function deleteEntity(id: number, entityType: string): Promise<IApiResult> {
 
   // Validate entityType
-  if ( entityType !== EntityTypes.IMAGE
-    && entityType !== EntityTypes.NOTEBOOK
-    && entityType !== EntityTypes.SECTION
-    && entityType !== EntityTypes.PAGE    
-  ) {
+  const entityTypes = Object.values(EntityTypes);
+  if (!entityTypes.includes(entityType)) {
     // Throws error: 'Cannot delete entity of unknown type.' if the type is not one of the four options.
     throw new Error('Cannot delete entity of unknown type.');
   }
@@ -580,14 +577,35 @@ async function getImages({ limit = 10, offset = 0 } = {}): Promise<IImage[]> {
     throw new Error(error);
   }
 
-  //  TODO: Return link 
-  console.warn('limit:' + limit);
-  console.warn(result.data.items.length);
-  console.warn(result.data._links.next);
-
   return result.data.items.map(mapImage);
 }
 
+
+/**
+ * Async function that fetches a Users and returns them.
+ * Throws unspecified error if HTTP request is unsuccessful.
+ * Throws error: 'expired token' if the user's token is expired.
+ * Throws error: 'invalid token' if the user's token doesn't match any user.
+ * @param param0 {limit, offset}
+ */
+async function getUsers({ limit = 10, offset = 0 } = {}): Promise<IUser[]> {
+  let result: IApiResult;
+
+  try {
+    result = await get(`/users`); // ?limit=${limit}&offset=${offset}
+  } catch (e) {
+    console.error(ConsoleErrorMessages.ERROR_FETCHING + 'users', e);
+    throw new Error(e);
+  }
+  if (result && !result.ok) {
+  	// Throws error: 'expired token' if the user's token is expired.
+    // Throws error: 'invalid token' if the user's token doesn't match any user.
+    const { data: { error } } = result;
+    throw new Error(error);
+  }
+
+  return result.data.items.map(mapUser);
+}
 
 /**
  * Async function that fetches an image and returns it.
@@ -637,4 +655,5 @@ export {
   getImages,
   getImage,
   postImage,
+  getUsers,
 };

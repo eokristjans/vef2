@@ -36,7 +36,7 @@ const ConsoleErrorMessages = {
   PATCH_ERROR: 'Error patching ',
   DELETE_ERROR: 'Error deleting ',
   POST_ERROR: 'Error posting ',
-
+  NO_JSON_RESPONSE: 'No JSON resposne from request. Probably would have been null: ',
 }
 
 const EnglishErrorMessages = {
@@ -59,6 +59,7 @@ const EntityTypes = {
   SECTION: 'section',
   PAGE: 'page',
   IMAGE: 'image',
+  USER: 'user',
 }
 
 module.exports = {
