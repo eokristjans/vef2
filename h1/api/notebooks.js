@@ -132,37 +132,39 @@ async function readNotebooksRoute(req, res) {
 async function readNotebooksWithSectionsWithPagesRoute(req, res) {
   const { user } = req;
 
-  // Only admins can access all notebooks
-  const filterUser = !user.admin ? 'WHERE user_id = $1' : '';
-
   // Prepare query
   const q = `
     SELECT
       *
     FROM
       notebooks
-      ${filterUser}
+    WHERE
+      user_id = $1
   `;
 
   const result = await query(
     q,
-    [!user.admin ? user.id : null].filter(Boolean),
+    [user.id].filter(Boolean),
   );
 
   const notebooks = result.rows;
 
   // Get the sections of each notebook
   for (let i = 0; i < notebooks.length; i++) {
+    // eslint-disable-next-line no-await-in-loop
     notebooks[i].sections = await readNotebookSections(
-      notebooks[i].id, notebooks[i].userId);
+      notebooks[i].id, notebooks[i].userId,
+    );
 
     // Get the pages of each section
     for (let j = 0; j < notebooks[i].sections.length; j++) {
+      // eslint-disable-next-line no-await-in-loop
       notebooks[i].sections[j].pages = await readSectionPages(
-        notebooks[i].sections[j].id, notebooks[i].userId);
+        notebooks[i].sections[j].id, notebooks[i].userId,
+      );
     }
   }
-  
+
   return res.json({
     results: notebooks,
   });
