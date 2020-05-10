@@ -1,4 +1,4 @@
-import React, { Component, Fragment, ReactNode } from 'react';
+import React, { Component, Fragment } from 'react';
 
 import { Link, NavLink } from 'react-router-dom';
 
@@ -15,10 +15,6 @@ import {
 
 
 import { INotebook, IPage, IApiResult } from '../../api/types';
-import { Context } from '../../UserContext';
-import useApi from '../../hooks/useApi';
-import useSideBar from '../../hooks/useSideBar';
-import NotFound from '../system-pages/NotFound';
 import NoAccess from '../system-pages/NoAccess';
 
 import SideBar from '../../components/sidebar/SideBar';
@@ -42,7 +38,6 @@ interface INotebooksState {
   notebookId: number, 
   sectionId: number,
   pageId: number,
-  prevPageId: number,
   deleting: boolean,
   saving: boolean,
   error: string,
@@ -54,7 +49,6 @@ const initialState: INotebooksState = {
   notebookId: 0,
   sectionId: 0,
   pageId: 0,
-  prevPageId: 0,
   deleting: false,
   saving: false,
   error: '',
@@ -155,7 +149,6 @@ export default class Notebooks extends Component<INotebooksProps, INotebooksStat
     const { error, pageId} = this.state;
     let result;
     this.setState({deleting: true});
-    // Delete the entity
     try {
       result = await deleteEntity(id, entityType);
       if (!result.ok) {
@@ -174,6 +167,8 @@ export default class Notebooks extends Component<INotebooksProps, INotebooksStat
     this.setState({deleting: false});
   }
 
+
+  /** Asynchronous method that gets Notebooks and sets the state. */
   setNotebooksWithContents = async () => {
     // Get the notebooks and set the state
     try {
@@ -285,13 +280,12 @@ export default class Notebooks extends Component<INotebooksProps, INotebooksStat
             />
           </div>
           <div className="col-9">
-            {
-              (this.state.page !== undefined) && 
+            {(this.state.page !== undefined) && (
               <Page
                 key={this.state.page.id}
                 page={this.state.page}
               />
-            }
+            )}
           </div>
         </div>
       </Fragment>

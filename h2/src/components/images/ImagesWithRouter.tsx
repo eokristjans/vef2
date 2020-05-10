@@ -14,6 +14,7 @@ import { IImage, IApiResult } from '../../api/types';
 import { Context } from '../../UserContext';
 import useApi from '../../hooks/useApi';
 import Paging from '../paging/Paging';
+import NoAccess from '../../routes/system-pages/NoAccess';
 
 import { 
   EnglishConstants, 
@@ -100,8 +101,25 @@ function ImagesComponentWithRouter(
       setDeleting(false);
     }
   }
+  
+  // TODO: Not good to match on strings
+  if (error.endsWith('invalid token')) {
+    console.error('Notebooks ' + error);
+    return (<NoAccess/>);
+  }
 
-  return (    
+  if (error == 'Error: expired token') {
+    console.error('Notebooks ' + error);
+    // Remove the user from localStorage
+    localStorage.removeItem('user');
+
+    // This is brute force...
+    // window.location.replace('/login');
+    // TODO: return <Login /> with new prop, message = 'Your login session expired'
+    return (<Login/>);
+  }
+
+  return (
     <Fragment>
       {deleting && (
         <li>Deleting...</li>
