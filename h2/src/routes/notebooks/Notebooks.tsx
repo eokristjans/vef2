@@ -131,7 +131,7 @@ export default class Notebooks extends Component<INotebooksProps, INotebooksStat
       else if (entityType === EntityTypes.SECTION) await postSection(text, entityId);
       else if (entityType === EntityTypes.NOTEBOOK) await postNotebook(text);
       else {
-        console.error('Can only handle Editable Focus Out for notebooks and sections');
+        console.error('Can only handle Editable Focus Out for notebooks, sections and pages');
         this.setState({ error: EnglishErrorMessages.HANDLE_EDITABLE_ERROR });
       }
     } catch (e) {
