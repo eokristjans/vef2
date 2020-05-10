@@ -96,18 +96,6 @@ export default class Notebooks extends Component<INotebooksProps, INotebooksStat
   }
 
   async componentDidUpdate() {
-    // Get new Page if pageId changed
-    if (this.state.pageId !== this.state.prevPageId) {
-      try {
-        this.setState({
-          page: await getPage(this.state.pageId),
-          prevPageId: this.state.pageId,
-        });
-      } catch(e) {
-        console.error(e)
-        this.setError(e);
-      }
-    }
   }
 
   /**
@@ -164,6 +152,7 @@ export default class Notebooks extends Component<INotebooksProps, INotebooksStat
    */
   async handleDeleteEntity(id: number, entityType: string) {
 
+    const { error, pageId} = this.state;
     let result;
     this.setState({deleting: true});
     // Delete the entity
@@ -176,8 +165,11 @@ export default class Notebooks extends Component<INotebooksProps, INotebooksStat
         this.setError('');
       }
     } catch (e) {
-      this.setError(e);
       console.error(e);
+      this.setError(e);
+    }
+    if (entityType === EntityTypes.PAGE && error === '' && pageId === id) {
+      this.setPageId(0);
     }
     this.setState({deleting: false});
   }
@@ -190,6 +182,7 @@ export default class Notebooks extends Component<INotebooksProps, INotebooksStat
         notebooksWithContents: newNotebooksWithContents,
       });
     } catch (e) {
+      console.error(e);
       this.setError(e);
     }
   }
@@ -203,9 +196,20 @@ export default class Notebooks extends Component<INotebooksProps, INotebooksStat
       sectionId: id,
     });
   }
-  setPageId = (id: number) => {
+  setPageId = async (id: number) => {
+    debug('setPageId: ' + id);
+    let newPage;
+    if (id > 0) {
+      try {
+        newPage = await getPage(id);
+      } catch (e) {
+        console.error(e);
+        this.setError(e);
+      }
+    }
     this.setState({
       pageId: id,
+      page: newPage,
     });
   }
   setError = (error: any) => {
@@ -227,7 +231,7 @@ export default class Notebooks extends Component<INotebooksProps, INotebooksStat
       console.error('Notebooks ' + error);
       return (<NoAccess/>);
     }
-    
+
     if (error == 'Error: expired token') {
       console.error('Notebooks ' + error);
       // Remove the user from localStorage
