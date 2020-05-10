@@ -1,3 +1,7 @@
+/**
+ * Contains methods to perform HTTP requests to various API endpoints.
+ */
+
 import { IApiResult, IHeaders } from './types';
 import { IPage, ISection, INotebook, IImage, IUser } from './types';
 import { mapPage, mapSection, mapNotebook, mapImage, mapUser } from './mapping';
@@ -8,8 +12,7 @@ import {
   EntityTypes,
  } from '../MyConstClass';
 
-import { debug } from '../utils/debug';
-import { isUndefined } from 'util';
+ import { isUndefined } from 'util';
 
 const baseurl:string | undefined = process.env.REACT_APP_API_URL;
 
@@ -33,6 +36,7 @@ async function postFile(path: string, data: FormData): Promise<IApiResult> {
   return fileRequest('POST', path, data);
 }
 
+/** Async method to perform a HTTP request with option JSON data. */
 async function request(method: string, path: string, data?: any) {
   const url = new URL(path, baseurl);
 
@@ -60,9 +64,7 @@ async function request(method: string, path: string, data?: any) {
 
   const response = await fetch(url.href, options);
 
-  // Olafur's method does not handle failed delete requests
-  // const json = method.toLowerCase() !== 'delete' ? await response.json() : null;
-
+  // Perform request and wait for response. Catch error from null response when deleting.
   let json = null;
   try {
     json = await response.json();
@@ -79,6 +81,7 @@ async function request(method: string, path: string, data?: any) {
   }
 }
 
+/** Async method to perform a HTTP request with FormData. */
 async function fileRequest(method: string, path: string, data: FormData) {
   const url = new URL(path, baseurl);
 
@@ -105,9 +108,7 @@ async function fileRequest(method: string, path: string, data: FormData) {
 
   const response = await fetch(url.href, options);
 
-  // Olafur's method does not handle failed delete requests
-  // const json = method.toLowerCase() !== 'delete' ? await response.json() : null;
-
+  // Perform request and wait for response. Catch error from null response when deleting.
   let json = null;
   try {
     json = await response.json();
@@ -172,8 +173,6 @@ async function loginUser(username: string, password: string): Promise<any> {
 async function getNotebooksWithContents(): Promise<INotebook[]> {
   let result: IApiResult;
 
-  debug('src api index.ts getNotebooks()');
-
   try {
     result = await get('/notebooks-with-contents');
   } catch (e) {
@@ -202,8 +201,6 @@ async function getNotebooksWithContents(): Promise<INotebook[]> {
  */
 async function getNotebooks(): Promise<INotebook[]> {
   let result: IApiResult;
-
-  debug('src api index.ts getNotebooks()');
 
   try {
     result = await get('/notebooks');
@@ -235,8 +232,6 @@ async function getNotebooks(): Promise<INotebook[]> {
 async function getNotebook(id: number | string): Promise<INotebook> {
   let result: IApiResult;
 
-  debug(`src api index.ts getNotebook(${id})`);
-
   try {
     result = await get(`/notebooks/${id}`);
   } catch (e) {
@@ -267,8 +262,6 @@ async function getNotebook(id: number | string): Promise<INotebook> {
  */
 async function getSection(id: number | string): Promise<ISection> {
   let result: IApiResult;
-
-  debug(`src api index.ts getSection(${id})`);
 
   try {
     result = await get(`/sections/${id}`);
@@ -616,8 +609,6 @@ async function getUsers({ limit = 10, offset = 0 } = {}): Promise<IUser[]> {
  */
 async function getImage(id: number | string): Promise<IImage> {
   let result: IApiResult;
-
-  debug(`src api index.ts getImage(${id})`);
 
   try {
     result = await get(`/images/${id}`);

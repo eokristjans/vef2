@@ -1,42 +1,26 @@
-import React, { Fragment, Component } from 'react';
-import { Link, NavLink } from 'react-router-dom';
-import { useState, useEffect } from 'react';
+/**
+ * Component that provides a sidebar with the user's notebooks and their contents.
+ */
+
+import React, { Fragment } from 'react';
 
 import EditableLabel from '../editable-label/EditableLabel';
-
-import {
-  // deleteNotebook,
-  // deleteSection
-} from '../../api';
-
-import { INotebook, ISection, IPage } from '../../api/types';
-import useApi from '../../hooks/useApi';
-import useSideBar from '../../hooks/useSideBar';
-import NotFound from '../../routes/system-pages/NotFound';
-import NoAccess from '../../routes/system-pages/NoAccess';
-
+import { INotebook } from '../../api/types';
 import Button from '../button/Button';
-
 import { 
   EnglishConstants,
-  EnglishErrorMessages,
   EntityTypes,
 } from '../../MyConstClass';
 
-import { debug } from '../../utils/debug';
-
 import './SideBar.scss';
-
-// TODO: Add `preventDefault` to onClicks?
-
 
 interface ISideBarProps {
   notebookId: number,
   sectionId: number,
+  notebooksWithContents: INotebook[],
   setNotebookId: (id: number) => void,
   setSectionId: (id: number) => void,
   setPageId: (id: number) => void,
-  notebooksWithContents: INotebook[],
   handleDeleteEntity: (id: number, entityType: string) => Promise<void>,
   handleEditableFocus: (text: string, entityType: string, entityId: number) => void,
   handleEditableFocusOut: (text: string, entityType: string, entityId: number) => Promise<void>,
@@ -159,13 +143,4 @@ export default function SideBar(props: ISideBarProps) {
       </ul>
     </Fragment>
   );
-}
-
-/**
- * Just an example click handler
- * @param id 
- * @param event 
- */
-function handleNotebookClick(id: number, event: React.MouseEvent) {
-  debug('handleNotebookClick ' + id);
 }

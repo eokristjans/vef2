@@ -1,9 +1,5 @@
 import React, { Component, Fragment } from 'react';
 
-import { Link, NavLink } from 'react-router-dom';
-
-import Button from '../../components/button/Button';
-
 import {
   getNotebooksWithContents,
   getPage,
@@ -13,10 +9,10 @@ import {
   postNotebook,
 } from '../../api';
 
-
-import { INotebook, IPage, IApiResult } from '../../api/types';
+import { INotebook, IPage } from '../../api/types';
 import NoAccess from '../system-pages/NoAccess';
-
+import Login from '../login/Login';
+import Button from '../../components/button/Button';
 import SideBar from '../../components/sidebar/SideBar';
 import Page from '../../components/page/Page';
 
@@ -26,10 +22,7 @@ import {
   EntityTypes,
 } from '../../MyConstClass';
 
-import { debug } from '../../utils/debug';
-
 import './Notebooks.scss';
-import Login from '../login/Login';
 
 
 interface INotebooksState {
@@ -54,21 +47,15 @@ const initialState: INotebooksState = {
   error: '',
 };
 
-// TODO: ??
-interface INotebooksProps {
-  pageId?: number,
-  match?: any,
-}
-
 /**
  * Route to /notebooks.
  * Manages which notebooks, section and page is open.
  * Fetches the notebooks when mounted,
  * Fetches a page when opened.
  */
-export default class Notebooks extends Component<INotebooksProps, INotebooksState> {
+export default class Notebooks extends Component<{}, INotebooksState> {
 
-  constructor(props: INotebooksProps) {
+  constructor(props: {}) {
     super(props);
     this.state = initialState;
 
@@ -79,7 +66,6 @@ export default class Notebooks extends Component<INotebooksProps, INotebooksStat
     this.setNotebooksWithContents = this.setNotebooksWithContents.bind(this);
 
     this.handleDeleteEntity = this.handleDeleteEntity.bind(this);
-
     this.handleEditableFocus = this.handleEditableFocus.bind(this);
     this.handleEditableFocusOut = this.handleEditableFocusOut.bind(this);
   }
@@ -89,18 +75,8 @@ export default class Notebooks extends Component<INotebooksProps, INotebooksStat
     await this.setNotebooksWithContents();
   }
 
-  async componentDidUpdate() {
-  }
-
-  /**
-   * Currently does nothing.
-   * @param text 
-   * @param entityType 
-   * @param entityId 
-   */
-  handleEditableFocus(text: string, entityType: string, entityId: number) {
-    return;
-  }
+  /** Does nothing. Is passed to component. */
+  handleEditableFocus(text: string, entityType: string, entityId: number) { return; }
 
   /**
    * Creates a new entity of given entityType, with title from text.
@@ -136,7 +112,6 @@ export default class Notebooks extends Component<INotebooksProps, INotebooksStat
       this.setState({ saving: false });
     }
   }
-  
   
   /**
    * Deletes an entity
@@ -196,7 +171,6 @@ export default class Notebooks extends Component<INotebooksProps, INotebooksStat
    * number then it also fetches the page and sets this.state.page.
    */
   setPageId = async (id: number) => {
-    debug('setPageId: ' + id);
     let newPage;
     if (id > 0) {
       try {
@@ -226,12 +200,12 @@ export default class Notebooks extends Component<INotebooksProps, INotebooksStat
     } = this.state;
 
     // TODO: Not good to match on strings
-    if (error == 'Error: invalid token') {
+    if (error.endsWith('invalid token')) {
       console.error('Notebooks ' + error);
       return (<NoAccess/>);
     }
 
-    if (error == 'Error: expired token') {
+    if (error.endsWith('expired token')) {
       console.error('Notebooks ' + error);
       // Remove the user from localStorage
       localStorage.removeItem('user');
@@ -246,7 +220,7 @@ export default class Notebooks extends Component<INotebooksProps, INotebooksStat
       console.error('Notebooks ' + error);
     }
 
-    if (error != '') {
+    if (error !== '') {
       // TODO: Handle error from failed server request or other unknown error.
       console.error('Notebooks UNHANDLED ' + error);
     }

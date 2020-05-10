@@ -1,20 +1,19 @@
-
+/**
+ * Component that displays the user's images. Supports Paging.
+ */
 import React, { Component, Fragment, ReactNode, useState } from 'react';
-import { Link, NavLink, withRouter } from 'react-router-dom';
-
-import Button from '../button/Button';
+import { withRouter } from 'react-router-dom';
 
 import {
   getImages,
   deleteEntity,
 } from '../../api';
-
-
-import { IImage, IApiResult } from '../../api/types';
-import { Context } from '../../UserContext';
+import { IImage } from '../../api/types';
 import useApi from '../../hooks/useApi';
 import Paging from '../paging/Paging';
 import NoAccess from '../../routes/system-pages/NoAccess';
+import Login from '../../routes/login/Login';
+import Button from '../button/Button';
 
 import { 
   EnglishConstants, 
@@ -22,11 +21,7 @@ import {
   EntityTypes,
 } from '../../MyConstClass';
 
-import { debug } from '../../utils/debug';
-
 import './Images.scss';
-import Login from '../../routes/login/Login';
-
 
 interface IImagesProps {
   limit?: number;

@@ -1,5 +1,8 @@
-import React, { Fragment } from 'react';
-import { Link } from 'react-router-dom';
+/**
+ * Component that provides links to previous and next pagination pages.
+ */
+
+import React from 'react';
 
 import Button from '../button/Button';
 

@@ -1,19 +1,18 @@
-
-import React, { Component, Fragment, ReactNode, useState } from 'react';
-import { Link, NavLink, withRouter } from 'react-router-dom';
-
-import Button from '../button/Button';
+/**
+ * Component that provides a list of all users.
+ */
+import React, { Fragment, useState } from 'react';
+import { withRouter } from 'react-router-dom';
 
 import {
   getUsers,
   deleteEntity,
 } from '../../api';
-
-
-import { IUser, IApiResult } from '../../api/types';
-import { Context } from '../../UserContext';
+import { IUser } from '../../api/types';
 import useApi from '../../hooks/useApi';
 import Paging from '../paging/Paging';
+import Button from '../button/Button';
+import Login from '../../routes/login/Login'; // TODO: Expired token redirection.
 
 import { 
   EnglishConstants, 
@@ -21,11 +20,7 @@ import {
   EntityTypes,
 } from '../../MyConstClass';
 
-import { debug } from '../../utils/debug';
-
 import './Users.scss';
-import Login from '../../routes/login/Login';
-
 
 interface IUsersProps {
   limit?: number;

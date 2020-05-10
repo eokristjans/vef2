@@ -1,11 +1,12 @@
 import React from 'react';
 import { Link, NavLink } from 'react-router-dom';
 
-import User from '../user/User';
+import User from './User';
 import { EnglishConstants } from '../../MyConstClass';
 
 import './Header.scss';
 
+/** Defines a reusable Header component. */
 export default function Home() {
   // TODO: If user is admin, link to list of all users.
   return (
@@ -20,23 +21,7 @@ export default function Home() {
             <div className="header__user">
               <User />
             </div>
-            {/* <div className="header__cart">
-              <NavLink activeClassName="header__link--selected" exact to="/cart">Karfa</NavLink>
-            </div> */}
           </div>
-
-          {/* <div className="header__bottom">
-            <nav className="header__nav">
-              <ul className="header__list">
-                <li className="header__item">
-                  <NavLink activeClassName="header__link--selected" exact to="/">Nýjar vörur</NavLink>
-                </li>
-                <li className="header__item">
-                  <NavLink activeClassName="header__link--selected" to="/categories">Flokkar</NavLink>
-                </li>
-              </ul>
-            </nav>
-          </div> */}
 
         </div>
       </div>

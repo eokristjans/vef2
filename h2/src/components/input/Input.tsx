@@ -1,3 +1,6 @@
+/**
+ * Reuseable component for user input.
+ */
 import React from 'react';
 
 import './Input.scss';

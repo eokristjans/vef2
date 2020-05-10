@@ -10,6 +10,7 @@ interface IButtonProps {
   small?: boolean;
 }
 
+/** Defines a reusable button component. */
 export default function Button(props: IButtonProps) {
   const { children, onClick = () => {}, disabled = false, className = '', small = false } = props;
 

@@ -1,8 +1,8 @@
-
-import React, { Component, Fragment, ReactNode } from 'react';
+/**
+ * /images route.
+ */
+import React, { Component, Fragment } from 'react';
 import { Link, NavLink } from 'react-router-dom';
-
-
 
 import {
   getImages,
@@ -11,13 +11,11 @@ import {
 } from '../../api';
 
 
-import { IImage, IApiResult } from '../../api/types';
-import { Context } from '../../UserContext';
-import useApi from '../../hooks/useApi';
-import NotFound from '../system-pages/NotFound';
+import { IImage } from '../../api/types';
 import NoAccess from '../system-pages/NoAccess';
 import Button from '../../components/button/Button';
 import ImagesComponentWithRouter from '../../components/images/ImagesWithRouter';
+import Login from '../login/Login';
 
 import { 
   EnglishConstants, 
@@ -25,10 +23,7 @@ import {
   EntityTypes,
 } from '../../MyConstClass';
 
-import { debug } from '../../utils/debug';
-
 import './Images.scss';
-import Login from '../login/Login';
 
 interface IImagesState {
   images: IImage[],
@@ -59,20 +54,9 @@ export default class Images extends Component<{}, IImagesState> {
     super(props);
     this.state = initialState;
 
-    // Basic setters
     this.setImages = this.setImages.bind(this);
     this.handleFileChange = this.handleFileChange.bind(this);
     this.handleFileUpload = this.handleFileUpload.bind(this);
-
-    // this.handleDeleteEntity = this.handleDeleteEntity.bind(this);
-  }
-
-  async componentDidMount() {
-    // Get the images and set the state
-    // await this.setImages();
-  }
-
-  async componentDidUpdate() {
   }
 
   handleFileChange(selectedFiles: FileList | null) {

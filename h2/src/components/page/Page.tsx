@@ -1,7 +1,8 @@
-import React, { Fragment, ThHTMLAttributes } from 'react';
+/**
+ * Component that displays a page as editable text with live markdown rendering. 
+ */
 
-// See https://github.com/HarryChen0506/react-markdown-editor-lite/blob/HEAD/docs/configure.md#onimageupload
-// for image upload example.
+import React from 'react';
 
 // See https://www.npmjs.com/package/react-markdown-editor-lite
 import MarkdownIt from 'markdown-it';
@@ -13,16 +14,10 @@ import {
 } from '../../api';
 
 import { IPage } from '../../api/types';
-import NotFound from '../../routes/system-pages/NotFound';
-import NoAccess from '../../routes/system-pages/NoAccess';
-
-import { useState, useEffect } from 'react';
 
 import { EnglishConstants, EnglishErrorMessages } from '../../MyConstClass';
 
-import { debug } from '../../utils/debug';
-
-// import './SideBar.scss';
+import './Page.scss';
 
 
 interface IPageProps {
@@ -95,7 +90,6 @@ export default class Page extends React.Component<IPageProps, IPageState> {
         const patchedPage = await patchPage(this.state.page);
         this.setPage(patchedPage);
       } catch (e) {
-        // TODO: NoAccess or NotFound?
         this.setError(e);
       }
       // Finished saving

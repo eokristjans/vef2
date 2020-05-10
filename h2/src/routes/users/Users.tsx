@@ -1,21 +1,16 @@
-
-import React, { Component, Fragment, ReactNode } from 'react';
-import { Link, NavLink } from 'react-router-dom';
-
-
+/**
+ * Route to /users.
+ */
+import React, { Component, Fragment } from 'react';
 
 import {
   getUsers,
 } from '../../api';
-
-
 import { IUser, IApiResult } from '../../api/types';
-import { Context } from '../../UserContext';
-import useApi from '../../hooks/useApi';
-import NotFound from '../system-pages/NotFound';
 import NoAccess from '../system-pages/NoAccess';
-import Button from '../../components/button/Button';
 import UsersComponentWithRouter from '../../components/users/UsersWithRouter';
+import Button from '../../components/button/Button';
+import Login from '../login/Login';
 
 import { 
   EnglishConstants, 
@@ -23,10 +18,7 @@ import {
   EntityTypes,
 } from '../../MyConstClass';
 
-import { debug } from '../../utils/debug';
-
 import './Users.scss';
-import Login from '../login/Login';
 
 interface IUsersState {
   users: IUser[],
@@ -54,18 +46,12 @@ export default class Users extends Component<{}, IUsersState> {
     super(props);
     this.state = initialState;
 
-    // Basic setters
     this.setUsers = this.setUsers.bind(this);
-
-    // this.handleDeleteEntity = this.handleDeleteEntity.bind(this);
   }
 
   async componentDidMount() {
     // Get the Users and set the state
     // await this.setUsers();
-  }
-
-  async componentDidUpdate() {
   }
 
   setUsers = async () => {

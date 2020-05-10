@@ -1,5 +1,5 @@
 /**
- * Contains header links for the user, based on whether or not he's authenticated.
+ * Component for the header, based on if the user is authenticated and an admin.
  */
 
 import React, { Fragment } from 'react';
@@ -20,7 +20,6 @@ export default function User() {
     <Context.Consumer>
       {({ user, authenticated, logoutUser }) => {
 
-
         if (!authenticated) {
           return (
             <Fragment>
@@ -31,30 +30,6 @@ export default function User() {
               {EnglishConstants.LOGIN}
               </NavLink>
             </Fragment>
-          )
-        }
-
-        if (user.user.admin) {
-          return (
-            <p className="user__info">
-              <NavLink
-                activeClassName="user__link--selected"
-                className="user__link" to="/logout"
-                onClick={onClick(logoutUser)}
-              >
-                {user.user.username} {EnglishConstants.LOGOUT}
-              </NavLink>
-              {/* TODO: Style */}
-              <NavLink activeClassName="user__link--selected" className="user__link" to="/notebooks">
-                <span> All Notebooks </span>
-              </NavLink>
-              <NavLink activeClassName="user__link--selected" className="user__link" to="/images">
-                <span> All Images </span>
-              </NavLink>            
-              <NavLink activeClassName="user__link--selected" className="user__link" to="/users">
-                <span> All Users </span>
-              </NavLink>
-            </p>
           )
         }
 
@@ -74,6 +49,11 @@ export default function User() {
             <NavLink activeClassName="user__link--selected" className="user__link" to="/images">
               <span> {EnglishConstants.MY_IMAGES}</span>
             </NavLink>
+            {user.user.admin && (
+              <NavLink activeClassName="user__link--selected" className="user__link" to="/users">
+              <span> Users </span>
+              </NavLink>
+            )}
           </p>
         );
       }}

@@ -1,7 +1,8 @@
-// TODO: Documentation
+/**
+ * Hook that provides easy useage of API in functional components.
+ */
 
 import { useState, useEffect } from 'react';
-
 import { debug } from '../utils/debug';
 
 export default function useApi<T>(apiCall: () => Promise<T>, defaultValue: T, deps: Array<any> = []) {

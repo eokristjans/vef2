@@ -9,6 +9,7 @@ import PropTypes from 'prop-types';
 const ENTER_KEY_CODE = 13;
 const DEFAULT_LABEL_PLACEHOLDER = "Click To Edit";
 
+/** Defines a reusable component with an editable label. */
 export default class EditableLabel extends React.Component {
     constructor(props) {
         super(props);
