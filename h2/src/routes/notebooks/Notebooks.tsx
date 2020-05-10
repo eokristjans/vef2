@@ -196,6 +196,10 @@ export default class Notebooks extends Component<INotebooksProps, INotebooksStat
       sectionId: id,
     });
   }
+  /**
+   * Asynchronous method that sets this.state.pageId and if the id is a positive
+   * number then it also fetches the page and sets this.state.page.
+   */
   setPageId = async (id: number) => {
     debug('setPageId: ' + id);
     let newPage;
