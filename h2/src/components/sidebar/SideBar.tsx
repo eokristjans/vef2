@@ -53,11 +53,13 @@ export default function SideBar(props: ISideBarProps) {
    */
   return (
     <Fragment>
-      <ul>
+      <ul className="sidebar">
         {notebooksWithContents.map(notebook => (
           // Render each Notebook
-          <li key={notebook.id} className="notebooks__item">
-            <a href='#' onClick={() => setNotebookId(notebook.id)}>{notebook.title}</a>
+          <li key={notebook.id} className="sidebar__item">
+            <div className="sidebar__item__elem" onClick={() => setNotebookId(notebook.id)}>
+              {notebook.title}
+            </div>
             <Button
               children={EnglishConstants.DELETE_BUTTON}
               onClick={() => handleDeleteEntity(notebook.id, EntityTypes.NOTEBOOK)}
@@ -67,19 +69,23 @@ export default function SideBar(props: ISideBarProps) {
               <ul>
                 {notebook.sections.map(section => (
                   // Render each Section
-                  <li key={section.id} className="sections__item">
-                  <a href='#' onClick={() => setSectionId(section.id)}>{section.title}</a>
-                  <Button
-                    children={EnglishConstants.DELETE_BUTTON}
-                    onClick={() => handleDeleteEntity(section.id, EntityTypes.SECTION)}
-                  />
+                  <li key={section.id} className="sidebar__item">
+                    <div className="sidebar__item__elem" onClick={() => setSectionId(section.id)}>
+                      {section.title}
+                    </div>
+                    <Button
+                      children={EnglishConstants.DELETE_BUTTON}
+                      onClick={() => handleDeleteEntity(section.id, EntityTypes.SECTION)}
+                    />
                   {
                     (sectionId === section.id) && (section.pages !== undefined) &&
                     <ul>
                       {section.pages.map(page => (
                           // Render each Page
-                          <li key={page.id} className="pages__item">
-                            <a href='#' onClick={() => setPageId(page.id)}>{page.title}</a>
+                          <li key={page.id} className="sidebar__item">
+                            <div className="sidebar__item__elem" onClick={() => setPageId(page.id)}>
+                              {page.title}
+                            </div>
                             <Button
                               children={EnglishConstants.DELETE_BUTTON}
                               onClick={() => handleDeleteEntity(page.id, EntityTypes.PAGE)}
@@ -87,7 +93,7 @@ export default function SideBar(props: ISideBarProps) {
                           </li>
                         ))
                       }
-                      <li>
+                      <li className="sidebar__item sidebar__item__elem">
                         <EditableLabel
                           text={EnglishConstants.CLICK_TO_CREATE_NEW + EntityTypes.PAGE}
                           labelClassName='myLabelClass'
@@ -106,7 +112,7 @@ export default function SideBar(props: ISideBarProps) {
                   }
                   </li>
                 ))}
-                <li>                
+                <li className="sidebar__item sidebar__item__elem">                
                   <EditableLabel
                     text={EnglishConstants.CLICK_TO_CREATE_NEW + EntityTypes.SECTION}
                     labelClassName='myLabelClass'
@@ -125,7 +131,7 @@ export default function SideBar(props: ISideBarProps) {
             }
           </li>
         ))}
-        <li> 
+        <li className="sidebar__item sidebar__item__elem"> 
           <EditableLabel
             text={EnglishConstants.CLICK_TO_CREATE_NEW + EntityTypes.NOTEBOOK}
             labelClassName='myLabelClass' 
