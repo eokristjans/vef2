@@ -1,0 +1,78 @@
+@import '../../config.scss';
+
+.images {
+  @include container;
+
+  &__list {
+    @include row;
+    flex-wrap: wrap;
+    list-style: none;
+  }
+
+  &__item {
+    @include columns(12);
+    margin-bottom: $gutter;
+    display: flex;
+
+    @media (min-width: 800px) {
+      @include columns(6);
+    }
+
+    @media (min-width: 1200px) {
+      @include columns(4);
+    }
+  }
+}
+
+.image {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+
+  color: $color-font;
+
+  &__image {
+    width: 100%;
+    height: 100%;
+    height: 300px;
+
+    margin-bottom: $gutter / 2;
+  }
+
+  &__img {
+    object-fit: cover;
+    object-position: center;
+    width: 100%;
+    height: 100%;
+  }
+
+  // &__url {
+  //   white-space: nowrap;
+  //   overflow: hidden;
+  //   text-overflow: ellipsis ellipsis;
+
+  // }
+
+  &__content {
+    width: 380px;
+  }
+
+  table {
+    display: inline-block;
+    position: relative;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  tr {
+    display: flex;
+  }
+
+  td {    
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+}

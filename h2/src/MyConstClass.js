@@ -29,6 +29,10 @@ const EnglishConstants = {
   RENAME_BUTTON: 'R',
   
   CLICK_TO_CREATE_NEW: 'Click to create a new ',
+
+  DELETING: 'Deleting...',
+  LOADING: 'Loading...',
+  SAVING: 'Saving...',
 };
 
 const ConsoleErrorMessages = {
@@ -51,7 +55,9 @@ const EnglishErrorMessages = {
   PERMITTED_FILE_TYPES: 'The only permitted file types are JPG and PNG.',
   
   ERROR_ADVICE: '. Refresh the page and try again. If the error persists, contact a system administrator.',
-  UNKNOWN_ERROR: 'An unknown error occurred.'
+  UNKNOWN_ERROR: 'An unknown error occurred.',
+  INVALID_TOKEN: 'invalid token',
+  EXPIRED_TOKEN: 'expired token',
 }
 
 const EntityTypes = {

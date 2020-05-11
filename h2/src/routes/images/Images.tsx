@@ -183,7 +183,7 @@ export default class Images extends Component<{}, IImagesState> {
           <button onClick={this.handleFileUpload}>Upload image</button>
         </div> 
         <ImagesComponentWithRouter
-          limit={10}
+          limit={6}
           paging={true}
         />
       </Fragment>

@@ -12,7 +12,6 @@ import { IImage } from '../../api/types';
 import useApi from '../../hooks/useApi';
 import Paging from '../paging/Paging';
 import NoAccess from '../../routes/system-pages/NoAccess';
-import Login from '../../routes/login/Login';
 import Button from '../button/Button';
 
 import { 
@@ -31,23 +30,12 @@ interface IImagesProps {
   children: (data: IImage[], loading: boolean, error: string) => JSX.Element;
 }
 
-function ImagesComponentWithRouter(
-  {
-    limit = 10,
-    paging = false,
-    location,
-    history,
-    children,
-  }: IImagesProps
-) {
+function ImagesComponentWithRouter({ limit = 10, paging = false, location, history, }: IImagesProps) {
 
   const params = new URLSearchParams(location.search);
-
   const page: number = Number(params.get('page')) || 1;
-
   const offset = (page - 1) * limit;
 
-  // TODO: Add link to next page of images
   const {items, loading, error} = useApi<IImage[]>(getImages.bind(null, { limit, offset }), [], [page]);
   const [deleting, setDeleting] = useState(false);
   const [deleteError, setDeleteError] = useState('');
@@ -96,22 +84,15 @@ function ImagesComponentWithRouter(
       setDeleting(false);
     }
   }
-  
-  // TODO: Not good to match on strings
-  if (error.endsWith('invalid token')) {
-    console.error('Notebooks ' + error);
-    return (<NoAccess/>);
-  }
 
-  if (error == 'Error: expired token') {
-    console.error('Notebooks ' + error);
+  if (error.endsWith(EnglishErrorMessages.EXPIRED_TOKEN)) {
     // Remove the user from localStorage
     localStorage.removeItem('user');
+    window.location.replace('/login');
+  }
 
-    // This is brute force...
-    // window.location.replace('/login');
-    // TODO: return <Login /> with new prop, message = 'Your login session expired'
-    return (<Login/>);
+  if (error.endsWith(EnglishErrorMessages.INVALID_TOKEN)) {
+    return (<NoAccess/>);
   }
 
   return (
@@ -128,21 +109,54 @@ function ImagesComponentWithRouter(
       {error && (
         <li>Failed to load images. {error}</li>
       )}
-      <ul className="images__list">
-      {!loading && !error && items.map(image => (
-        <li key={image.id} className="images__item">
-          <span>{image.title} </span>
-          <p>{image.url} </p>
-          <a href={image.url}>
-            <img alt={image.title} src={image.url} width="150" height="150"/>
-          </a>
-          <Button
-            children={EnglishConstants.DELETE_BUTTON}
-            onClick={() => handleDeleteEntity(image.id, EntityTypes.IMAGE)}
-          />
-        </li>
-      ))}
-      </ul>
+
+      <div className="images">
+        {/* TODO: ... */}
+        <div className="images__item">
+          <p>Copy the Image URL to embed it the image on your page.</p>
+        </div>
+
+        <ul className="images__list">
+        {!loading && !error && items.map(image => (
+          <li key={image.id} className="images__item">
+            {/* Render each image */}
+            <div className="image">
+
+              <div className="image__image">
+                <a href={image.url} target="_blank">
+                  <img className="image__img" alt={image.title} src={image.url}/>
+                </a>
+              </div>
+
+              <div className="image__content">
+                <table>
+                  <tr>
+                    <th>Title</th>
+                    <td>{image.title}</td>
+                  </tr>
+                  <tr>
+                    <th>Url</th>
+                    <td>
+                      <span className="image__url">{image.url}</span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th>Created</th>
+                    <td>{image.created.toLocaleString()}</td>
+                  </tr>
+                </table>
+                <Button
+                  className="button delete__button"
+                  children={'Delete'}
+                  onClick={() => handleDeleteEntity(image.id, EntityTypes.IMAGE)}
+                />
+              </div>
+
+            </div>
+          </li>
+        ))}
+        </ul>
+      </div>
       
       {paging && (
         <Paging
