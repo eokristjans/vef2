@@ -1,13 +1,14 @@
 @import '../../config.scss';
 
-.row {
-  display: flex;
-}
+.container {
 
-.col-3 {
-  flex: 25%;
-}
+  &__page {
+    padding-left: 250px + $gutter;
+    padding-right: $gutter;
+  }
 
-.col-9 {
-  flex: 75%;
+  &__error {
+    padding-left: 250px + $gutter;
+    padding-right: $gutter;
+  }
 }

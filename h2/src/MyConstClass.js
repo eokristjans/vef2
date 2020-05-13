@@ -28,11 +28,16 @@ const EnglishConstants = {
   DELETE_BUTTON: 'D',
   RENAME_BUTTON: 'R',
   
-  CLICK_TO_CREATE_NEW: 'Click to create a new ',
+  CLICK_TO_CREATE_NEW: 'Create a new ',
 
   DELETING: 'Deleting...',
   LOADING: 'Loading...',
   SAVING: 'Saving...',
+
+  DELETE_HOVER: 'Delete this ',
+  CREATE_HOVER: 'Open this ',
+  
+  DELETE_CONFIRM: 'Are you sure you wish to delete this ',
 };
 
 const ConsoleErrorMessages = {
@@ -58,6 +63,8 @@ const EnglishErrorMessages = {
   UNKNOWN_ERROR: 'An unknown error occurred.',
   INVALID_TOKEN: 'invalid token',
   EXPIRED_TOKEN: 'expired token',
+  
+  ACCIDENTAL_TITLE_ERROR: 'The title can not start with the substring "Create a new" or contain the symbol "✔".',
 }
 
 const EntityTypes = {

@@ -130,10 +130,8 @@ export default class Page extends React.Component<IPageProps, IPageState> {
           key="mdEditor"
           value={this.props.page.body}
           style={{ 
-            // might be able to remove this simplistic unresponsive styling 
-            // by adding my own htmlClass and markdownClass
-            height: '500px',
-            width: '70%',
+            height: 'calc(100vh - 240px)', // The platform is not designed for small windows
+            width: '100%',
           }}
           renderHTML={this.renderHTML}
           config={{

@@ -23,6 +23,7 @@ import {
 } from '../../MyConstClass';
 
 import './Notebooks.scss';
+import { stringify } from 'querystring';
 
 
 interface INotebooksState {
@@ -89,6 +90,12 @@ export default class Notebooks extends Component<{}, INotebooksState> {
    * @param entityId of the entity within which the new one shall be nested.
    */
   async handleEditableFocusOut(text: string, entityType: string, entityId: number) {
+
+    // Prevent silly accidental entity creations
+    if (text.startsWith('Create a new') || text.includes('✔')) {
+      this.setError(EnglishErrorMessages.ACCIDENTAL_TITLE_ERROR);
+      return;
+    }
 
     this.setState({
       saving: true,
@@ -159,11 +166,13 @@ export default class Notebooks extends Component<{}, INotebooksState> {
   setNotebookId = (id: number) => {
     this.setState({
       notebookId: id,
+      error: '',
     });
   }
   setSectionId = (id: number) => {
     this.setState({
       sectionId: id,
+      error: '',
     });
   }
   /**
@@ -183,6 +192,7 @@ export default class Notebooks extends Component<{}, INotebooksState> {
     this.setState({
       pageId: id,
       page: newPage,
+      error: '',
     });
   }
   setError = (error: any) => {
@@ -227,19 +237,17 @@ export default class Notebooks extends Component<{}, INotebooksState> {
 
     return (
       <Fragment>
-        <div>
-          {this.state.saving && <span>Saving...</span>}
-        </div>
-        <div> {/* Display any potential error */}
-          {error && <div>
-          {  error.endsWith('not found.') && error + ' ' + EnglishErrorMessages.ADMIN_CAN_NOT
-          || error.startsWith('Error: Error: User already has') && error.substr(7)
-          || EnglishErrorMessages.UNKNOWN_ERROR + EnglishErrorMessages.UNKNOWN_ERROR }
+        <div className="container">
+          <div className="container__error"> {/* Display any potential error */}
+            {error && <div>
+            {  error.endsWith('not found.') && error + ' ' + EnglishErrorMessages.ADMIN_CAN_NOT
+            || error.startsWith('Error: Error: User already has') && error.substr(7)
+            || error.startsWith('The title can not') && error
+            || EnglishErrorMessages.UNKNOWN_ERROR + EnglishErrorMessages.UNKNOWN_ERROR }
+            </div>
+            }
           </div>
-          }
-        </div>
-        <div className="row">
-          <div className="col-3">
+          <div className="container__sidebar">
             <div>{this.state.deleting && <span>Deleting...</span>}</div>
             <SideBar
               notebookId={notebookId}
@@ -253,7 +261,10 @@ export default class Notebooks extends Component<{}, INotebooksState> {
               handleEditableFocusOut={this.handleEditableFocusOut}
             />
           </div>
-          <div className="col-9">
+          <div className="container__page">
+            <div>
+              {this.state.saving && <span>Saving...</span>}
+            </div>
             {(this.state.page !== undefined) && (
               <Page
                 key={this.state.page.id}

@@ -1,27 +1,101 @@
 @import '../../config.scss';
 
 .sidebar {
-  height: 100%; /* Full-height: remove this if you want "auto" height */
-  width: 250px; /* Set the width of the sidebar */
-  position: fixed; /* Fixed Sidebar (stay in place on scroll) */
-  z-index: 1; /* Stay on top */
-  top: 2*$gutter; /* Stay at the top */
+  height: 100%;
+  width: 250px;
+  position: fixed;
+  z-index: 1;
+  top: 2*$gutter;
   left: 0;
   background-color: $color-font;
-  overflow-x: hidden; /* Disable horizontal scroll */
-  padding-top: 20px;
+  overflow-x: hidden;
+  padding-top: $gutter;
   
-  &__item {
-    padding: $gutter / 2;
+  &__item, &__create {
     text-decoration: none;
     color: $color-background;
     display: block;
+  }
 
-    
-    &__elem:hover {
-      background-color: $color-background;
-      color: $color-font;
+  &__item {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  &__create:first-child {
+    font-style: italic;
+    padding: $gutter / 2;
+    padding-left: 0;
+  }
+
+  &__notebook{
+    :first-child {
+      padding-left: $gutter / 4;
+    }
+    .sidebar__item__title {
+      padding-left: $gutter / 2;
     }
   }
 
+  &__section {
+    :first-child {
+      padding-left: $gutter / 2;
+    }
+    .sidebar__item__title {
+      padding-left: $gutter;
+    }
+  }
+  
+  &__page {
+    :first-child {
+      padding-left: $gutter * 0.75;
+    }
+    .sidebar__item__title {
+      padding-left: $gutter*1.5;
+    }
+  }
+
+  &__item:hover {
+    background-color: $color-background;
+    color: $color-font;
+    font-weight: bold;
+    cursor: pointer;
+  }
+
+  &__create *:hover {
+    background-color: $color-background;
+    color: $color-font;
+    text-decoration: underline;
+    font-weight: bold;
+    cursor: pointer;
+  }
+
+  &__item__title {
+    width: 100%;
+    padding: $gutter / 2;
+  }
+
+  &__delete {
+    width: 15%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+  }
+
+  &__delete:hover {
+    cursor: pointer;
+  }
+
+
+  &__selected {
+    font-weight: bold;
+  }
+
+  &__selected:hover {
+    font-weight: bold;
+    color: $color-background;
+    background-color: $color-font;
+    cursor: default;
+  }
 }
