@@ -265,6 +265,9 @@ export default class Notebooks extends Component<{}, INotebooksState> {
             <div>
               {this.state.saving && <span>Saving...</span>}
             </div>
+            {(this.state.page === undefined) && (
+              <strong>You haven't opened any page.</strong>
+            )}
             {(this.state.page !== undefined) && (
               <Page
                 key={this.state.page.id}

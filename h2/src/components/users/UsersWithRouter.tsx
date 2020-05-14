@@ -1,7 +1,7 @@
 /**
  * Component that provides a list of all users.
  */
-import React, { Fragment, useState } from 'react';
+import React, { useState } from 'react';
 import { withRouter } from 'react-router-dom';
 
 import {
@@ -11,8 +11,6 @@ import {
 import { IUser } from '../../api/types';
 import useApi from '../../hooks/useApi';
 import Paging from '../paging/Paging';
-import Button from '../button/Button';
-import Login from '../../routes/login/Login'; // TODO: Expired token redirection.
 
 import { 
   EnglishConstants, 
@@ -36,7 +34,6 @@ function UsersComponentWithRouter(
     paging = false,
     location,
     history,
-    children,
   }: IUsersProps
 ) {
 
@@ -131,8 +128,8 @@ function UsersComponentWithRouter(
           <td className="users__admin">{user.admin ? '✔' : '🗙'}</td>
           <td className="users__delete" >
             <div className="users__delete__button"
-              title={EnglishConstants.DELETE_HOVER + EntityTypes.PAGE} 
-              onClick={() => { if (window.confirm(EnglishConstants.DELETE_CONFIRM + EntityTypes.PAGE + '?')) handleDeleteEntity(user.id, EntityTypes.USER) } }
+              title={EnglishConstants.DELETE_HOVER + EntityTypes.USER} 
+              onClick={() => { if (window.confirm(EnglishConstants.DELETE_CONFIRM + EntityTypes.USER + '?')) handleDeleteEntity(user.id, EntityTypes.USER) } }
             >❌</div>
           </td>
         </tr>

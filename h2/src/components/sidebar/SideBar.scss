@@ -10,6 +10,10 @@
   background-color: $color-font;
   overflow-x: hidden;
   padding-top: $gutter;
+
+  @media (max-width: 849px) {
+    top: 4*$gutter;
+  }
   
   &__item, &__create {
     text-decoration: none;

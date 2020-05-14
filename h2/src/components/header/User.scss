@@ -2,6 +2,7 @@
 
 .user {
   &__link {
+    padding: $gutter / 4;
     color: $color-background;
 
     &--selected {
@@ -13,7 +14,6 @@
     }
   }
 
-  // TODO
   span {
     margin-right: $gutter / 2;
     font-weight: bold;

@@ -136,19 +136,16 @@ export default class Images extends Component<{}, IImagesState> {
     } = this.state;
 
     // TODO: Not good to match on strings
-    if (error == 'Error: invalid token') {
+    if (error.includes('invalid token')) {
       console.error('Images ' + error);
       return (<NoAccess/>);
     }
 
-    if (error == 'Error: expired token') {
+    if (error.includes('expired token')) {
       console.error('Images ' + error);
       // Remove the user from localStorage
       localStorage.removeItem('user');
-
-      // window.location.replace('/login');
-      // TODO: return <Login /> with new prop, message = 'Your login session expired'
-      return (<Login/>);
+      window.location.replace('/login');
     }
 
     if (error.endsWith('not found.')){
@@ -172,15 +169,14 @@ export default class Images extends Component<{}, IImagesState> {
           </div>
           }
         </div>
-        {/* TODO: Consider changing to form with onSubmit. I tried it but then the 
-          page was refreshed after failed upload, so the error disappeared immediately.
-          Consider adding text input field. However, onChange() currently causes all
-          images to be fetched again every time it refreshes...
-        */}
-        <div> 
-          <input type="file" onChange={ (e) => this.handleFileChange(e.target.files)} /> 
+
+        <div className="upload"> 
+          <strong>Upload an image and copy its Url to embed the image on your page.</strong>
+
+          <input className="button button--small" type="file" onChange={ (e) => this.handleFileChange(e.target.files)} /> 
           {/* <input type="text" value={this.state.fileTitle} onChange={ (e) => this.handleFileTextChange(e)}/> */}
-          <button onClick={this.handleFileUpload}>Upload image</button>
+          <Button className="button button--small" onClick={this.handleFileUpload}>Upload</Button>
+          
         </div> 
         <ImagesComponentWithRouter
           limit={6}

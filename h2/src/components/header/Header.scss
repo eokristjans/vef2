@@ -4,7 +4,6 @@
   margin-bottom: $gutter * 2;
   padding: $gutter/2;
 
-  // vá, invertaðir litir, such design
   background-color: $color-font;
   color: $color-background;
 
@@ -18,7 +17,7 @@
     justify-content: space-between;
     align-items: center;
 
-    @media (min-width: 650px) {
+    @media (min-width: 850px) {
       flex-direction: row;
     }
 
@@ -33,7 +32,7 @@
 
     word-break: break-all;
 
-    @media (min-width: 650px) {
+    @media (min-width: 850px) {
       margin-bottom: 0;
     }
   }
@@ -51,7 +50,7 @@
     margin-bottom: $gutter / 2;
     text-align: center;
 
-    @media (min-width: 650px) {
+    @media (min-width: 850px) {
       margin-bottom: 0;
       margin-right: $gutter;
       text-align: left;
@@ -65,7 +64,7 @@
     flex-direction: column;
     justify-content: center;
 
-    @media (min-width: 650px) {
+    @media (min-width: 850px) {
       flex-direction: row;
     }
   }

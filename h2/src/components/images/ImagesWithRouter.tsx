@@ -1,9 +1,8 @@
 /**
  * Component that displays the user's images. Supports Paging.
  */
-import React, { Component, Fragment, ReactNode, useState } from 'react';
+import React, { Fragment, useState } from 'react';
 import { withRouter } from 'react-router-dom';
-
 import {
   getImages,
   deleteEntity,
@@ -20,7 +19,7 @@ import {
   EntityTypes,
 } from '../../MyConstClass';
 
-import './Images.scss';
+import './ImagesWithRouter.scss';
 
 interface IImagesProps {
   limit?: number;
@@ -112,9 +111,6 @@ function ImagesComponentWithRouter({ limit = 10, paging = false, location, histo
 
       <div className="images">
         {/* TODO: ... */}
-        <div className="images__item">
-          <p>Copy the Image URL to embed it the image on your page.</p>
-        </div>
 
         <ul className="images__list">
         {!loading && !error && items.map(image => (
@@ -131,25 +127,24 @@ function ImagesComponentWithRouter({ limit = 10, paging = false, location, histo
               <div className="image__content">
                 <table>
                   <tr>
-                    <th>Title</th>
-                    <td>{image.title}</td>
-                  </tr>
-                  <tr>
-                    <th>Url</th>
-                    <td>
-                      <span className="image__url">{image.url}</span>
+                    <td className="image__delete">
+                      <div className="image__delete__button"
+                        title={EnglishConstants.DELETE_HOVER + EntityTypes.IMAGE} 
+                        onClick={() => { if (window.confirm(EnglishConstants.DELETE_CONFIRM + EntityTypes.IMAGE + '?')) handleDeleteEntity(image.id, EntityTypes.IMAGE) } }
+                      >❌</div>
                     </td>
-                  </tr>
-                  <tr>
-                    <th>Created</th>
+                    <th>Title:</th>
+                    <td>{image.title}</td>
+                    <th>Created:</th>
                     <td>{image.created.toLocaleString()}</td>
                   </tr>
                 </table>
-                <Button
-                  className="button delete__button"
-                  children={'Delete'}
-                  onClick={() => handleDeleteEntity(image.id, EntityTypes.IMAGE)}
-                />
+                <table>
+                  <tr>
+                    <th>Url:</th>
+                    <td className="image__url">{image.url}</td>
+                  </tr>
+                </table>
               </div>
 
             </div>

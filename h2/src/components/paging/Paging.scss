@@ -1,6 +1,7 @@
 @import '../../config.scss';
 
 .paging {
+  padding-bottom: $gutter;
   display: flex;
   align-items: center;
 

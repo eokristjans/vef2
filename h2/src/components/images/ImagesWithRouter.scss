@@ -46,26 +46,16 @@
     height: 100%;
   }
 
-  &__content {
-    width: 380px;
+  &__url {
+    word-break: break-word;  
   }
 
-  table {
-    display: inline-block;
-    position: relative;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+  &__delete__button {
+    justify-content: center;
+    text-align: center;
   }
 
-  tr {
-    display: flex;
+  &__delete__button:hover {
+    cursor: pointer;
   }
-
-  td {    
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
 }
