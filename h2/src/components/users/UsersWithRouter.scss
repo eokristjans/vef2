@@ -1,0 +1,39 @@
+@import '../../config.scss';
+
+.users {
+  @include container;
+
+  table {
+    border-collapse: collapse;
+    border-spacing: 0;
+  }
+
+  th {
+    text-align: center;
+  }
+  
+  th {
+    border-bottom: 1px solid black;
+  }
+  
+  td {
+    text-align: center;
+  }
+  
+  &__item:hover {
+    background-color: $color-gray;
+  }
+
+  &__admin {
+    text-align: center;
+  }
+  
+  &__delete {
+    justify-content: center;
+    text-align: center;
+
+    &__button:hover {
+      cursor: pointer;
+    }
+  }
+}

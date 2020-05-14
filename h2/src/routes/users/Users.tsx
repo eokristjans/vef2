@@ -6,19 +6,10 @@ import React, { Component, Fragment } from 'react';
 import {
   getUsers,
 } from '../../api';
-import { IUser, IApiResult } from '../../api/types';
+import { IUser } from '../../api/types';
 import NoAccess from '../system-pages/NoAccess';
 import UsersComponentWithRouter from '../../components/users/UsersWithRouter';
-import Button from '../../components/button/Button';
 import Login from '../login/Login';
-
-import { 
-  EnglishConstants, 
-  EnglishErrorMessages,
-  EntityTypes,
-} from '../../MyConstClass';
-
-import './Users.scss';
 
 interface IUsersState {
   users: IUser[],
@@ -49,11 +40,6 @@ export default class Users extends Component<{}, IUsersState> {
     this.setUsers = this.setUsers.bind(this);
   }
 
-  async componentDidMount() {
-    // Get the Users and set the state
-    // await this.setUsers();
-  }
-
   setUsers = async () => {
     // Get the Users and set the state
     try {
@@ -70,21 +56,9 @@ export default class Users extends Component<{}, IUsersState> {
       error: error + '',
     });
   }
-  setSaving = (saving: boolean) => {
-    this.setState({
-      saving: saving,
-    });
-  }
-  setDeleting = (deleting: boolean) => {
-    this.setState({
-      deleting: deleting,
-    });
-  }
 
   render() {
     const {
-      saving,
-      deleting,
       error,
     } = this.state;
 
@@ -115,16 +89,6 @@ export default class Users extends Component<{}, IUsersState> {
 
     return (
       <Fragment>
-        <div>{saving && <span>Saving...</span>}</div>
-        <div>{deleting && <span>Deleting...</span>}</div>
-        <div> {/* Display any potential error */}
-          {error && <div>
-          {  error.endsWith('not found.') && error + ' ' + EnglishErrorMessages.ADMIN_CAN_NOT
-          || error.startsWith('Error: User already has') && error
-          || EnglishErrorMessages.PERMITTED_FILE_TYPES }
-          </div>
-          }
-        </div>
         <UsersComponentWithRouter
           limit={10}
           paging={true}

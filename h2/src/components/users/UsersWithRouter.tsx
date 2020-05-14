@@ -20,7 +20,7 @@ import {
   EntityTypes,
 } from '../../MyConstClass';
 
-import './Users.scss';
+import './UsersWithRouter.scss';
 
 interface IUsersProps {
   limit?: number;
@@ -86,17 +86,20 @@ function UsersComponentWithRouter(
         console.error(result.status);
         setDeleteError(EnglishErrorMessages.UNKNOWN_ERROR + EnglishErrorMessages.ERROR_ADVICE);
       }
+      else {        
+        // No exception was caught and result was ok, so there is no error. Best reload the page.
+        window.location.reload(false);
+      }
     } catch (e) {
       console.error(e);
       setDeleteError(e + '');
     } finally {
-      if (deleteError === '') window.location.reload(false);
       setDeleting(false);
     }
   }
 
-  return (    
-    <Fragment>
+  return (
+    <div className="users">
       {deleting && (
         <li>Deleting...</li>
       )}
@@ -109,19 +112,32 @@ function UsersComponentWithRouter(
       {error && (
         <li>Failed to load users. {error}</li>
       )}
-      <ul className="users__list">
+
+      <table className="users__table">
+        <tr>
+          <th>Id</th>
+          <th>Username</th>
+          <th>Email Address</th>
+          <th>Created</th>
+          <th className="users__admin">Admin</th>
+          <th className="users__delete">Delete?</th>
+        </tr>
       {!loading && !error && items.map(user => (
-        <li key={user.id} className="users__item">
-          <span>{user.id} </span>
-          <span>{user.username} </span>
-          <span>{user.email} </span>
-          <Button
-            children={EnglishConstants.DELETE_BUTTON}
-            onClick={() => handleDeleteEntity(user.id, EntityTypes.USER)}
-          />
-        </li>
+        <tr key={user.id} className="users__item">
+          <td>{user.id}</td>
+          <td>{user.username}</td>
+          <td>{user.email}</td>
+          <td>{user.created ? user.created.toLocaleDateString() : ''}</td>
+          <td className="users__admin">{user.admin ? '✔' : '🗙'}</td>
+          <td className="users__delete" >
+            <div className="users__delete__button"
+              title={EnglishConstants.DELETE_HOVER + EntityTypes.PAGE} 
+              onClick={() => { if (window.confirm(EnglishConstants.DELETE_CONFIRM + EntityTypes.PAGE + '?')) handleDeleteEntity(user.id, EntityTypes.USER) } }
+            >❌</div>
+          </td>
+        </tr>
       ))}
-      </ul>
+      </table>
       
       {paging && (
         <Paging
@@ -131,7 +147,7 @@ function UsersComponentWithRouter(
           onClick={onPagingClick}
         />
       )}
-    </Fragment>
+    </div>
   )
 }
 
