@@ -2,6 +2,7 @@
  * Route to /users.
  */
 import React, { Component, Fragment } from 'react';
+import { Helmet } from 'react-helmet';
 
 import {
   getUsers,
@@ -89,6 +90,7 @@ export default class Users extends Component<{}, IUsersState> {
 
     return (
       <Fragment>
+        <Helmet title="Users"/>
         <UsersComponentWithRouter
           limit={10}
           paging={true}

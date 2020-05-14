@@ -1,4 +1,5 @@
 import React, { Component, Fragment } from 'react';
+import { Helmet } from 'react-helmet';
 
 import {
   getNotebooksWithContents,
@@ -12,7 +13,6 @@ import {
 import { INotebook, IPage } from '../../api/types';
 import NoAccess from '../system-pages/NoAccess';
 import Login from '../login/Login';
-import Button from '../../components/button/Button';
 import SideBar from '../../components/sidebar/SideBar';
 import Page from '../../components/page/Page';
 
@@ -23,7 +23,6 @@ import {
 } from '../../MyConstClass';
 
 import './Notebooks.scss';
-import { stringify } from 'querystring';
 
 
 interface INotebooksState {
@@ -237,6 +236,7 @@ export default class Notebooks extends Component<{}, INotebooksState> {
 
     return (
       <Fragment>
+        <Helmet title="Notebooks"/>
         <div className="container">
           <div className="container__error"> {/* Display any potential error */}
             {error && <div>

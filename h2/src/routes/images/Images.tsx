@@ -2,11 +2,10 @@
  * /images route.
  */
 import React, { Component, Fragment } from 'react';
-import { Link, NavLink } from 'react-router-dom';
+import { Helmet } from 'react-helmet';
 
 import {
   getImages,
-  getImage,
   postImage,
 } from '../../api';
 
@@ -15,12 +14,10 @@ import { IImage } from '../../api/types';
 import NoAccess from '../system-pages/NoAccess';
 import Button from '../../components/button/Button';
 import ImagesComponentWithRouter from '../../components/images/ImagesWithRouter';
-import Login from '../login/Login';
 
 import { 
   EnglishConstants, 
   EnglishErrorMessages,
-  EntityTypes,
 } from '../../MyConstClass';
 
 import './Images.scss';
@@ -159,6 +156,7 @@ export default class Images extends Component<{}, IImagesState> {
 
     return (
       <Fragment>
+        <Helmet title="Images"/>
         <div>{saving && <span>Saving...</span>}</div>
         <div>{deleting && <span>Deleting...</span>}</div>
         <div> {/* Display any potential error */}
