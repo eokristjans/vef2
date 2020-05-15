@@ -18,7 +18,7 @@ Note that there is also a [Cheatsheet specific to Markdown Here](./Markdown-Here
 [Line Breaks](#lines)  
 [YouTube Videos](#videos)  
 
-<a name="headers"/>
+<a name="headers"></a>
 
 ## Headers
 
@@ -54,7 +54,7 @@ Alt-H1
 Alt-H2
 ------
 
-<a name="emphasis"/>
+<a name="emphasis"></a>
 
 ## Emphasis
 
@@ -77,7 +77,7 @@ Combined emphasis with **asterisks and _underscores_**.
 Strikethrough uses two tildes. ~~Scratch this.~~
 
 
-<a name="lists"/>
+<a name="lists"></a>
 
 ## Lists
 
@@ -119,7 +119,7 @@ Strikethrough uses two tildes. ~~Scratch this.~~
 - Or minuses
 + Or pluses
 
-<a name="links"/>
+<a name="links"></a>
 
 ## Links
 
@@ -171,7 +171,7 @@ Some text to show that the reference links can follow later.
 [1]: http://slashdot.org
 [link text itself]: http://www.reddit.com
 
-<a name="images"/>
+<a name="images"></a>
 
 ## Images
 
@@ -197,7 +197,7 @@ Reference-style:
 
 [logo]: https://github.com/adam-p/markdown-here/raw/master/src/common/images/icon48.png "Logo Title Text 2"
 
-<a name="code"/>
+<a name="code"></a>
 
 ## Code and Syntax Highlighting
 
@@ -245,7 +245,7 @@ But let's throw in a <b>tag</b>.
 ```
 
 
-<a name="tables"/>
+<a name="tables"></a>
 
 ## Tables
 
@@ -285,7 +285,7 @@ Markdown | Less | Pretty
 *Still* | `renders` | **nicely**
 1 | 2 | 3
 
-<a name="blockquotes"/>
+<a name="blockquotes"></a>
 
 ## Blockquotes
 
@@ -305,7 +305,7 @@ Quote break.
 
 > This is a very long line that will still be quoted properly when it wraps. Oh boy let's keep writing to make sure this is long enough to actually wrap for everyone. Oh, you can *put* **Markdown** into a blockquote. 
 
-<a name="html"/>
+<a name="html"></a>
 
 ## Inline HTML
 
@@ -329,7 +329,7 @@ You can also use raw HTML in your Markdown, and it'll mostly work pretty well.
   <dd>Does *not* work **very** well. Use HTML <em>tags</em>.</dd>
 </dl>
 
-<a name="hr"/>
+<a name="hr"></a>
 
 ## Horizontal Rule
 
@@ -363,7 +363,7 @@ ___
 
 Underscores
 
-<a name="lines"/>
+<a name="lines"></a>
 
 ## Line Breaks
 
@@ -389,7 +389,7 @@ This line is only separated by a single newline, so it's a separate line in the 
 
 (Technical note: *Markdown Here* uses GFM line breaks, so there's no need to use MD's two-space line breaks.)
 
-<a name="videos"/>
+<a name="videos"></a>
 
 ## YouTube Videos
 

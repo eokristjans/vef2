@@ -65,7 +65,6 @@ heroku run node setup.js
 
 Use Papertrail for logging and Heroku-Redis for caching.
 
-
 ### Setting up redis (noSQL) for caching (inconvient on Windows)
 
 If you want to configure caching on development environment, you'll have to set up and have a redis-server running locally.
@@ -77,7 +76,6 @@ sudo apt install redis-server
 # Run server with default config
 redis-server
 ```
-
 
 ## Project Description
 

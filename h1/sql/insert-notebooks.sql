@@ -20,22 +20,22 @@ INSERT INTO
   pages
     (user_id, notebook_id, section_id, title, body)
   VALUES
-    (2, 1, 1, 'OWASP', '# OWASP \n\n... TODO: figure out how to make new lines and add content.');
+    (2, 1, 1, 'OWASP', '# OWASP');
 INSERT INTO
   pages
     (user_id, notebook_id, section_id, title, body)
   VALUES
-    (2, 1, 1, 'React', '# React \n\n... TODO: figure out how to make new lines and add content.');
+    (2, 1, 1, 'React', '# React');
 INSERT INTO
   pages
     (user_id, notebook_id, section_id, title, body)
   VALUES
-    (2, 1, 2, 'Android Control Flow', '# Android Control Flow \n\n... TODO: figure out how to make new lines and add content.');
+    (2, 1, 2, 'Android Control Flow', '# Android Control Flow');
 INSERT INTO
   pages
     (user_id, notebook_id, section_id, title, body)
   VALUES
-    (2, 1, 2, 'Software Architecture', '# Software Architecture \n\n... TODO: figure out how to make new lines and add content.');
+    (2, 1, 2, 'Software Architecture', '# Software Architecture');
 
 INSERT INTO 
   images

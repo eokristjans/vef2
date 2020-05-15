@@ -14,13 +14,9 @@ const util = require('util');
 
 const requireEnv = require('./utils/requireEnv');
 const { query } = require('./utils/db');
-const {
-  uploadImagesFromDisk,
-  /* TODO: Implement something similar
-  createFakeCategories,
-  createFakeProducts,
-*/
-} = require('./data/images');
+const { uploadImagesFromDisk } = require('./data/images');
+const { createUserContents } = require('./api/notebook-helpers');
+
 
 const readFileAsync = util.promisify(fs.readFile);
 
@@ -69,12 +65,20 @@ async function main() {
     return;
   }
 
+  // Create the default sign-up data for the first two users.
+  try {
+    await createUserContents(1);
+    await createUserContents(2);
+  } catch (e) {
+    console.error('Error while creating some user content:'. e.message);
+  }
+
   // send pictures to Cloudinary
   try {
     images = await uploadImagesFromDisk(imageFolder);
-    console.info(`Sendi ${images.length} myndir á Cloudinary`);
+    console.info(`Sending ${images.length} images to Cloudinary`);
   } catch (e) {
-    console.error('Villa við senda myndir á Cloudinary:', e.message);
+    console.error('Error while sending pictures to Cloudinary:', e.message);
   }
 
   // Create notebooks
