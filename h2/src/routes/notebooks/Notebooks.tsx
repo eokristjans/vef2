@@ -89,7 +89,7 @@ export default class Notebooks extends Component<{}, INotebooksState> {
   async handleEditableFocusOut(text: string, entityType: string, entityId: number) {
 
     // Prevent silly accidental entity creations
-    if (text.startsWith('Create a new') || text.includes('✔')) {
+    if (text.startsWith('Create a new')) {
       this.setError(EnglishErrorMessages.ACCIDENTAL_TITLE_ERROR);
       return;
     }

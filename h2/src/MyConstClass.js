@@ -65,7 +65,7 @@ const EnglishErrorMessages = {
   EXPIRED_TOKEN: 'expired token',
   NOT_FOUND: 'not found',
   
-  ACCIDENTAL_TITLE_ERROR: 'The title can not start with the substring "Create a new" or contain the symbol "✔".',
+  ACCIDENTAL_TITLE_ERROR: 'The title can not start with the substring "Create a new".',
 }
 
 const EntityTypes = {

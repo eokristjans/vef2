@@ -3,8 +3,13 @@
 .login {
   @include container;
 
+  
+
   &__row {
     @include row;
+    max-width: 420px;
+    margin-left: auto;
+    margin-right: auto;
   }
 
   &__col {
@@ -21,6 +26,7 @@
 
   &__error {
     margin-bottom: $gutter;
+    
   }
 
   &__input {
@@ -29,10 +35,23 @@
 
   &__input label {
     flex: 0 1 150px;
+    font-weight: bold;
   }
 
   &__link {
     margin-top: $gutter / 2;
     color: $color-font;
+    
+    display: flex;
+    justify-content: flex-end;
+  }
+  
+  &__link:hover {
+    text-decoration: underline;
+  }
+
+  .button {
+    display: block;
+    margin-left: auto;
   }
 }

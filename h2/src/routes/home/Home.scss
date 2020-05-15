@@ -1,7 +1,8 @@
 @import '../../config.scss';
 
-.container {
+.home {
   @include container;
+  text-align: center;
 
   &__title {
     margin-bottom: $gutter;
