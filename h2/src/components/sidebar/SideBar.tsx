@@ -86,9 +86,9 @@ export default function SideBar(props: ISideBarProps) {
                   </li>
                 ))}
                 {(sectionId === section.id) && (section.pages !== undefined) &&
-                <li className="sidebar__create sidebar__page">
+                <li className="sidebar__create sidebar__page sidebar__item">
                   <EditableLabel
-                    text={EnglishConstants.CLICK_TO_CREATE_NEW + EntityTypes.PAGE + ' ✔'}
+                    text={EnglishConstants.CLICK_TO_CREATE_NEW + EntityTypes.PAGE}
                     labelClassName='sidebar__create'
                     inputClassName='myInputClass'
                     inputWidth='200px'
@@ -99,14 +99,14 @@ export default function SideBar(props: ISideBarProps) {
                     onFocusOut={handleEditableFocusOut}
                     entityType={EntityTypes.PAGE}
                     entityTypeId={section.id}
-                  />
+                  /><span className="sidebar__checkmark" role="img" aria-label="Create-Checkmark">✅</span>
                 </li>}
               </div>
             ))}
             {(notebookId === notebook.id) && (notebook.sections !== undefined) &&
-            <li className="sidebar__create sidebar__section">
+            <li className="sidebar__create sidebar__section sidebar__item">
               <EditableLabel
-                text={EnglishConstants.CLICK_TO_CREATE_NEW + EntityTypes.SECTION + ' ✔'}
+                text={EnglishConstants.CLICK_TO_CREATE_NEW + EntityTypes.SECTION}
                 labelClassName='sidebar__create'
                 inputClassName='myInputClass'
                 inputWidth='200px'
@@ -117,13 +117,13 @@ export default function SideBar(props: ISideBarProps) {
                 onFocusOut={handleEditableFocusOut}
                 entityType={EntityTypes.SECTION}
                 entityTypeId={notebookId}
-              />
+              /><span className="sidebar__checkmark" role="img" aria-label="Create-Checkmark">✅</span>
             </li>}
           </div>
         ))}
-        <li className="sidebar__create sidebar__notebook">
+        <li className="sidebar__create sidebar__notebook sidebar__item">
           <EditableLabel
-            text={EnglishConstants.CLICK_TO_CREATE_NEW + EntityTypes.NOTEBOOK + ' ✔'}
+            text={EnglishConstants.CLICK_TO_CREATE_NEW + EntityTypes.NOTEBOOK}
             labelClassName='sidebar__create' 
             inputClassName='myInputClass'
             inputWidth='200px'
@@ -134,7 +134,7 @@ export default function SideBar(props: ISideBarProps) {
             onFocusOut={handleEditableFocusOut}
             entityType={EntityTypes.NOTEBOOK}
             entityTypeId={0}
-          />
+          /><span className="sidebar__checkmark" role="img" aria-label="Create-Checkmark">✅</span>
         </li>
       </ul>
               
