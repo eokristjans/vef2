@@ -18,78 +18,16 @@ Setting up the backend to run it locally takes a bit of work.
 
 The backend is also running on Heroku [here](https://noteworthy-md-eok4.herokuapp.com/).
 
-### Users
+## Users
 
 There are two default users with some default content.
 
 * Admin with username `matthias` and password `doctor-who-2020`.
 * Non-admin user with username `kristjan` and password `mister-master-2020`.
-  * Has some default notebooks with sections and pages.
-
-## The author's notes
-
-The file `reqs.txt` contains commands used to set up the development environment.
-However, it should suffice to run
-
-```bash
-npm install
-npm setup
-```
-
-Always remember that if Icelandic letters do not show correctly in PSQL, run the following:
-
-```bash
-SET PGCLIENTENCODING=utf-8
-chcp 65001
-```
-
-### Setting up Heroku and deploying project
-
-```bash
-# Set up Heroku (globally)
-npm install -g heroku
-
-# Navigate to git root folder, in my case it's vef2-eok4 and backend is contained within directory h1/
-
-# Login
-heroku login
-
-# Connect to remote
-heroku git:remote -a noteworthy-md-eok4
-
-# Remember to commit any changes...
-
-# Push just a subtree (the webapp) to Heroku
-git subtree push --prefix h1 heroku master
-
-# See https://medium.com/@shalandy/deploy-git-subdirectory-to-heroku-ea05e95fce1f for more details
-
-
-# Set up Postgres database
-heroku addons:create heroku-postgresql:hobby-dev -a noteworthy-md-eok4
-
-# Set up Redis - Make sure to configure REDIS_URL usage in app.
-heroku addons:create heroku-redis:hobby-dev -a noteworthy-md-eok4
-
-# Run setup on Heroku (make sure Config Vars are correct on Heroku)
-heroku run node setup.js
-```
-
-Use Papertrail for logging and Heroku-Redis for caching.
-
-### Setting up redis (noSQL) for caching (inconvient on Windows)
-
-If you want to configure caching on development environment, you'll have to set up and have a redis-server running locally.
-
-```bash
-# Install on Linux
-sudo apt install redis-server
-
-# Run server with default config
-redis-server
-```
 
 ## Project Description
+
+*This description was written in the style of Ólafur Sverrir Kjartansson. Bear in mind that some of the functionality from the backend is not available through the initial release of the frontend, but only through HTTP requests to the server.*
 
 **# noteworthyMD** is an online platform for storing and organizing notes, whether they be for courses at school, projects at work or anything else that that needs to be noted down. What separates **# noteworthyMD** from other platforms is that all of your notes can be written and stored in the `Markdown` markup language.
 
@@ -172,7 +110,6 @@ Create a web service with:
   * The project should be running on Heroku.
   * (Optional) The project uses pagination.
 
-
 ## Database Tables
 
 * Users
@@ -216,19 +153,13 @@ Create a web service with:
   * Url, varchar, not null.
   * Unique (UserId, Title).
 
-*Two-way pointing (i.e. Pages point to Sections and Sections contain Array of Pages) is unnecessary, because we can quickly get all Pages in a Section using the section_id.*
-
 Tables should have unique Ids and use [foreign keys](https://www.postgresql.org/docs/current/ddl-constraints.html#DDL-CONSTRAINTS-FK) to point to other tables.
-
 
 ## Data
 
 When a new user is created, one sample notebook is created for him. This notebook contains:
 * 1 section with 2 pages.
-* 2 images. TODO: Add or change?
-
-Some pages will contain the images.
-
+  * 1 of which is markdown cheatsheet.
 
 ## Images
 
@@ -269,6 +200,7 @@ GET `/` shall return a list of possible operations.
 Never return or show password hash.
 
 ### Notebooks
+
 * `/notebooks`
   * `GET` returns a list of notebooks that belong to the user who performs the request.
   * `POST` creates a new notebook owned by the user who performs the request. Request body must contain a valid title for the new notebook.
@@ -295,7 +227,13 @@ Never return or show password hash.
   * `PATCH` updates the page, only if data input is valid, and if the user who performs the request is the owner.
   * `DELETE` deletes the page, only if the user who performs the request is the owner.
 
+### Combo for Convenience
+
+* `/notebooks-with-contents`
+  * `GET` returns a list of notebooks that belong to the user who performs the request, with all sections and pages nested within.
+
 ### Images
+
 * `/images`
   * `POST` uploads a new image owned by the user who performs the request, only if data input is valid.
   * `GET` returns a list of up to 10 images owned by the user who performs the request. Uses pagination to return more images.
@@ -308,11 +246,77 @@ Never return or show password hash.
 Each time when data is created or updated, the web service should verify that the user has permission and that the data is valid. If not, then the web service should return the appropriate HTTP status code and error message.
 
 
+****
 
-> Release 0.3
+## The author's notes
+
+The file `reqs.txt` contains commands used to set up the development environment.
+However, it should suffice to run
+
+```bash
+npm install
+npm setup
+```
+
+Always remember that if Icelandic letters do not show correctly in PSQL, run the following:
+
+```bash
+SET PGCLIENTENCODING=utf-8
+chcp 65001
+```
+
+### Setting up Heroku and deploying project
+
+```bash
+# Set up Heroku (globally)
+npm install -g heroku
+
+# Navigate to git root folder, in my case it's vef2-eok4 and backend is contained within directory h1/
+
+# Login
+heroku login
+
+# Connect to remote
+heroku git:remote -a noteworthy-md-eok4
+
+# Remember to commit any changes...
+
+# Push just a subtree (the webapp) to Heroku
+git subtree push --prefix h1 heroku master
+
+# See https://medium.com/@shalandy/deploy-git-subdirectory-to-heroku-ea05e95fce1f for more details
+
+
+# Set up Postgres database
+heroku addons:create heroku-postgresql:hobby-dev -a noteworthy-md-eok4
+
+# Set up Redis - Make sure to configure REDIS_URL usage in app.
+heroku addons:create heroku-redis:hobby-dev -a noteworthy-md-eok4
+
+# Run setup on Heroku (make sure Config Vars are correct on Heroku)
+heroku run node setup.js
+```
+
+Use Papertrail for logging and Heroku-Redis for caching.
+
+### Setting up redis (noSQL) for caching (inconvient on Windows)
+
+If you want to configure caching on development environment, you'll have to set up and have a redis-server running locally.
+
+```bash
+# Install on Linux
+sudo apt install redis-server
+
+# Run server with default config
+redis-server
+```
+
+
+> Release 0.4
 
 | Release | Description                                                              |
 |---------|--------------------------------------------------------------------------|
 | 0.1     | First release                                                            |
 | 0.2     | Updated description.                                                     |
 | 0.3     | Functionality completed.                                                 |
+| 0.4     | Bug fixes.                                                 |
