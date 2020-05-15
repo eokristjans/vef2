@@ -65,14 +65,6 @@ async function main() {
     return;
   }
 
-  // Create the default sign-up data for the first two users.
-  try {
-    await createUserContents(1);
-    await createUserContents(2);
-  } catch (e) {
-    console.error('Error while creating some user content:'. e.message);
-  }
-
   // send pictures to Cloudinary
   try {
     images = await uploadImagesFromDisk(imageFolder);
@@ -88,6 +80,15 @@ async function main() {
     console.info('Notebooks created.');
   } catch (e) {
     console.error('Error while creating notebooks:', e.message);
+  }
+
+  // Create the default sign-up data for the first two users.
+  try {
+    await createUserContents(1);
+    await createUserContents(2);
+    console.info('More user data created.');
+  } catch (e) {
+    console.error('Error while creating some user content:'. e.message);
   }
 }
 
