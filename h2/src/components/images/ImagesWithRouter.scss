@@ -46,6 +46,10 @@
     height: 100%;
   }
 
+  &__title {
+    word-break: break-word;  
+  }
+
   &__url {
     word-break: break-word;  
   }

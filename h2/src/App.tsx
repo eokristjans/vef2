@@ -1,26 +1,19 @@
 import React from 'react';
 import { Helmet } from 'react-helmet';
-import { Route, Switch, withRouter } from 'react-router-dom';
+import { Route, Switch } from 'react-router-dom';
 
 import Header from './components/header/Header';
-
 import Home from './routes/home/Home';
 import Register from './routes/register/Register';
 import Login from './routes/login/Login';
 import Notebooks from './routes/notebooks/Notebooks';
 import Images from './routes/images/Images';
 import Users from './routes/users/Users';
-
-// import Admin from './routes/admin/Admin';
 import NotFound from './routes/system-pages/NotFound';
-
 import './App.scss';
 
 
-
-type Props = {
-  location?: Location; // Changed this to be optional
-};
+type Props = { location?: Location };
 
 function App(props: Props) {
   return (
@@ -31,7 +24,6 @@ function App(props: Props) {
       <Header />
 
       <div className="app">
-
         <main className="main__content">
           {/* Define all available routes */}
           <Switch location={props.location}>
@@ -41,11 +33,9 @@ function App(props: Props) {
             <Route path="/notebooks" component={Notebooks} />
             <Route path="/images" component={Images} />
             <Route path="/users" component={Users} />
-            {/* <Route path="/admin" component={Admin} /> */}
             <Route component={NotFound} />
           </Switch>
         </main>
-
       </div>
     </React.Fragment>
   );

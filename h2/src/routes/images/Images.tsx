@@ -15,10 +15,7 @@ import NoAccess from '../system-pages/NoAccess';
 import Button from '../../components/button/Button';
 import ImagesComponentWithRouter from '../../components/images/ImagesWithRouter';
 
-import { 
-  EnglishConstants, 
-  EnglishErrorMessages,
-} from '../../MyConstClass';
+import { EnglishErrorMessages } from '../../MyConstClass';
 
 import './Images.scss';
 
@@ -56,20 +53,12 @@ export default class Images extends Component<{}, IImagesState> {
     this.handleFileUpload = this.handleFileUpload.bind(this);
   }
 
+  // For uploading images
   handleFileChange(selectedFiles: FileList | null) {
     if (selectedFiles !== null && selectedFiles !== undefined && selectedFiles.length !== 0) {
       this.setSelectedFile(selectedFiles[0]);
     } else {
       this.setSelectedFile(undefined);
-    }
-  }
-  handleFileTextChange(e: React.FormEvent<HTMLInputElement>) {
-    if (e.currentTarget.value === '' && this.state.selectedFile) {
-      this.setState({ 
-        fileTitle: this.state.selectedFile.name
-      });
-    } else {
-      this.setState({ fileTitle: e.currentTarget.value });
     }
   }
   
@@ -78,8 +67,8 @@ export default class Images extends Component<{}, IImagesState> {
     if (this.state.selectedFile !== null && this.state.selectedFile !== undefined) {
       this.setSaving(true);
       try {
-        const uploadedFile = await postImage(
-          this.state.selectedFile.name, // TODO: offer name choice?
+        await postImage(
+          this.state.selectedFile.name, // Could offer a name choice
           this.state.selectedFile
         );
       } catch (e) {
@@ -149,7 +138,7 @@ export default class Images extends Component<{}, IImagesState> {
       console.error('Images ' + error);
     }
 
-    if (error != '') {
+    if (error !== '') {
       // TODO: Handle error from failed server request or other unknown error.
       console.error('Images UNHANDLED ' + error);
     }
@@ -159,20 +148,22 @@ export default class Images extends Component<{}, IImagesState> {
         <Helmet title="Images"/>
         <div>{saving && <span>Saving...</span>}</div>
         <div>{deleting && <span>Deleting...</span>}</div>
-        <div> {/* Display any potential error */}
-          {error && <div>
-          {  error.endsWith('not found.') && error + ' ' + EnglishErrorMessages.ADMIN_CAN_NOT
-          || error.startsWith('Error: User already has') && error
-          || EnglishErrorMessages.PERMITTED_FILE_TYPES }
-          </div>
-          }
+        
+        <div className="container__error"> {/* Display any potential error */}
+          {error && error.endsWith('not found.') && error + ' ' + EnglishErrorMessages.ADMIN_CAN_NOT}
+          {error && error.startsWith('Error: Error: User already has') && error.substr(7)}
+          {error && error.startsWith('The title can not') && error}
+          {/* Check for other unknown error */}
+          {error && !error.endsWith('not found.') &&
+          !error.startsWith('Error: Error: User already has') &&
+          !error.startsWith('The title can not') && 
+          EnglishErrorMessages.PERMITTED_FILE_TYPES}
         </div>
 
         <div className="upload"> 
           <strong>Upload an image and copy its Url to embed the image on your page.</strong>
 
           <input className="button button--small" type="file" onChange={ (e) => this.handleFileChange(e.target.files)} /> 
-          {/* <input type="text" value={this.state.fileTitle} onChange={ (e) => this.handleFileTextChange(e)}/> */}
           <Button className="button button--small" onClick={this.handleFileUpload}>Upload</Button>
           
         </div> 

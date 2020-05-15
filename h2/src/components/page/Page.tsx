@@ -1,7 +1,6 @@
 /**
  * Component that displays a page as editable text with live markdown rendering. 
  */
-
 import React from 'react';
 
 // See https://www.npmjs.com/package/react-markdown-editor-lite
@@ -9,16 +8,16 @@ import MarkdownIt from 'markdown-it';
 import MdEditor from 'react-markdown-editor-lite';
 import 'react-markdown-editor-lite/lib/index.css'; // import style manually
 
-import {
-  patchPage,
-} from '../../api';
-
+import Button from '../../components/button/Button';
+import { patchPage } from '../../api';
 import { IPage } from '../../api/types';
-
-import { EnglishConstants, EnglishErrorMessages } from '../../MyConstClass';
 
 import './Page.scss';
 
+
+const mdParser = new MarkdownIt({
+  html: true,
+});
 
 interface IPageProps {
   page: IPage,
@@ -30,10 +29,6 @@ interface IPageState {
   saving: boolean,
   error: string,
 }
-
-const mdParser = new MarkdownIt({
-  html: true,
-});
 
 export default class Page extends React.Component<IPageProps, IPageState> {
 
@@ -112,17 +107,15 @@ export default class Page extends React.Component<IPageProps, IPageState> {
 
     return (
       <div>
-        <div key="page-info">
-          {/* TODO : Remove and make it obvious on the sidebar and maybe tab title */}
-          <p>Current Page: {this.props.page.id} - {this.props.page.title}</p>
+        <div>
+          <strong>Current Page: {this.props.page.title}</strong>
         </div>
 
         <div> 
-          <button onClick={this.saveChangesHandler}>
-            {this.state.saving && 'Saving...' || 'Save Changes!'}
-          </button>
+          <Button className="button button--small" onClick={this.saveChangesHandler}>
+            {this.state.saving ? 'Saving...' : 'Save Changes!'}
+          </Button>
           <span> Last saved: {this.state.page.updated.toLocaleString()}</span>
-          {/*  TODO: Display better error messages, like in MyNotebooks.tsx */}
           <span>{this.state.error}</span>
         </div>
   
@@ -135,9 +128,6 @@ export default class Page extends React.Component<IPageProps, IPageState> {
           }}
           renderHTML={this.renderHTML}
           config={{
-            // (do not remove custom-html-style, instead just something like my-html-style)
-            // htmlClass: 'my-html-style custom-html-style',
-            // markdownClass: 'my-markdown-style',
             view: { 
               md: true,
               html: true,
@@ -150,6 +140,5 @@ export default class Page extends React.Component<IPageProps, IPageState> {
         />
       </div>
     )
-
   }
 }

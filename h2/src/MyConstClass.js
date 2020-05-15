@@ -63,6 +63,7 @@ const EnglishErrorMessages = {
   UNKNOWN_ERROR: 'An unknown error occurred.',
   INVALID_TOKEN: 'invalid token',
   EXPIRED_TOKEN: 'expired token',
+  NOT_FOUND: 'not found',
   
   ACCIDENTAL_TITLE_ERROR: 'The title can not start with the substring "Create a new" or contain the symbol "✔".',
 }

@@ -130,7 +130,7 @@ function UsersComponentWithRouter(
             <div className="users__delete__button"
               title={EnglishConstants.DELETE_HOVER + EntityTypes.USER} 
               onClick={() => { if (window.confirm(EnglishConstants.DELETE_CONFIRM + EntityTypes.USER + '?')) handleDeleteEntity(user.id, EntityTypes.USER) } }
-            >❌</div>
+            ><span role="img" aria-label="Delete-Cross">❌</span></div>
           </td>
         </tr>
       ))}

@@ -10,7 +10,7 @@ import {
 import { IUser } from '../../api/types';
 import NoAccess from '../system-pages/NoAccess';
 import UsersComponentWithRouter from '../../components/users/UsersWithRouter';
-import Login from '../login/Login';
+import { EnglishErrorMessages } from '../../MyConstClass';
 
 interface IUsersState {
   users: IUser[],
@@ -64,26 +64,19 @@ export default class Users extends Component<{}, IUsersState> {
     } = this.state;
 
     // TODO: Not good to match on strings
-    if (error == 'Error: invalid token') {
+    if (error.endsWith(EnglishErrorMessages.INVALID_TOKEN)) {
       console.error('Users ' + error);
       return (<NoAccess/>);
     }
 
-    if (error == 'Error: expired token') {
+    if (error.endsWith(EnglishErrorMessages.EXPIRED_TOKEN)) {
       console.error('Users ' + error);
       // Remove the user from localStorage
       localStorage.removeItem('user');
-
-      // window.location.replace('/login');
-      // TODO: return <Login /> with new prop, message = 'Your login session expired'
-      return (<Login/>);
+      window.location.replace('/login');
     }
 
-    if (error.endsWith('not found.')){
-      console.error('Users ' + error);
-    }
-
-    if (error != '') {
+    if (error !== '') {
       // TODO: Handle error from failed server request or other unknown error.
       console.error('Users UNHANDLED ' + error);
     }

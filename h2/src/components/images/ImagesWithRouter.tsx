@@ -11,7 +11,6 @@ import { IImage } from '../../api/types';
 import useApi from '../../hooks/useApi';
 import Paging from '../paging/Paging';
 import NoAccess from '../../routes/system-pages/NoAccess';
-import Button from '../button/Button';
 
 import { 
   EnglishConstants, 
@@ -110,7 +109,6 @@ function ImagesComponentWithRouter({ limit = 10, paging = false, location, histo
       )}
 
       <div className="images">
-        {/* TODO: ... */}
 
         <ul className="images__list">
         {!loading && !error && items.map(image => (
@@ -119,7 +117,7 @@ function ImagesComponentWithRouter({ limit = 10, paging = false, location, histo
             <div className="image">
 
               <div className="image__image">
-                <a href={image.url} target="_blank">
+                <a href={image.url} target="_blank" rel="noopener noreferrer">
                   <img className="image__img" alt={image.title} src={image.url}/>
                 </a>
               </div>
@@ -131,10 +129,10 @@ function ImagesComponentWithRouter({ limit = 10, paging = false, location, histo
                       <div className="image__delete__button"
                         title={EnglishConstants.DELETE_HOVER + EntityTypes.IMAGE} 
                         onClick={() => { if (window.confirm(EnglishConstants.DELETE_CONFIRM + EntityTypes.IMAGE + '?')) handleDeleteEntity(image.id, EntityTypes.IMAGE) } }
-                      >❌</div>
+                      ><span role="img" aria-label="Delete-Cross">❌</span></div>
                     </td>
                     <th>Title:</th>
-                    <td>{image.title}</td>
+                    <td className="image__title">{image.title}</td>
                     <th>Created:</th>
                     <td>{image.created.toLocaleString()}</td>
                   </tr>

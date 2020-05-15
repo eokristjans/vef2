@@ -3,6 +3,7 @@
  */
 
 import React, { useState } from 'react';
+import { Helmet } from 'react-helmet';
 
 import Input from '../../components/input/Input';
 import { Link } from 'react-router-dom';
@@ -63,6 +64,8 @@ export default function Register() {
 
   return (
     <div className="register">
+      <Helmet title="Notebooks"/>
+
       <div className="register__row">
         <div className="register__col">
           <h1 className="register__heading">{EnglishConstants.SIGN_UP}</h1>

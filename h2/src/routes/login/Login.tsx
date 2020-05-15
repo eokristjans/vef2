@@ -3,12 +3,11 @@
  */
 import React, { useState, Fragment } from 'react';
 import { Link } from 'react-router-dom';
+import { Helmet } from 'react-helmet';
 
 import Input from '../../components/input/Input';
 import Button from '../../components/button/Button';
-
 import { Context } from '../../UserContext';
-
 import { EnglishConstants } from '../../MyConstClass';
 
 import './Login.scss';
@@ -46,6 +45,8 @@ export default function Login(props: ILoginProps) {
 
   return (
     <Fragment>
+      <Helmet title="Login"/>
+
       {props.sessionExpired && (
         <p>Your login session has expired. Please login again.</p>
       )}
@@ -57,7 +58,7 @@ export default function Login(props: ILoginProps) {
               <div className="login__row">
                 <div className="login__col">
                   <h1 className="login__heading">{EnglishConstants.LOGIN}</h1>
-                  {/* TODO: Get unauthorized error message to display correctly */}
+
                   {message && typeof message === 'string' && (
                     <p>{message}</p>
                   )}

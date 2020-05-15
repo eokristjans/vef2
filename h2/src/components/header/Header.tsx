@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link, NavLink } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 import User from './User';
 import { EnglishConstants } from '../../MyConstClass';
@@ -8,7 +8,6 @@ import './Header.scss';
 
 /** Defines a reusable Header component. */
 export default function Home() {
-  // TODO: If user is admin, link to list of all users.
   return (
     <header className="header">
       <div className="header__content">
