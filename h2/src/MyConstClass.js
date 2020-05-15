@@ -1,5 +1,7 @@
 /**
  * A file for constants.
+ * An attempt at using defensive programming, so that a spelling error
+ * in one place is unlikely to go unnoticed.
  */
 
 const EnglishConstants = {

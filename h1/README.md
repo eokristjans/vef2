@@ -45,6 +45,8 @@ heroku login
 # Connect to remote
 heroku git:remote -a noteworthy-md-eok4
 
+# Remember to commit any changes...
+
 # Push just a subtree (the webapp) to Heroku
 git subtree push --prefix h1 heroku master
 

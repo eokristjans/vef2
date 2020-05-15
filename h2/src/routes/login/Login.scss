@@ -3,8 +3,6 @@
 .login {
   @include container;
 
-  
-
   &__row {
     @include row;
     max-width: 420px;
@@ -26,7 +24,6 @@
 
   &__error {
     margin-bottom: $gutter;
-    
   }
 
   &__input {

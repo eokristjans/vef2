@@ -257,15 +257,14 @@ async function readImagesRoute(req, res) {
   const { user } = req;
   let { offset = 0, limit = 10 } = req.query;
 
-  // 10.05.20 - Admins can no longer view other users' images.
   // Only admins can view all images
-  // const userIdIfNotAdmin = user.admin ? null : user.id;
+  const userIdIfNotAdmin = user.admin ? null : user.id;
 
   // Sanitize input
   offset = toPositiveNumberOrDefault(offset, 0);
   limit = toPositiveNumberOrDefault(limit, 10);
 
-  const images = await readImages(offset, limit, user.Id);
+  const images = await readImages(offset, limit, userIdIfNotAdmin);
 
   // Add page metadata
   const imagesWithPage = addPageMetadata(
