@@ -1,13 +1,20 @@
-# Vefforritun 2
+# Vefforritun 2 / Web Development 2
 
-## Háskóli Íslands
+## Háskóli Íslands / Univeristy of Iceland
 
 ### Erling Óskar Kristjánsson, eok4@hi.is
 
-#### Vor 2019
+#### Spring 2019
 
-Mínar lausnir á verkefnum námskeiðisins ásamt glósum o.fl.
+This repository contains my notes and solutions to some of the projects from this class.
 
+## Final Project
+
+I designed and developed a website for taking notes, organizing them and storing them online so they can be accessed through any browser. The notes can be written in markdown with live rendering. I came up with the idea because I often write notes when learning something new. I like to write notes in markdown because it's easy to put in a code section and even some formulas (not supported by all converters), but I think that Google Colab is too heavy weight and can be a bit slow, and writing them directly on the computer requires that the correct tools are set up and you have to remember to push them to git so that you can access them from other devices. So I designed the page as I would like to have it, so that I can use it. The backend is a Restful API written in NodeJS with the Express Framework. hosted on Heroku [here](https://noteworthy-md-eok4.herokuapp.com/); the code for the backend is in the folder **h1**. The frontend is written in React with TypeScript and can be found in the folder **h2**. A detailed description of each of them and their functionalities can be found in corresponding README.md files.
+
+****
+
+Notes from classes...
 
 ## Fyrirlestur 4 - Öryggi - OWASP Top 10
 

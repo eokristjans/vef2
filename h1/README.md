@@ -6,9 +6,21 @@
 
 ## Setup
 
-TODO: Finish description
+Setting up the backend to run it locally takes a bit of work.
+
+* You must have NodeJS, npm and postgres installed. You also have to sign up for [Cloudinary](https://cloudinary.com/).
+* Download the repository and navigate into this folder, named **h1**.
+* Run `npm install` to install all packages.
+* Copy the `.env_example` file into another file called `.env` and set all the parameters as descbribed in there.
+  * You may have to create a new database, or use an existing one.
+* Run `npm run setup` to set up the database, cloudinary and some default data.
+* Run the server with `npm run dev` or `npm start`.
+
+The backend is also running on Heroku [here](https://noteworthy-md-eok4.herokuapp.com/).
 
 ### Users
+
+There are two default users with some default content.
 
 * Admin with username `matthias` and password `doctor-who-2020`.
 * Non-admin user with username `kristjan` and password `mister-master-2020`.
