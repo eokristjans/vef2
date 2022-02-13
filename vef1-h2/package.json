@@ -43,7 +43,7 @@
   "homepage": "https://github.com/eokristjans/vef1-h2#readme",
   "dependencies": {
     "@babel/polyfill": "^7.0.0",
-    "ajv": "^6.0.0",
+    "ajv": "^6.12.3",
     "node-sass": "^4.9.4"
   }
 }
